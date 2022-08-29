@@ -2,7 +2,7 @@
   "name": "f1_digiflags",
   "version": "0.0.0",
   "description": "Adding a DigiFlag fonctionnality in MultiViewer For F1",
-  "main": "index.ts",
+  "main": "main.ts",
   "scripts": {
     "dev": "electron .",
     "start": "electron ."
