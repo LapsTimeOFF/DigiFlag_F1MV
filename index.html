@@ -46,6 +46,21 @@
                         $('#edit_hostInfo').remove()
                         $('#infotag').text('')
                         $('#infolink').text('')
+
+                        $('#select_device').append(`
+                            <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                Window DigiFlag
+                            </label>
+                            </div>
+                            <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" disabled>
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                Pixoo 64 DigiFlag <span class="badge text-bg-danger">Not implemanted yet</span>
+                            </label>
+                            </div>
+                        `)
                     }
                 } catch (e) {
                     $('#tagLink').addClass('text-bg-danger')
@@ -58,7 +73,6 @@
         }
 
         $('document').ready(() => {
-            $('#updateSettings').css('opacity', 0)
             $('#LinkF1MV').click(() => {
                 linkF1MV()
             })
@@ -67,17 +81,17 @@
                 $('#edit_hostInfo').append('<input type="text" class="form-control" placeholder="localhost" value="localhost" id="ip">')
                 $('#edit_hostInfo').append('<p>Port : </p>')
                 $('#edit_hostInfo').append('<input type="text" class="form-control" placeholder="10101" value="10101" id="port">')
-                $('#updateSettings').css('opacity', 1)
-            })
-            $('#updateSettings').click(() => {
-                console.log('Editing settings...');
-                host = $('#ip').val();
-                console.log($('#ip').val() !== "");
-                console.log(`IP = ${$('#ip').val()} = ${host}`);
-                port = $('#port').val();
-                console.log($('#port').val() !== "");
-                console.log(`PORT = ${$('#port').val()} = ${port}`);
-                console.log('Settings edited !');
+                $('#edit_hostInfo').append('<button type="button" id="updateSettings" class="btn btn-primary">Update settings</button>')
+                $('#updateSettings').click(() => {
+                    console.log('Editing settings...');
+                    host = $('#ip').val();
+                    console.log($('#ip').val() !== "");
+                    console.log(`IP = ${$('#ip').val()} = ${host}`);
+                    port = $('#port').val();
+                    console.log($('#port').val() !== "");
+                    console.log(`PORT = ${$('#port').val()} = ${port}`);
+                    console.log('Settings edited !');
+                })
             })
         })
     </script>
@@ -112,7 +126,10 @@
             <p id="infotag"></p>
             <a href="#" id="infolink"></a>
             <div id="edit_hostInfo">
-                <button type="button" id="updateSettings" class="btn btn-primary">Update settings</button>
+
+            </div>
+            <div id="select_device">
+
             </div>
         </div>
     </div>
