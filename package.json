@@ -1,0 +1,20 @@
+{
+  "name": "f1_digiflags",
+  "version": "0.0.0",
+  "description": "Adding a DigiFlag fonctionnality in MultiViewer For F1",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "electron .",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LapsTimeOFF/DigiFlag_F1MV.git"
+  },
+  "author": "LapsTime",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LapsTimeOFF/DigiFlag_F1MV/issues"
+  },
+  "homepage": "https://github.com/LapsTimeOFF/DigiFlag_F1MV#readme"
+}
