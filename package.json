@@ -16,5 +16,14 @@
   "bugs": {
     "url": "https://github.com/LapsTimeOFF/DigiFlag_F1MV/issues"
   },
-  "homepage": "https://github.com/LapsTimeOFF/DigiFlag_F1MV#readme"
+  "homepage": "https://github.com/LapsTimeOFF/DigiFlag_F1MV#readme",
+  "dependencies": {
+    "chalk": "^5.0.1",
+    "electron": "^20.1.0",
+    "fs": "^0.0.1-security",
+    "node-fetch": "^3.2.10"
+  },
+  "devDependencies": {
+    "typescript": "^4.8.2"
+  }
 }
