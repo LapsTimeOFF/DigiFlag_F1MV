@@ -23,8 +23,8 @@
         let host = "localhost"
         let port = 10101
 
-        $('document').ready(() => {
-            $('#LinkF1MV').click(() => {
+        function linkF1MV() {
+            console.log('Link started...');
                 $('#tagLink').removeClass('text-bg-secondary')
                 $('#tagLink').removeClass('text-bg-danger')
                 $('#tagLink').removeClass('text-bg-warning')
@@ -32,6 +32,7 @@
                 $('#tagLink').addClass('text-bg-primary')
                 $('#tagLink').text('Linking to F1MV in progress...')
                 try {
+                    console.log(`URL = http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`);
                     let response = JSON.parse(httpGet(`http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`))
                     if(response.error === "No data found, do you have live timing running?") {
                         $('#tagLink').addClass('text-bg-warning')
@@ -42,6 +43,7 @@
                         $('#tagLink').removeClass('text-bg-primary')
                         $('#tagLink').removeClass('text-bg-warning')
                         $('#tagLink').text('Connected to F1MV')
+                        $('#edit_hostInfo').remove()
                         $('#infotag').text('')
                         $('#infolink').text('')
                     }
@@ -53,6 +55,29 @@
                     $('#infotag').text('Maybe your port isn\'t the default one ? Maybe are you trying to connect to another host ?')
                     $('#infolink').text('Click here for editing the F1MV config.')
                 }
+        }
+
+        $('document').ready(() => {
+            $('#updateSettings').css('opacity', 0)
+            $('#LinkF1MV').click(() => {
+                linkF1MV()
+            })
+            $('#infolink').click(() => {
+                $('#edit_hostInfo').append('<p>IP : </p>')
+                $('#edit_hostInfo').append('<input type="text" class="form-control" placeholder="localhost" value="localhost" id="ip">')
+                $('#edit_hostInfo').append('<p>Port : </p>')
+                $('#edit_hostInfo').append('<input type="text" class="form-control" placeholder="10101" value="10101" id="port">')
+                $('#updateSettings').css('opacity', 1)
+            })
+            $('#updateSettings').click(() => {
+                console.log('Editing settings...');
+                host = $('#ip').val();
+                console.log($('#ip').val() !== "");
+                console.log(`IP = ${$('#ip').val()} = ${host}`);
+                port = $('#port').val();
+                console.log($('#port').val() !== "");
+                console.log(`PORT = ${$('#port').val()} = ${port}`);
+                console.log('Settings edited !');
             })
         })
     </script>
@@ -86,6 +111,9 @@
             <button type="button" class="btn btn-primary" id="LinkF1MV">Link my F1MV</button> <span id="tagLink" class="badge text-bg-secondary">F1MV is currently not linked to DigiFlag</span>
             <p id="infotag"></p>
             <a href="#" id="infolink"></a>
+            <div id="edit_hostInfo">
+                <button type="button" id="updateSettings" class="btn btn-primary">Update settings</button>
+            </div>
         </div>
     </div>
 </body>
