@@ -13,6 +13,13 @@
 
     <!-- JS -->
     <script>
+        function httpGet(theUrl) {
+            let xmlHttpReq = new XMLHttpRequest();
+            xmlHttpReq.open("GET", theUrl, false); 
+            xmlHttpReq.send(null);
+            return xmlHttpReq.responseText;
+        }
+
         $('document').ready(() => {
             $('#LinkF1MV').click(() => {
                 
