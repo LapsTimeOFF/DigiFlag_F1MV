@@ -20,9 +20,39 @@
             return xmlHttpReq.responseText;
         }
 
+        let host = "localhost"
+        let port = 10101
+
         $('document').ready(() => {
             $('#LinkF1MV').click(() => {
-                
+                $('#tagLink').removeClass('text-bg-secondary')
+                $('#tagLink').removeClass('text-bg-danger')
+                $('#tagLink').removeClass('text-bg-warning')
+                $('#tagLink').removeClass('text-bg-success')
+                $('#tagLink').addClass('text-bg-primary')
+                $('#tagLink').text('Linking to F1MV in progress...')
+                try {
+                    let response = JSON.parse(httpGet(`http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`))
+                    if(response.error === "No data found, do you have live timing running?") {
+                        $('#tagLink').addClass('text-bg-warning')
+                        $('#tagLink').removeClass('text-bg-primary')
+                        $('#tagLink').text('Your F1MV is connected, but it\'s seem like your Live Timing page is not running.')
+                    } else {
+                        $('#tagLink').addClass('text-bg-success')
+                        $('#tagLink').removeClass('text-bg-primary')
+                        $('#tagLink').removeClass('text-bg-warning')
+                        $('#tagLink').text('Connected to F1MV')
+                        $('#infotag').text('')
+                        $('#infolink').text('')
+                    }
+                } catch (e) {
+                    $('#tagLink').addClass('text-bg-danger')
+                    $('#tagLink').removeClass('text-bg-primary')
+                    $('#tagLink').removeClass('text-bg-warning')
+                    $('#tagLink').text('Failed to connect to F1MV')
+                    $('#infotag').text('Maybe your port isn\'t the default one ? Maybe are you trying to connect to another host ?')
+                    $('#infolink').text('Click here for editing the F1MV config.')
+                }
             })
         })
     </script>
@@ -53,7 +83,9 @@
             <center>
                 <h1>F1MV x DigiFlags</h1><br>
             </center>
-            <button type="button" class="btn btn-primary" id="LinkF1MV">Link my F1MV</button> <span class="badge text-bg-secondary">F1MV is currently not linked to DigiFlag</span>
+            <button type="button" class="btn btn-primary" id="LinkF1MV">Link my F1MV</button> <span id="tagLink" class="badge text-bg-secondary">F1MV is currently not linked to DigiFlag</span>
+            <p id="infotag"></p>
+            <a href="#" id="infolink"></a>
         </div>
     </div>
 </body>
