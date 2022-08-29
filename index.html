@@ -60,13 +60,14 @@
                                 Pixoo 64 DigiFlag <span class="badge text-bg-danger">Not implemanted yet</span>
                             </label>
                             </div>
+                            <button type="button" id="launchDigiFlag" class="btn btn-success">Start DigiFlag</button>
                         `)
                     }
                 } catch (e) {
                     $('#tagLink').addClass('text-bg-danger')
                     $('#tagLink').removeClass('text-bg-primary')
                     $('#tagLink').removeClass('text-bg-warning')
-                    $('#tagLink').text('Failed to connect to F1MV')
+                    $('#tagLink').text('Failed to connect to F1MV') 
                     $('#infotag').text('Maybe your port isn\'t the default one ? Maybe are you trying to connect to another host ?')
                     $('#infolink').text('Click here for editing the F1MV config.')
                 }
