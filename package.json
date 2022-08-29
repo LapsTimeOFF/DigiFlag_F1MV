@@ -4,8 +4,8 @@
   "description": "Adding a DigiFlag fonctionnality in MultiViewer For F1",
   "main": "main.ts",
   "scripts": {
-    "dev": "electron .",
-    "start": "electron ."
+    "build": "tsc",
+    "start": "sh build.sh"
   },
   "repository": {
     "type": "git",
