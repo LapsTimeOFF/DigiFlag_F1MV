@@ -3,7 +3,9 @@ rm -rf F1MV-DigiFlag-*
 echo 'Old builds removed'
 echo 'Starting building...'
 echo 'Building Win32x64'
-electron-packager . F1MV-DigiFlag --platform=win32 --arch=ia32
+npx electron-forge package --arch=x64 --platform=win32
+mv out/f1_digiflags-win32-x64/ ./F1MV-DigiFlag-win32-x64
+rm -rf out
 echo 'Building Win32x64 completed'
 echo 'Building Darwin'
 electron-packager . F1MV-DigiFlag --platform=darwin
@@ -17,7 +19,7 @@ rm -rf ./F1MV-DigiFlag-darwin-arm64/version
 echo 'Useless files removed'
 echo 'Zipping files...'
 zip F1MV-DigiFlag-linux-arm64.zip ./F1MV-DigiFlag-linux-arm64/*
-zip F1MV-DigiFlag-win32-ia32.zip ./F1MV-DigiFlag-win32-ia32/*
+zip F1MV-DigiFlag-win32-x64.zip ./F1MV-DigiFlag-win32-x64/*
 echo 'Zippied files done'
 echo 'Create Applications folder alias'
 ln -s /Applications ./F1MV-DigiFlag-darwin-arm64/Applications
