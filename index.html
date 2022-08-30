@@ -203,6 +203,16 @@
                             break;
                         case "BLUE":
                             $('#digiflag').prop('src', 'gifs/blue.gif')
+                            await timer(2500)
+                            if(sc === true) {
+                                $('#digiflag').prop('src', 'gifs/sc.gif')
+                            } else {
+                                if(vsc === true) {
+                                    $('#digiflag').prop('src', 'gifs/vsc.gif');
+                                    return;
+                                }
+                                $('#digiflag').prop('src', 'gifs/void.gif')
+                            }
                             break;
                         case "BLACK AND ORANGE":
                             $('#digiflag').prop('src', 'gifs/mec.gif')
