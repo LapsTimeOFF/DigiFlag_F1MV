@@ -11,7 +11,6 @@ echo 'Building Darwin completed'
 echo 'Building Linux'
 electron-packager . F1MV-DigiFlag --platform=linux
 echo 'Building Linux completed'
-echo 'Building completed'
 echo 'Removing useless files...'
 rm -rf ./F1MV-DigiFlag-darwin-arm64/LICENSE*
 rm -rf ./F1MV-DigiFlag-darwin-arm64/version
@@ -23,3 +22,7 @@ echo 'Zippied files done'
 echo 'Create Applications folder alias'
 ln -s /Applications ./F1MV-DigiFlag-darwin-arm64/Applications
 echo 'Create Applications folder alias done'
+echo 'Create the .dmg file'
+hdiutil create -srcfolder ./F1MV-DigiFlag-darwin-arm64 ./F1MV-DigiFlag-darwin-arm64.dmg
+echo '.dmg file created'
+echo 'Building completed'
