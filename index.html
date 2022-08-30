@@ -120,8 +120,6 @@
 
             const url = `http://${host}:${port}/api/v1/live-timing/RaceControlMessages`
 
-            if(debugOn) console.log('Checking for new messages...');
-
             const result = await JSON.parse(httpGet(url))
 
             if(result.Messages.length === oldMessages.Messages.length) {
