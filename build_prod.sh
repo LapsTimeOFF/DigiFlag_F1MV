@@ -3,7 +3,7 @@ rm -rf F1MV-DigiFlag-*
 echo 'Old builds removed'
 echo 'Starting building...'
 echo 'Building Win32x64'
-electron-packager . F1MV-DigiFlag --platform=win32 --arch=x64
+electron-packager . F1MV-DigiFlag --platform=win32 --arch=ia32
 echo 'Building Win32x64 completed'
 echo 'Building Darwin'
 electron-packager . F1MV-DigiFlag --platform=darwin
