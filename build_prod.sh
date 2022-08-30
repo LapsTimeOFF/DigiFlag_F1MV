@@ -1,3 +1,6 @@
+echo 'Removing old builds'
+rm -rf F1MV-DigiFlag-*
+echo 'Old builds removed'
 echo 'Starting building...'
 echo 'Building Win32x64'
 electron-packager . F1MV-DigiFlag --platform=win32 --arch=x64
