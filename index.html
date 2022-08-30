@@ -25,6 +25,8 @@
 
         const timer = ms => new Promise( res => setTimeout(res, ms));
 
+        let debugOn = false;
+
         let started = false;
 
         let sc = false;
@@ -35,7 +37,7 @@
         }
 
         function linkF1MV() {
-            console.log('Link started...');
+            if(debugOn) console.log('Link started...');
                 $('#tagLink').removeClass('text-bg-secondary')
                 $('#tagLink').removeClass('text-bg-danger')
                 $('#tagLink').removeClass('text-bg-warning')
@@ -118,14 +120,14 @@
 
             const url = `http://${host}:${port}/api/v1/live-timing/RaceControlMessages`
 
-            console.log('Checking for new messages...');
+            if(debugOn) console.log('Checking for new messages...');
 
             const result = await JSON.parse(httpGet(url))
 
             if(result.Messages.length === oldMessages.Messages.length) {
-                console.log('No new messages.');
+                if(debugOn) console.log('No new messages.');
             } else {
-                console.log('New message');
+                if(debugOn) console.log('New message');
                 message = result.Messages[oldMessages.Messages.length]
                 oldMessages = result
             
@@ -154,6 +156,8 @@
                     messageData.Sector = message.Sector;
                     messageData.Scope = message.Scope
                 }
+
+                if(debugOn) console.log(messageData);
 
                 if(messageData.Category === "TrackSurfaceSlippery") $('#digiflag').prop('src', 'gifs/slippery.gif');
                 if(messageData.Category === "SafetyCar"){
