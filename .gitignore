@@ -182,6 +182,14 @@ dist
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 
+*.exe
+*.dmg
+*.app
+
+F1MV-DigiFlag-win32-x64/
+F1MV-DigiFlag-darwin-arm64/
+F1MV-DigiFlag-linux-arm64/
+
 # Local History for Visual Studio Code
 .history/
 
