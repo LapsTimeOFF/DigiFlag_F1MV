@@ -27,6 +27,9 @@
 
         let started = false;
 
+        let sc = false;
+        let vsc = false;
+
         let oldMessages = {
             "Messages": []
         }
@@ -149,8 +152,27 @@
                     messageData.Category = "Flag";
                     messageData.Flag = message.Flag;
                     messageData.Sector = message.Sector;
+                    messageData.Scope = message.Scope
                 }
 
+                if(messageData.Category === "TrackSurfaceSlippery") $('#digiflag').prop('src', 'gifs/slippery.gif');
+                if(messageData.Category === "SafetyCar"){
+                    sc = true;
+                    $('#digiflag').prop('src', 'gifs/sc.gif');
+                }
+                if(messageData.Category === "VirtualSafetyCar") {
+                    vsc = true;
+                    $('#digiflag').prop('src', 'gifs/vsc.gif');
+                }
+
+                if(messageData.Scope === "Track") {
+                    sc = false;
+                    vsc = false;
+                    $('#digiflag').prop('src', 'gifs/green.gif');
+                    await timer(2500)
+                    $('#digiflag').prop('src', 'gifs/void.gif');
+                    return;
+                }
 
                 if (messageData.Category === "Flag") {
                     switch (messageData.Flag) {
@@ -163,7 +185,15 @@
                         case "CLEAR":
                             $('#digiflag').prop('src', 'gifs/green.gif')
                             await timer(2500)
-                            $('#digiflag').prop('src', 'gifs/void.gif')
+                            if(sc === true) {
+                                $('#digiflag').prop('src', 'gifs/sc.gif')
+                            } else {
+                                if(vsc === true) {
+                                    $('#digiflag').prop('src', 'gifs/vsc.gif');
+                                    return;
+                                }
+                                $('#digiflag').prop('src', 'gifs/void.gif')
+                            }
                             break;
                         case "RED":
                             $('#digiflag').prop('src', 'gifs/red.gif')
@@ -174,6 +204,19 @@
                         case "BLUE":
                             $('#digiflag').prop('src', 'gifs/blue.gif')
                             break;
+                        case "BLACK AND ORANGE":
+                            $('#digiflag').prop('src', 'gifs/mec.gif')
+                            await timer(2500)
+                            if(sc === true) {
+                                $('#digiflag').prop('src', 'gifs/sc.gif')
+                            } else {
+                                if(vsc === true) {
+                                    $('#digiflag').prop('src', 'gifs/vsc.gif');
+                                    return;
+                                }
+                                $('#digiflag').prop('src', 'gifs/void.gif')
+                            }
+                            break;
                     
                         default:
                             break;
@@ -182,7 +225,7 @@
             }
         }
 
-        setInterval(checkRCM, 1000)
+        setInterval(checkRCM, 250)
 
     </script>
 
