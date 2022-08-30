@@ -18,7 +18,7 @@ rm -rf ./F1MV-DigiFlag-darwin-arm64/version
 echo 'Useless files removed'
 echo 'Zipping files...'
 zip F1MV-DigiFlag-linux-arm64.zip ./F1MV-DigiFlag-linux-arm64/*
-zip F1MV-DigiFlag-win32-x64.zip ./F1MV-DigiFlag-win32-x64/*
+zip F1MV-DigiFlag-win32-ia32.zip ./F1MV-DigiFlag-win32-ia32/*
 echo 'Zippied files done'
 echo 'Create Applications folder alias'
 ln -s /Applications ./F1MV-DigiFlag-darwin-arm64/Applications
