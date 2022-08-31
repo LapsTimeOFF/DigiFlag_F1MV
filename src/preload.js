@@ -65,6 +65,12 @@ function linkF1MV() {
                 $('#launchDigiFlag').click(() => {
                     $('.menu_box').remove()
                     $('body').append('<img src="gifs/void.gif" height="512px" id="digiflag" class="center-screen">')
+                    $('body').append(`
+                    <div class="bottom-screen" id="zoom">
+                        <button id="+" class="btn btn-primary">+</button>
+                        <button id="-" class="btn btn-primary">-</button>
+                    </div>
+                    `)
                     started = true;
                 })
             }
