@@ -1,3 +1,6 @@
+echo 'CD...'
+cd ..
+echo 'CD done'
 echo 'Removing old builds'
 rm -rf F1MV-DigiFlag-*
 echo 'Old builds removed'
@@ -8,10 +11,10 @@ mv out/f1_digiflags-win32-x64/ ./F1MV-DigiFlag-win32-x64
 rm -rf out
 echo 'Building Win32x64 completed'
 echo 'Building Darwin'
-electron-packager . F1MV-DigiFlag --platform=darwin
+npx electron-forge package --platform=darwin
 echo 'Building Darwin completed'
 echo 'Building Linux'
-electron-packager . F1MV-DigiFlag --platform=linux
+npx electron-forge package --platform=linux
 echo 'Building Linux completed'
 echo 'Removing useless files...'
 rm -rf ./F1MV-DigiFlag-darwin-arm64/LICENSE*
