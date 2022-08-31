@@ -1,6 +1,3 @@
-echo 'CD...'
-cd ..
-echo 'CD done'
 echo 'Removing old builds'
 rm -rf F1MV-DigiFlag-*
 echo 'Old builds removed'
