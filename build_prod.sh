@@ -4,7 +4,7 @@ echo 'Old builds removed'
 echo 'Starting building...'
 echo 'Building Win32x64'
 npx electron-forge package --arch=x64 --platform=win32
-mv out/f1_digiflags-win32-x64/ ./F1MV-DigiFlag-win32-x64
+mv out/* ./*
 rm -rf out
 echo 'Building Win32x64 completed'
 echo 'Building Darwin'
