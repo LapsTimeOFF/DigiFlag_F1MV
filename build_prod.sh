@@ -1,10 +1,14 @@
+echo 'CD...'
+cd src/
+echo 'CD done'
 echo 'Removing old builds'
 rm -rf F1MV-DigiFlag-*
 echo 'Old builds removed'
 echo 'Starting building...'
 echo 'Building Win32x64'
 npx electron-forge package --arch=x64 --platform=win32
-mv out/* ./*
+mv out/* ../*
+mv ./Can\'tBeOpenBug.sh ../
 rm -rf out
 echo 'Building Win32x64 completed'
 echo 'Building Darwin'
