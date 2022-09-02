@@ -16,6 +16,7 @@ let started = false;
 
 let sc = false;
 let vsc = false;
+let red = false;
 
 let oldMessages = {
     "Messages": []
@@ -155,6 +156,7 @@ async function checkRCM() {
         if(messageData.Scope === "Track") {
             sc = false;
             vsc = false;
+            red = false;
             $('#digiflag').prop('src', 'gifs/green.gif');
             await timer(2500)
             $('#digiflag').prop('src', 'gifs/void.gif');
@@ -178,11 +180,17 @@ async function checkRCM() {
                         if(vsc === true) {
                             $('#digiflag').prop('src', 'gifs/vsc.gif');
                             return;
+                        } else {
+                            if(red === true) {
+                                $('#digiflag').prop('src', 'gifs/red.gif');
+                                return;
+                            }
                         }
                         $('#digiflag').prop('src', 'gifs/void.gif')
                     }
                     break;
                 case "RED":
+                    red = true;
                     $('#digiflag').prop('src', 'gifs/red.gif')
                     break;
                 case "CHEQUERED":
@@ -197,6 +205,11 @@ async function checkRCM() {
                         if(vsc === true) {
                             $('#digiflag').prop('src', 'gifs/vsc.gif');
                             return;
+                        } else {
+                            if(red === true) {
+                                $('#digiflag').prop('src', 'gifs/red.gif');
+                                return;
+                            }
                         }
                         $('#digiflag').prop('src', 'gifs/void.gif')
                     }
@@ -210,6 +223,11 @@ async function checkRCM() {
                         if(vsc === true) {
                             $('#digiflag').prop('src', 'gifs/vsc.gif');
                             return;
+                        } else {
+                            if(red === true) {
+                                $('#digiflag').prop('src', 'gifs/red.gif');
+                                return;
+                            }
                         }
                         $('#digiflag').prop('src', 'gifs/void.gif')
                     }
