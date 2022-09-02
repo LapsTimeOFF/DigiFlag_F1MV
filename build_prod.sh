@@ -3,10 +3,10 @@ rm -rf F1MV-DigiFlag-*
 echo 'Old builds removed'
 echo 'Starting building...'
 echo 'Building Win32x64'
-
+electron-packager ./ F1MV-DigiFlag --platform=win32 --arch=x64
 echo 'Building Win32x64 completed'
 echo 'Building Darwin'
-npx electron-forge package --platform=darwin
+electron-packager ./ F1MV-DigiFlag --platform=darwin
 echo 'Building Darwin completed'
 echo "Making can't be open file"
 echo "sudo spctl --master-disable" > out/Can\'tBeOpenBug.sh
@@ -17,12 +17,8 @@ echo "" > out/Can\'tBeOpenBug.sh
 echo "echo 'Done.'" > out/Can\'tBeOpenBug.sh
 echo "Making can't be open file done"
 echo 'Building Linux'
-npx electron-forge package --platform=linux
+electron-packager ./ F1MV-DigiFlag --platform=linux
 echo 'Building Linux completed'
-mv out/* ../*
-mv ./Can\'tBeOpenBug.sh ../
-rm -rf out
-cd ..
 echo 'Removing useless files...'
 rm -rf ./F1MV-DigiFlag-darwin-arm64/LICENSE*
 rm -rf ./F1MV-DigiFlag-darwin-arm64/version
