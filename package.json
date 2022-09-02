@@ -1,0 +1,61 @@
+{
+  "name": "digiflag-f1mv",
+  "productName": "digiflag-f1mv",
+  "version": "0.0.1-beta6",
+  "description": "Adding a DigiFlag fonctionnality in MultiViewer For F1",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LapsTimeOFF/DigiFlag_F1MV.git"
+  },
+  "author": "LapsTime",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LapsTimeOFF/DigiFlag_F1MV/issues"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "digiflag_f1mv"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "chalk": "^5.0.1",
+    "electron-squirrel-startup": "^1.0.0",
+    "fs": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.65",
+    "@electron-forge/maker-deb": "^6.0.0-beta.65",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.65",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.65",
+    "@electron-forge/maker-zip": "^6.0.0-beta.65",
+    "electron": "20.1.0"
+  }
+}
