@@ -14,6 +14,7 @@ let debugOn = false;
 
 let started = false;
 
+let yellow = false;
 let sc = false;
 let vsc = false;
 let red = false;
@@ -104,9 +105,9 @@ async function checkRCM() {
     if(started === false) return;
 
 
-    const url = `http://${host}:${port}/api/v1/live-timing/RaceControlMessages`
+    const urlRCM = `http://${host}:${port}/api/v1/live-timing/RaceControlMessages`
 
-    const result = await JSON.parse(httpGet(url))
+    const result = await JSON.parse(httpGet(urlRCM))
 
     if(result.Messages.length === oldMessages.Messages.length) {
         if(debugOn) console.log('No new messages.');
@@ -184,6 +185,11 @@ async function checkRCM() {
                             if(red === true) {
                                 $('#digiflag').prop('src', 'gifs/red.gif');
                                 return;
+                            } else {
+                                if(yellow === true) {
+                                    $('#digiflag').prop('src', 'gifs/yellow.gif');
+                                    return;
+                                }
                             }
                         }
                         $('#digiflag').prop('src', 'gifs/void.gif')
@@ -209,6 +215,11 @@ async function checkRCM() {
                             if(red === true) {
                                 $('#digiflag').prop('src', 'gifs/red.gif');
                                 return;
+                            } else {
+                                if(yellow === true) {
+                                    $('#digiflag').prop('src', 'gifs/yellow.gif');
+                                    return;
+                                }
                             }
                         }
                         $('#digiflag').prop('src', 'gifs/void.gif')
@@ -227,6 +238,11 @@ async function checkRCM() {
                             if(red === true) {
                                 $('#digiflag').prop('src', 'gifs/red.gif');
                                 return;
+                            } else {
+                                if(yellow === true) {
+                                    $('#digiflag').prop('src', 'gifs/yellow.gif');
+                                    return;
+                                }
                             }
                         }
                         $('#digiflag').prop('src', 'gifs/void.gif')
@@ -238,6 +254,52 @@ async function checkRCM() {
             }
         }
     }
+
 }
 
-setInterval(checkRCM, 250)
+function checkStatus() {
+    let urlStatus = `http://${host}:${port}/api/v1/live-timing/TrackStatus`
+
+    let trackStatus = JSON.parse(httpGet(urlStatus)).Status
+
+    // {"Status":"1","Message":"AllClear"}
+    // {"Status":"2","Message":"Yellow"}
+    // {"Status":"4","Message":"SCDeployed"}
+    // {"Status":"5","Message":"Red"}
+    // {"Status":"6","Message":"VSCDeployed"}
+    // {"Status":"7","Message":"VSCEnding"}
+
+    if(trackStatus === "1") {
+        sc = false;
+        yellow = false;
+        vsc = false;
+        red = false;
+    }
+    if(trackStatus === "2") {
+        sc = false;
+        yellow = true;
+        vsc = false;
+        red = false;
+    }
+    if(trackStatus === "4") {
+        sc = true;
+        yellow = false;
+        vsc = false;
+        red = false;
+    }
+    if(trackStatus === "5") {
+        sc = false;
+        yellow = false;
+        vsc = false;
+        red = true;
+    }
+    if(trackStatus === "6") {
+        sc = false;
+        yellow = false;
+        vsc = true;
+        red = false;
+    }
+}
+
+setInterval(checkRCM, 100)
+setInterval(checkStatus, 100)
