@@ -3,7 +3,7 @@ rm -rf F1MV-DigiFlag-*
 echo 'Old builds removed'
 echo 'Starting building...'
 echo 'Building Win32x64'
-npx electron-forge package --arch=x64 --platform=win32
+
 echo 'Building Win32x64 completed'
 echo 'Building Darwin'
 npx electron-forge package --platform=darwin

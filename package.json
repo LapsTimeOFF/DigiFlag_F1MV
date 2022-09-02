@@ -3,7 +3,7 @@
   "productName": "digiflag-f1mv",
   "version": "0.0.1-beta6",
   "description": "Adding a DigiFlag fonctionnality in MultiViewer For F1",
-  "main": "src/index.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
