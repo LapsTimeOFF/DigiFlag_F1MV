@@ -4,6 +4,12 @@
     left: 50%;
     transform: translate(-50%,-50%);
 }
+.bottom-screen {
+    position: absolute;
+    top:  95%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
 .menu_box {
     color: white;
     background-color: #888888;

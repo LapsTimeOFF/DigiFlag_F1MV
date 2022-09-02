@@ -12,6 +12,8 @@ const timer = ms => new Promise( res => setTimeout(res, ms));
 
 let debugOn = false;
 
+let zoom = 512
+
 let started = false;
 
 let yellow = false;
@@ -64,7 +66,8 @@ function linkF1MV() {
                 `)
                 $('#launchDigiFlag').click(() => {
                     $('.menu_box').remove()
-                    $('body').append('<img src="gifs/void.gif" height="90%"" id="digiflag" class="center-screen">')
+                    $('body').append('<img src="gifs/void.gif" height="512" id="digiflag" class="center-screen">')
+                    $('#zoomControl').css('opacity', 1)
                     started = true;
                 })
             }
@@ -79,6 +82,7 @@ function linkF1MV() {
 }
 
 $('document').ready(() => {
+    $('#zoomControl').css('opacity', 0)
     $('#LinkF1MV').click(() => {
         linkF1MV()
     })
@@ -98,6 +102,14 @@ $('document').ready(() => {
             console.log(`PORT = ${$('#port').val()} = ${port}`);
             console.log('Settings edited !');
         })
+    })
+    $('#zoomIn').click(() => {
+        zoom = zoom + 20;
+        $('#digiflag').prop('height', zoom)
+    })
+    $('#zoomOut').click(() => {
+        zoom = zoom - 20;
+        $('#digiflag').prop('height', zoom)
     })
 })
 
