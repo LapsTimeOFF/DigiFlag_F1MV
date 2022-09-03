@@ -286,13 +286,15 @@ async function checkStatus() {
     // {"Status":"7","Message":"VSCEnding"}
 
     if(trackStatus === "1") {
-        $('#digiflag').prop('src', 'gifs/green.gif')
-        await timer(2500)
-        $('#digiflag').prop('src', 'gifs/void.gif')
-        sc = false;
-        yellow = false;
-        vsc = false;
-        red = false;
+        if(sc || vsc || red || yellow) {
+            $('#digiflag').prop('src', 'gifs/green.gif')
+            await timer(2500)
+            $('#digiflag').prop('src', 'gifs/void.gif')
+            sc = false;
+            yellow = false;
+            vsc = false;
+            red = false;
+        }
     }
     if(trackStatus === "2") {
         sc = false;
