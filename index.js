@@ -165,6 +165,13 @@ async function checkRCM() {
             vsc = true;
             $('#digiflag').prop('src', 'gifs/vsc.gif');
         }
+        
+        if(messageData.Flag === "CHEQUERED") {
+            $('#digiflag').prop('src', 'gifs/chequered.gif')
+            await timer(60000)
+            $('#digiflag').prop('src', 'gifs/void.gif')
+            return;
+        }
 
         if(messageData.Scope === "Track") {
             sc = false;
@@ -210,9 +217,6 @@ async function checkRCM() {
                 case "RED":
                     red = true;
                     $('#digiflag').prop('src', 'gifs/red.gif')
-                    break;
-                case "CHEQUERED":
-                    $('#digiflag').prop('src', 'gifs/chequered.gif')
                     break;
                 case "BLUE":
                     $('#digiflag').prop('src', 'gifs/blue.gif')
@@ -269,7 +273,7 @@ async function checkRCM() {
 
 }
 
-function checkStatus() {
+async function checkStatus() {
     let urlStatus = `http://${host}:${port}/api/v1/live-timing/TrackStatus`
 
     let trackStatus = JSON.parse(httpGet(urlStatus)).Status
@@ -282,6 +286,9 @@ function checkStatus() {
     // {"Status":"7","Message":"VSCEnding"}
 
     if(trackStatus === "1") {
+        $('#digiflag').prop('src', 'gifs/green.gif')
+        await timer(2500)
+        $('#digiflag').prop('src', 'gifs/void.gif')
         sc = false;
         yellow = false;
         vsc = false;
