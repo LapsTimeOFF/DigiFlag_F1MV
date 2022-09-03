@@ -34,7 +34,7 @@ function linkF1MV() {
         $('#tagLink').addClass('text-bg-primary')
         $('#tagLink').text('Linking to F1MV in progress...')
         try {
-            console.log(`URL = http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`);
+            if(debugOn) console.log(`URL = http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`);
             let response = JSON.parse(httpGet(`http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`))
             if(response.error === "No data found, do you have live timing running?") {
                 $('#tagLink').addClass('text-bg-warning')
@@ -93,14 +93,14 @@ $('document').ready(() => {
         $('#edit_hostInfo').append('<input type="text" class="form-control" placeholder="10101" value="10101" id="port">')
         $('#edit_hostInfo').append('<button type="button" id="updateSettings" class="btn btn-primary">Update settings</button>')
         $('#updateSettings').click(() => {
-            console.log('Editing settings...');
+            if(debugOn) console.log('Editing settings...');
             host = $('#ip').val();
-            console.log($('#ip').val() !== "");
-            console.log(`IP = ${$('#ip').val()} = ${host}`);
+            if(debugOn) console.log($('#ip').val() !== "");
+            if(debugOn) console.log(`IP = ${$('#ip').val()} = ${host}`);
             port = $('#port').val();
-            console.log($('#port').val() !== "");
-            console.log(`PORT = ${$('#port').val()} = ${port}`);
-            console.log('Settings edited !');
+            if(debugOn) console.log($('#port').val() !== "");
+            if(debugOn) console.log(`PORT = ${$('#port').val()} = ${port}`);
+            if(debugOn) console.log('Settings edited !');
         })
     })
     $('#zoomIn').click(() => {
