@@ -5,7 +5,8 @@ function createWindow(width:number, height:number, title:string) {
     let _window = new BrowserWindow({
         width: width,
         height: height,
-        title: title
+        title: title,
+        autoHideMenuBar: true
     })
 
     return _window;

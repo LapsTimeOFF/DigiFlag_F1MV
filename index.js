@@ -287,13 +287,13 @@ async function checkStatus() {
 
     if(trackStatus === "1") {
         if(sc || vsc || red || yellow) {
-            $('#digiflag').prop('src', 'gifs/green.gif')
-            await timer(2500)
-            $('#digiflag').prop('src', 'gifs/void.gif')
             sc = false;
             yellow = false;
             vsc = false;
             red = false;
+            $('#digiflag').prop('src', 'gifs/green.gif')
+            await timer(2500)
+            $('#digiflag').prop('src', 'gifs/void.gif')
         }
     }
     if(trackStatus === "2") {
