@@ -16,6 +16,7 @@
 }
 body {
     background-color: #444;
+    overflow: hidden;
 }
 #menu_content {
     margin: 10px;

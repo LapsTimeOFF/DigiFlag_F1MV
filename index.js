@@ -174,6 +174,10 @@ async function checkRCM() {
         }
 
         if(messageData.Scope === "Track") {
+            if(messageData.Flag === "RED") {
+                $('#digiflag').prop('src', 'gifs/red.gif');
+                return;
+            }
             sc = false;
             vsc = false;
             red = false;

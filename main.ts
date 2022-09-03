@@ -13,7 +13,7 @@ function createWindow(width:number, height:number, title:string) {
 }
 
 app.whenReady().then(() => {
-    let mainWindow = createWindow(800,600,"F1MV - DigiFlag")
+    let mainWindow = createWindow(800,600,"F1MV - DigiFlag - v0.0.1-beta10")
     mainWindow.loadFile('index.html')
 })
 
