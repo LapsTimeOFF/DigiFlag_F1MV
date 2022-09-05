@@ -10,6 +10,8 @@ let port = 10101
 
 const timer = ms => new Promise( res => setTimeout(res, ms));
 
+const themes = JSON.parse(httpGet('./filesConfiguration.json'))
+
 let debugOn = false;
 
 let zoom = 512
@@ -48,6 +50,14 @@ function linkF1MV() {
                 $('#edit_hostInfo').remove()
                 $('#infotag').text('')
                 $('#infolink').text('')
+
+                $('#select_theme').append(`
+                    <div id="themes">
+
+                    </div>
+                    <button type="button" id="launchDigiFlag" class="btn btn-success">Next</button>
+                `)
+                $('#')
 
                 $('#select_device').append(`
                     <div class="form-check" id="window">
@@ -278,6 +288,9 @@ async function checkRCM() {
 }
 
 async function checkStatus() {
+    if(!started) return;
+
+
     let urlStatus = `http://${host}:${port}/api/v1/live-timing/TrackStatus`
 
     let trackStatus = JSON.parse(httpGet(urlStatus)).Status
