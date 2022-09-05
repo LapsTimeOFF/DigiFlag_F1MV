@@ -50,21 +50,21 @@
                 "Pixoo64": false
             },
             "gifs": {
-                "blackandwhite": "",
-                "blue": "",
-                "chequered": "",
-                "dyellow": "",
-                "green": "",
-                "mec": "",
-                "red": "",
-                "rs": "",
-                "sc": "",
-                "slippery": "",
-                "ss": "",
-                "void": "",
-                "vsc": "",
-                "white": "",
-                "yellow": ""
+                "blackandwhite": false,
+                "blue": "gifs/realistic_11/blue.gif",
+                "chequered": "gifs/realistic_11/chequered.gif",
+                "dyellow": "gifs/realistic_11/dyellow.gif",
+                "green": "gifs/realistic_11/green.gif",
+                "mec": false,
+                "red": "gifs/realistic_11/red.gif",
+                "rs": "gifs/realistic_11/rs.gif",
+                "sc": "gifs/realistic_11/sc.gif",
+                "slippery": "gifs/realistic_11/slippery.gif",
+                "ss": "gifs/realistic_11/ss.gif",
+                "void": "gifs/realistic_11/void.gif",
+                "vsc": "gifs/realistic_11/vsc.gif",
+                "white": "gifs/realistic_11/white.gif",
+                "yellow": "gifs/realistic_11/yellow.gif"
             }
         },
         {

@@ -10,7 +10,7 @@ let port = 10101
 
 const timer = ms => new Promise( res => setTimeout(res, ms));
 
-const themes = JSON.parse(httpGet('./filesConfiguration.json'))
+const {themes} = JSON.parse(httpGet('./filesConfiguration.json'))
 
 let debugOn = false;
 
@@ -23,8 +23,22 @@ let sc = false;
 let vsc = false;
 let red = false;
 
+let currentTheme = 1;
+let currentMode = 0; // 0 for window, 1 for pixoo64
+
 let oldMessages = {
     "Messages": []
+}
+
+function changeGif(flag, mode) {
+    let flagPath;
+    for (let _i = 0; _i < themes.length; _i++) {
+        const theme = themes[_i];
+        if(theme.id !== currentTheme) return;
+
+        flagPath = theme.gifs[flag]
+    }
+    $('#digiflag').prop('src', flagPath)
 }
 
 function linkF1MV() {
@@ -155,6 +169,53 @@ async function checkRCM() {
 
         if (message.Message.match(/TRACK SURFACE SLIPPERY/i)) {
             messageData.Category = "TrackSurfaceSlippery";
+        }
+
+        if (message.Message.match(/ROLLING START/i)) {
+            $('#digiflag').prop('src', 'gifs/rs.gif')
+            await timer(10000)
+            if(sc === true) {
+                $('#digiflag').prop('src', 'gifs/sc.gif')
+            } else {
+                if(vsc === true) {
+                    $('#digiflag').prop('src', 'gifs/vsc.gif');
+                    return;
+                } else {
+                    if(red === true) {
+                        $('#digiflag').prop('src', 'gifs/red.gif');
+                        return;
+                    } else {
+                        if(yellow === true) {
+                            $('#digiflag').prop('src', 'gifs/yellow.gif');
+                            return;
+                        }
+                    }
+                }
+                $('#digiflag').prop('src', 'gifs/void.gif')
+            }
+        }
+        if (message.Message.match(/STANDING START/i)) {
+            $('#digiflag').prop('src', 'gifs/ss.gif')
+            await timer(10000)
+            if(sc === true) {
+                $('#digiflag').prop('src', 'gifs/sc.gif')
+            } else {
+                if(vsc === true) {
+                    $('#digiflag').prop('src', 'gifs/vsc.gif');
+                    return;
+                } else {
+                    if(red === true) {
+                        $('#digiflag').prop('src', 'gifs/red.gif');
+                        return;
+                    } else {
+                        if(yellow === true) {
+                            $('#digiflag').prop('src', 'gifs/yellow.gif');
+                            return;
+                        }
+                    }
+                }
+                $('#digiflag').prop('src', 'gifs/void.gif')
+            }
         }
 
         if (message.Flag !== undefined) {
