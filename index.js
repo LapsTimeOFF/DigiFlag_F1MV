@@ -30,14 +30,44 @@ let oldMessages = {
     "Messages": []
 }
 
-function changeGif(flag, mode) {
+function getGifPath(flag) {
     let flagPath;
     for (let _i = 0; _i < themes.length; _i++) {
         const theme = themes[_i];
-        if(theme.id !== currentTheme) return;
-
-        flagPath = theme.gifs[flag]
+        if(theme.id === currentTheme) {
+            flagPath = theme.gifs[flag]
+        };
     }
+    if(debugOn) console.log(`${flag} requested, returning ${flagPath}`);
+    return flagPath;
+}
+
+function turnOff(flag) {
+    if(flag === "ss" || flag === "rs" || flag === "chequered" || flag === "green" || flag === "blue" || flag === "slippery") {
+        if(sc === true) {
+            $('#digiflag').prop('src', getGifPath('sc'))
+        } else {
+            if(vsc === true) {
+                $('#digiflag').prop('src', getGifPath('vsc'));
+                return;
+            } else {
+                if(red === true) {
+                    $('#digiflag').prop('src', getGifPath('red'));
+                    return;
+                } else {
+                    if(yellow === true) {
+                        $('#digiflag').prop('src', getGifPath('yellow'));
+                        return;
+                    }
+                }
+            }
+            $('#digiflag').prop('src', getGifPath('void'))
+        }
+    } else $('#digiflag').prop('src', getGifPath('void'));
+}
+
+function changeGif(flag, mode) {
+    flagPath = getGifPath(flag);
     $('#digiflag').prop('src', flagPath)
 }
 
@@ -65,13 +95,13 @@ function linkF1MV() {
                 $('#infotag').text('')
                 $('#infolink').text('')
 
-                $('#select_theme').append(`
-                    <div id="themes">
+                // $('#select_theme').append(`
+                //     <div id="themes">
 
-                    </div>
-                    <button type="button" id="launchDigiFlag" class="btn btn-success">Next</button>
-                `)
-                $('#')
+                //     </div>
+                //     <button type="button" id="launchDigiFlag" class="btn btn-success">Next</button>
+                // `)
+                // $('#')
 
                 $('#select_device').append(`
                     <div class="form-check" id="window">
@@ -90,7 +120,7 @@ function linkF1MV() {
                 `)
                 $('#launchDigiFlag').click(() => {
                     $('.menu_box').remove()
-                    $('body').append('<img src="gifs/void.gif" height="512" id="digiflag" class="center-screen">')
+                    $('body').append(`<img src="${getGifPath('void')}" height="512" id="digiflag" class="center-screen">`)
                     $('#zoomControl').css('opacity', 1)
                     started = true;
                 })
@@ -172,50 +202,14 @@ async function checkRCM() {
         }
 
         if (message.Message.match(/ROLLING START/i)) {
-            $('#digiflag').prop('src', 'gifs/rs.gif')
+            changeGif('rs', currentMode)
             await timer(10000)
-            if(sc === true) {
-                $('#digiflag').prop('src', 'gifs/sc.gif')
-            } else {
-                if(vsc === true) {
-                    $('#digiflag').prop('src', 'gifs/vsc.gif');
-                    return;
-                } else {
-                    if(red === true) {
-                        $('#digiflag').prop('src', 'gifs/red.gif');
-                        return;
-                    } else {
-                        if(yellow === true) {
-                            $('#digiflag').prop('src', 'gifs/yellow.gif');
-                            return;
-                        }
-                    }
-                }
-                $('#digiflag').prop('src', 'gifs/void.gif')
-            }
+            turnOff('rs')
         }
         if (message.Message.match(/STANDING START/i)) {
-            $('#digiflag').prop('src', 'gifs/ss.gif')
+            changeGif('ss', currentMode)
             await timer(10000)
-            if(sc === true) {
-                $('#digiflag').prop('src', 'gifs/sc.gif')
-            } else {
-                if(vsc === true) {
-                    $('#digiflag').prop('src', 'gifs/vsc.gif');
-                    return;
-                } else {
-                    if(red === true) {
-                        $('#digiflag').prop('src', 'gifs/red.gif');
-                        return;
-                    } else {
-                        if(yellow === true) {
-                            $('#digiflag').prop('src', 'gifs/yellow.gif');
-                            return;
-                        }
-                    }
-                }
-                $('#digiflag').prop('src', 'gifs/void.gif')
-            }
+            turnOff('ss')
         }
 
         if (message.Flag !== undefined) {
@@ -227,117 +221,58 @@ async function checkRCM() {
 
         if(debugOn) console.log(messageData);
 
-        if(messageData.Category === "TrackSurfaceSlippery") $('#digiflag').prop('src', 'gifs/slippery.gif');
+        if(messageData.Category === "TrackSurfaceSlippery") changeGif('slippery')
         if(messageData.Category === "SafetyCar"){
             sc = true;
-            $('#digiflag').prop('src', 'gifs/sc.gif');
+            changeGif('sc', currentMode)
         }
         if(messageData.Category === "VirtualSafetyCar") {
             vsc = true;
-            $('#digiflag').prop('src', 'gifs/vsc.gif');
+            changeGif('vsc', currentMode)
         }
         
         if(messageData.Flag === "CHEQUERED") {
-            $('#digiflag').prop('src', 'gifs/chequered.gif')
+            changeGif('chequered', currentMode)
             await timer(60000)
-            $('#digiflag').prop('src', 'gifs/void.gif')
+            turnOff('chequered')
             return;
         }
 
         if(messageData.Scope === "Track") {
             if(messageData.Flag === "RED") {
-                $('#digiflag').prop('src', 'gifs/red.gif');
+                changeGif('red', currentMode)
                 return;
             }
             sc = false;
             vsc = false;
             red = false;
-            $('#digiflag').prop('src', 'gifs/green.gif');
+            changeGif('green', currentMode)
             await timer(2500)
-            $('#digiflag').prop('src', 'gifs/void.gif');
+            changeGif('void')
             return;
         }
 
         if (messageData.Category === "Flag") {
             switch (messageData.Flag) {
                 case "YELLOW":
-                    $('#digiflag').prop('src', 'gifs/yellow.gif')
+                    changeGif('yellow', currentMode)
                     break;
                 case "DOUBLE YELLOW":
-                    $('#digiflag').prop('src', 'gifs/dyellow.gif')
+                    changeGif('dyellow', currentMode)
                     break;
                 case "CLEAR":
-                    $('#digiflag').prop('src', 'gifs/green.gif')
+                    changeGif('green', currentMode)
                     await timer(2500)
-                    if(sc === true) {
-                        $('#digiflag').prop('src', 'gifs/sc.gif')
-                    } else {
-                        if(vsc === true) {
-                            $('#digiflag').prop('src', 'gifs/vsc.gif');
-                            return;
-                        } else {
-                            if(red === true) {
-                                $('#digiflag').prop('src', 'gifs/red.gif');
-                                return;
-                            } else {
-                                if(yellow === true) {
-                                    $('#digiflag').prop('src', 'gifs/yellow.gif');
-                                    return;
-                                }
-                            }
-                        }
-                        $('#digiflag').prop('src', 'gifs/void.gif')
-                    }
+                    turnOff('green')
                     break;
                 case "RED":
                     red = true;
-                    $('#digiflag').prop('src', 'gifs/red.gif')
+                    changeGif('red', currentMode)
                     break;
                 case "BLUE":
-                    $('#digiflag').prop('src', 'gifs/blue.gif')
-                    await timer(2500)
-                    if(sc === true) {
-                        $('#digiflag').prop('src', 'gifs/sc.gif')
-                    } else {
-                        if(vsc === true) {
-                            $('#digiflag').prop('src', 'gifs/vsc.gif');
-                            return;
-                        } else {
-                            if(red === true) {
-                                $('#digiflag').prop('src', 'gifs/red.gif');
-                                return;
-                            } else {
-                                if(yellow === true) {
-                                    $('#digiflag').prop('src', 'gifs/yellow.gif');
-                                    return;
-                                }
-                            }
-                        }
-                        $('#digiflag').prop('src', 'gifs/void.gif')
-                    }
-                    break;
-                case "BLACK AND ORANGE":
-                    $('#digiflag').prop('src', 'gifs/mec.gif')
-                    await timer(2500)
-                    if(sc === true) {
-                        $('#digiflag').prop('src', 'gifs/sc.gif')
-                    } else {
-                        if(vsc === true) {
-                            $('#digiflag').prop('src', 'gifs/vsc.gif');
-                            return;
-                        } else {
-                            if(red === true) {
-                                $('#digiflag').prop('src', 'gifs/red.gif');
-                                return;
-                            } else {
-                                if(yellow === true) {
-                                    $('#digiflag').prop('src', 'gifs/yellow.gif');
-                                    return;
-                                }
-                            }
-                        }
-                        $('#digiflag').prop('src', 'gifs/void.gif')
-                    }
+                    changeGif('blue', currentMode)
+                    await timer(1000)
+                    turnOff('blue')
                     break;
             
                 default:
@@ -369,9 +304,9 @@ async function checkStatus() {
             yellow = false;
             vsc = false;
             red = false;
-            $('#digiflag').prop('src', 'gifs/green.gif')
+            changeGif('green')
             await timer(2500)
-            $('#digiflag').prop('src', 'gifs/void.gif')
+            turnOff('green')
         }
     }
     if(trackStatus === "2") {
@@ -401,4 +336,4 @@ async function checkStatus() {
 }
 
 setInterval(checkRCM, 100)
-setInterval(checkStatus, 100)
+setInterval(checkStatus, 100);
