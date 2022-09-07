@@ -25,6 +25,7 @@ let red = false;
 
 let currentTheme = 1;
 let currentMode = 0; // 0 for window, 1 for pixoo64
+let disabledBlueFlag = false;
 
 let oldMessages = {
     "Messages": []
@@ -40,6 +41,11 @@ function getGifPath(flag) {
     }
     if(debugOn) console.log(`${flag} requested, returning ${flagPath}`);
     return flagPath;
+}
+
+function selectTheme(id) {
+    currentTheme = id;
+    $('#nextTheme').prop('disabled', false)
 }
 
 function turnOff(flag) {
@@ -67,6 +73,7 @@ function turnOff(flag) {
 }
 
 function changeGif(flag, mode) {
+    if(flag === "blue" && disabledBlueFlag) return;
     flagPath = getGifPath(flag);
     $('#digiflag').prop('src', flagPath)
 }
@@ -95,35 +102,64 @@ function linkF1MV() {
                 $('#infotag').text('')
                 $('#infolink').text('')
 
-                // $('#select_theme').append(`
-                //     <div id="themes">
+                $('#select_theme').append(`
+                    <div id="themes">
 
-                //     </div>
-                //     <button type="button" id="launchDigiFlag" class="btn btn-success">Next</button>
-                // `)
-                // $('#')
-
-                $('#select_device').append(`
-                    <div class="form-check" id="window">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
-                    <label class="form-check-label" for="flexRadioDefault1">
-                        Window DigiFlag
-                    </label>
                     </div>
-                    <div class="form-check" id="Pixoo64">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" disabled>
-                    <label class="form-check-label" for="flexRadioDefault2">
-                        Pixoo 64 DigiFlag <span class="badge text-bg-danger">Not implemanted yet</span>
-                    </label>
-                    </div>
-                    <button type="button" id="launchDigiFlag" class="btn btn-success">Start DigiFlag</button>
+                    <button type="button" id="nextTheme" class="btn btn-success" disabled>Next</button>
                 `)
-                $('#launchDigiFlag').click(() => {
-                    $('.menu_box').remove()
-                    $('body').append(`<img src="${getGifPath('void')}" height="512" id="digiflag" class="center-screen">`)
-                    $('#zoomControl').css('opacity', 1)
-                    started = true;
+                for (let _i = 0; _i < themes.length; _i++) {
+                    const theme = themes[_i];
+                    $('#themes').append(`
+                        <div class="form-check" id="window">
+                            <input class="form-check-input" type="radio" name="theme" id="theme${theme.id}">
+                            <label class="form-check-label" for="theme${theme.id}">
+                                ${theme.name}
+                            </label>
+                        </div>
+                    `)
+                    $('#theme' + theme.id).click(() => {
+                        selectTheme(theme.id)
+                    })
+                }
+                $('#nextTheme').click(() => {
+                    $('#select_theme').remove()
+                    $('#select_device').append(`
+                        <div class="form-check" id="window">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            Window DigiFlag
+                        </label>
+                        </div>
+                        <div class="form-check" id="Pixoo64">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" disabled>
+                        <label class="form-check-label" for="flexRadioDefault2">
+                            Pixoo 64 DigiFlag <span class="badge text-bg-danger">Not implemanted yet</span>
+                        </label>
+                        </div>
+                        <div class="form-check" id="blueFlag">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Remove blue flag ?
+                            </label>
+                        </div>
+                        <button type="button" id="launchDigiFlag" class="btn btn-success">Start DigiFlag</button>
+                    `)
+                    $('#blueFlag').click(() => {
+                        if(disabledBlueFlag) {
+                            disabledBlueFlag = false;
+                        } else {
+                            disabledBlueFlag = true;
+                        }
+                    })
+                    $('#launchDigiFlag').click(() => {
+                        $('.menu_box').remove()
+                        $('body').append(`<img src="${getGifPath('void')}" height="512" id="digiflag" class="center-screen">`)
+                        $('#zoomControl').css('opacity', 1)
+                        started = true;
+                    })
                 })
+
             }
         } catch (e) {
             $('#tagLink').addClass('text-bg-danger')
@@ -268,6 +304,8 @@ async function checkRCM() {
                 case "RED":
                     red = true;
                     changeGif('red', currentMode)
+                    await timer(90000)
+                    turnOff('red')
                     break;
                 case "BLUE":
                     changeGif('blue', currentMode)
