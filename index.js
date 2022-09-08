@@ -238,14 +238,18 @@ async function checkRCM() {
         }
 
         if (message.Message.match(/ROLLING START/i)) {
+            started = false;
             changeGif('rs', currentMode)
-            await timer(10000)
+            await timer(20000)
             turnOff('rs')
+            started = true;
         }
         if (message.Message.match(/STANDING START/i)) {
+            started = false;
             changeGif('ss', currentMode)
-            await timer(10000)
+            await timer(20000)
             turnOff('ss')
+            started = true;
         }
 
         if (message.Flag !== undefined) {
@@ -338,6 +342,7 @@ async function checkStatus() {
 
     if(trackStatus === "1") {
         if(sc || vsc || red || yellow) {
+            if (debugOn) console.log('New track status : Green');
             sc = false;
             yellow = false;
             vsc = false;
@@ -348,24 +353,28 @@ async function checkStatus() {
         }
     }
     if(trackStatus === "2") {
+        if (debugOn) console.log('New track status : Yellow');
         sc = false;
         yellow = true;
         vsc = false;
         red = false;
     }
     if(trackStatus === "4") {
+        if (debugOn) console.log('New track status : SC');
         sc = true;
         yellow = false;
         vsc = false;
         red = false;
     }
     if(trackStatus === "5") {
+        if (debugOn) console.log('New track status : Red');
         sc = false;
         yellow = false;
         vsc = false;
         red = true;
     }
     if(trackStatus === "6") {
+        if (debugOn) console.log('New track status : VSC');
         sc = false;
         yellow = false;
         vsc = true;

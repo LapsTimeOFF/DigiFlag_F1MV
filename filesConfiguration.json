@@ -91,6 +91,31 @@
                 "white": "gifs/realistic_169/white.gif",
                 "yellow": "gifs/realistic_169/yellow.gif"
             }
+        },
+        {
+            "id": 3,
+            "name": "Troll",
+            "compatibleWith": {
+                "Window": true,
+                "Pixoo64": false
+            },
+            "gifs": {
+                "blackandwhite": false,
+                "blue": "https://c.tenor.com/ykrSelwMB4AAAAAC/blue-flag.gif",
+                "chequered": "gifs/realistic_169/chequered.gif",
+                "dyellow": "gifs/realistic_169/dyellow.gif",
+                "green": "gifs/realistic_169/green.gif",
+                "mec": false,
+                "red": "gifs/realistic_169/red.gif",
+                "rs": "gifs/realistic_169/rs.gif",
+                "sc": "gifs/realistic_169/sc.gif",
+                "slippery": "gifs/realistic_169/slippery.gif",
+                "ss": "gifs/realistic_169/ss.gif",
+                "void": "gifs/realistic_169/void.gif",
+                "vsc": "gifs/realistic_169/vsc.gif",
+                "white": "gifs/realistic_169/white.gif",
+                "yellow": "https://cdn.discordapp.com/emojis/650814123180818444.gif?size=2048"
+            }
         }
     ]
 }
