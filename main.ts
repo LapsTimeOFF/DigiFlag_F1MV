@@ -1,6 +1,61 @@
 import { app, BrowserWindow, Menu, MenuItem } from "electron";
 import * as path from "path";
 import { version } from './package.json'
+import { themes } from './filesConfiguration.json'
+
+const { address } = require('ip')
+var request = require('request');
+const expressApp = require('express')();
+
+expressApp.listen(9093, () => {
+    console.log('API Started');
+})
+
+expressApp.get('/getGif/:gif/:themeID', (req:any,res:any) => {
+    const { gif, themeID } = req.params
+    let theme:any = themes[themeID]
+    let gifPath:any = theme.gifs[gif];
+
+    res.send(gifPath)
+})
+
+expressApp.get('/getGifPixoo/:gif/:themeID', (req:any,res:any) => {
+    const { gif, themeID } = req.params
+    let theme:any = themes[themeID]
+    if(theme.compatibleWith.Pixoo64 !== true) {
+        res.statusCode = 400
+        res.send('Theme requested doesn\'t support Pixoo64')
+        return;
+    }
+    let gifPath:any = theme.gifs.pixoo64[gif];
+
+    res.send(gifPath)
+})
+
+expressApp.get('/pixoo/:gif/:themeID/:ip', (req:any,res:any) => {
+    const { gif, themeID, ip } = req.params
+    let theme:any = themes[themeID]
+    if(theme.compatibleWith.Pixoo64 !== true) {
+        res.statusCode = 400
+        res.send('Theme requested doesn\'t support Pixoo64')
+        return;
+    }
+    let jsonRequest = {
+        "Command": "Device/PlayTFGif",
+        "FileType": 2,
+        "FileName": `http://${address}:9093/getGifPixoo/${gif}/${themeID}`
+    }
+
+    request.post(`http://${ip}:80/post`, { json: jsonRequest }, (err: any, resp: any, body: any) => {
+        let response = JSON.parse(body)
+        if(err || response.error_code !== 0) {
+            res.statusCode = 500
+            res.send('Failed to change GIF on Pixoo64')
+            return;
+        }
+        res.send('OK')
+    })
+})
  
  
 function createWindow(width:number, height:number, title:string) {
