@@ -5,8 +5,32 @@ function httpGet(theUrl) {
     return xmlHttpReq.responseText;
 }
 
+
 let host = "localhost"
 let port = 10101
+
+async function getF1MVVersion() {
+    let res = await JSON.parse(httpGet(`http://${host}:${port}/api/v1/app/version`))
+    ver = res.version
+    ver = parseInt(ver.replace(/[\D]/g, "").substring(0,3))
+
+    return ver;
+}
+
+async function getAPIVersion() {
+    if(await getF1MVVersion() >= 180) {
+        return 'v2';
+    } else {
+        return 'v1';
+    }
+}
+
+let F1MV_version = getF1MVVersion()
+let F1MV_APIVersion = getAPIVersion()
+
+async function F1MV_API_BuildLiveTimingUrl(topic) {
+    return `http://${host}:${port}/api/${await F1MV_APIVersion}/live-timing${await F1MV_APIVersion === 'v2' ? '/state': ''}/${topic}`
+}
 
 const timer = ms => new Promise( res => setTimeout(res, ms));
 
@@ -26,6 +50,7 @@ let red = false;
 let currentTheme = 1;
 let currentMode = 0; // 0 for window, 1 for pixoo64
 let disabledBlueFlag = false;
+
 
 let pixooIP = ""
 
@@ -246,6 +271,7 @@ $('document').ready(() => {
             if(debugOn) console.log($('#port').val() !== "");
             if(debugOn) console.log(`PORT = ${$('#port').val()} = ${port}`);
             if(debugOn) console.log('Settings edited !');
+            F1MV_version = getF1MVVersion();
         })
     })
     $('#zoomIn').click(() => {
@@ -261,9 +287,8 @@ $('document').ready(() => {
 async function checkRCM() {
     if(started === false) return;
 
-
-    const urlRCM = `http://${host}:${port}/api/v1/live-timing/RaceControlMessages`
-
+    const urlRCM = await F1MV_API_BuildLiveTimingUrl('RaceControlMessages');
+    
     const result = await JSON.parse(httpGet(urlRCM))
 
     if(result.Messages.length === oldMessages.Messages.length) {
@@ -382,7 +407,7 @@ async function checkStatus() {
     if(!started) return;
 
 
-    let urlStatus = `http://${host}:${port}/api/v1/live-timing/TrackStatus`
+    let urlStatus = F1MV_API_BuildLiveTimingUrl('TrackStatus');
 
     let trackStatus = JSON.parse(httpGet(urlStatus)).Status
 
