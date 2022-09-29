@@ -14,13 +14,17 @@ async function getF1MVVersion() {
     ver = res.version
     ver = parseInt(ver.replace(/[\D]/g, "").substring(0,3))
 
+    console.log(`Current F1MV Version : ${ver}`);
+
     return ver;
 }
 
 async function getAPIVersion() {
     if(await getF1MVVersion() >= 180) {
+        console.log("Api version needed : v2");
         return 'v2';
     } else {
+        console.log("Api version needed : v1");
         return 'v1';
     }
 }
@@ -288,7 +292,7 @@ async function checkRCM() {
     if(started === false) return;
 
     const urlRCM = await F1MV_API_BuildLiveTimingUrl('RaceControlMessages');
-    
+
     const result = await JSON.parse(httpGet(urlRCM))
 
     if(result.Messages.length === oldMessages.Messages.length) {
