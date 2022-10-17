@@ -16,47 +16,45 @@ function httpGet(theUrl) {
   return xmlHttpReq.responseText;
 }
 
-
 /**
  * It saves the host and port to local storage.
  * @param host - The hostname of the server.
  * @param port - The port number of the server.
  */
-function saveSettings(host,port){
-localStorage.setItem("host",host)
-localStorage.setItem("port",port)
+function saveSettings(host, port) {
+  localStorage.setItem("host", host);
+  localStorage.setItem("port", port);
 }
 
 /**
  * It checks if the host and port data is not null, if it is not null, it sets the host and port
  * variables to the data stored in local storage.
  */
-function loadSettings(){
-  const hostData = localStorage.getItem("host")
-  const portData=localStorage.getItem("port")
-  if(hostData && portData !== null ){
-    host=hostData
-    port=portData
+function loadSettings() {
+  const hostData = localStorage.getItem("host");
+  const portData = localStorage.getItem("port");
+  if (hostData && portData !== null) {
+    host = hostData;
+    port = portData;
   }
 }
 /**
  * It clears the local storage and sets host and port back to default.
  */
-function restoreSettings(){
-  console
-  if(localStorage !== null)
- localStorage.clear()
- host='localhost'
- port=10101
- console.log("Storage Cleared")
-  }
+function restoreSettings() {
+  console;
+  if (localStorage !== null) localStorage.clear();
+  host = "localhost";
+  port = 10101;
+  console.log("Storage Cleared");
+}
 
 /**
  * It gets the version of the F1MV app from the server and returns it as an integer.
  * @returns The current version of the F1MV app.
  */
 async function getF1MVVersion() {
-  loadSettings()
+  loadSettings();
   const res = await JSON.parse(
     httpGet(`http://${host}:${port}/api/v1/app/version`)
   );
@@ -103,13 +101,17 @@ const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 /* Getting the themes from the filesConfiguration.json file. */
 const { themes } = JSON.parse(httpGet("./filesConfiguration.json"));
 /* Declaring a variable called debugOn and assigning it a value of false. */
-let debugOn = true
+let debugOn = true;
 let zoom = 512;
 let started = false;
 let yellow = false;
 let sc = false;
 let vsc = false;
 let red = false;
+let Rainning;
+let LT_Data = {};
+let lightOn = false;
+let lightOnRain = false;
 /* Declaring a variable called currentTheme and assigning it a value of 1. */
 let currentTheme = 1;
 const currentMode = 0; // 0 for window, 1 for pixoo64
@@ -124,6 +126,7 @@ let oldMessages = {
  * @param status - true or false
  * @returns the value of true.
  */
+
 function debugMode(status) {
   if (status === true) {
     console.log(`Debug mode enabled`);
@@ -135,6 +138,8 @@ function debugMode(status) {
   }
   return true;
 }
+/* Setting the debugMode to true or false based on the value of debugOn. */
+debugMode(debugOn);
 /**
  * If the current theme is the same as the theme in the array, then return the flag path.
  * @param flag - the name of the flag you want to get the path for
@@ -206,7 +211,12 @@ async function turnOff(flag) {
         }
         return;
       }
+      if (Rainning) {
+        changeGif("rain", 0);
+        return;
+      }
       $("#digiflag").prop("src", getGifPath("void"));
+      lightOn = false;
     }
   } else {
     if (currentMode === 1) {
@@ -219,6 +229,7 @@ async function turnOff(flag) {
       return;
     }
     $("#digiflag").prop("src", getGifPath("void"));
+    lightOn = false;
   }
 }
 /**
@@ -244,7 +255,13 @@ async function changeGif(flag, mode) {
   }
   const flagPath = getGifPath(flag);
   $("#digiflag").prop("src", flagPath);
+  if (flag !== "rain") {
+    lightOn = true;
+    lightOnRain = false;
+  }
+  if (flag === "rain") lightOnRain = true;
 }
+
 function linkSuccess() {
   $("#tagLink").addClass("text-bg-success");
   $("#tagLink").removeClass("text-bg-primary");
@@ -378,25 +395,28 @@ $(function () {
     linkF1MV();
   });
 
-/* Appending a paragraph tag with the text "IP : " and an input tag with the class "form-control" and a
-placeholder of "localhost" and a value of the variable host and an id of "ip" to the div with the id
-"edit_hostInfo". */
+  /* Appending a paragraph tag with the text "IP : " and an input tag with the class "form-control" and a
+	placeholder of "localhost" and a value of the variable host and an id of "ip" to the div with the id
+	"edit_hostInfo". */
   $("#infolink").on("click", () => {
     $("#edit_hostInfo").append("<p>IP : </p>");
     $("#edit_hostInfo").append(
       `<input type="text" class="form-control" placeholder="localhost" value=${host} id="ip">`
     );
-/* Appending a paragraph tag with the text "Port : " and then appending an input tag with the class
-"form-control" and the placeholder "10101" and the value of the variable port and the id "port". */
+    /* Appending a paragraph tag with the text "Port : " and then appending an input tag with the class
+		"form-control" and the placeholder "10101" and the value of the variable port and the id "port". */
     $("#edit_hostInfo").append("<p>Port : </p>");
     $("#edit_hostInfo").append(
       `<input type="text" class="form-control" placeholder="10101" value=${port} id="port">`
     );
     $("#edit_hostInfo").append(
-      $('<div/>',{ "class": "settingsButtons" }).append([
-      '<button type="button" id="updateSettings" class="btn btn-primary">Save Network Settings</button>',
-      '<button type="button"  id="restoreSettings" class="btn btn-danger">Restore Default Settings </button>'
-    ]));
+      $("<div/>", {
+        class: "settingsButtons",
+      }).append([
+        '<button type="button" id="updateSettings" class="btn btn-primary">Save Network Settings</button>',
+        '<button type="button"  id="restoreSettings" class="btn btn-danger">Restore Default Settings </button>',
+      ])
+    );
     $("#updateSettings").on("click", () => {
       if (debugOn) console.log("Editing Settings...");
       /* Assigning the value of the input field with the id of "ip" to the variable "host". */
@@ -408,16 +428,16 @@ placeholder of "localhost" and a value of the variable host and an id of "ip" to
       if (debugOn) console.log($("#port").val() !== "");
       if (debugOn) console.log(`PORT = ${$("#port").val()} = ${port}`);
       if (debugOn) console.log("Settings edited !");
+      saveSettings(host, port);
       /* Getting the version of the F1MV. */
-      saveSettings(host,port)
       F1MV_version = getF1MVVersion();
     });
     $("#restoreSettings").on("click", () => {
-    /* Setting the value of the input fields back to localhost and 10101. */
+      /* Setting the value of the input fields back to localhost and 10101. */
       $("#ip").val("localhost");
-      $("#port").val(10101)
-     restoreSettings()
-     F1MV_version = getF1MVVersion();
+      $("#port").val(10101);
+      restoreSettings();
+      F1MV_version = getF1MVVersion();
     });
   });
   /* Increasing the zoom of the image by 20px when the button is clicked. */
@@ -438,10 +458,8 @@ placeholder of "localhost" and a value of the variable host and an id of "ip" to
  */
 const checkRCM = async () => {
   if (started === false) return;
-  /* Building the URL for the Race Control Messages. */
-  const urlRCM = await F1MV_API_BuildLiveTimingUrl("RaceControlMessages");
-  /* Making a GET request to the urlRCM and parsing the response as JSON. */
-  const result = await JSON.parse(httpGet(urlRCM));
+  /* Extract all the RCMs from the Live Timing data */
+  const result = LT_Data.RaceControlMessages;
   /* Checking to see if the number of messages in the result is the same as the number of messages in the
 oldMessages. If it is, then there are no new messages. */
   if (result.Messages.length === oldMessages.Messages.length) {
@@ -459,18 +477,18 @@ oldMessages. If it is, then there are no new messages. */
       Scope: undefined,
     };
     /* Checking if the message contains the text "BLACK AND ORANGE" and if it does, it sets the
-       category to "Flag" and the flag to "BLACK AND ORANGE". */
+		   category to "Flag" and the flag to "BLACK AND ORANGE". */
     if (message.Message.match(/BLACK AND ORANGE/i)) {
       messageData.Category = "Flag";
       messageData.Flag = "BLACK AND ORANGE";
     }
     /* Checking if the message contains the word "Safety Car" and if it does, it sets the category
-       to "SafetyCar". */
+		   to "SafetyCar". */
     if (message.Message.match(/SAFETY CAR/i)) {
       messageData.Category = "SafetyCar";
     }
     /* Checking if the message contains the words "Virtual Safety Car" and if it does, it sets the
-    category to "VirtualSafetyCar". */
+		category to "VirtualSafetyCar". */
     if (message.Message.match(/VIRTUAL SAFETY CAR/i)) {
       messageData.Category = "VirtualSafetyCar";
     }
@@ -541,46 +559,46 @@ is not, it is setting sc, vsc, and red to false, changing the gif to "green", wa
       red = false;
       changeGif("green", currentMode);
       await timer(2500);
-      changeGif("void", currentMode);
+      turnOff("green");
       return;
     }
-    
-/* Checking to see if the messageData.Category is equal to "Flag" */
+
+    /* Checking to see if the messageData.Category is equal to "Flag" */
     if (messageData.Category === "Flag") {
       switch (messageData.Flag) {
-/* A switch statement that is checking the value of the variable currentMode. If the value of
-currentMode is "YELLOW", then the changeGif function is called with the parameters "yellow" and
-currentMode. */
+        /* A switch statement that is checking the value of the variable currentMode. If the value of
+				currentMode is "YELLOW", then the changeGif function is called with the parameters "yellow" and
+				currentMode. */
         case "YELLOW":
           changeGif("yellow", currentMode);
           break;
-/* A switch statement that is checking the value of the variable currentMode. If the value of
-currentMode is "DOUBLE YELLOW", then the function changeGif is called with the parameters "dyellow"
-and currentMode. */
+        /* A switch statement that is checking the value of the variable currentMode. If the value of
+					currentMode is "DOUBLE YELLOW", then the function changeGif is called with the parameters "dyellow"
+					and currentMode. */
         case "DOUBLE YELLOW":
           changeGif("dyellow", currentMode);
           break;
-/* A switch statement that is checking the currentMode variable. If the currentMode variable is equal
-to "CLEAR" then it will change the gif to green and then turn off the green light. */
+        /* A switch statement that is checking the currentMode variable. If the currentMode variable is equal
+					to "CLEAR" then it will change the gif to green and then turn off the green light. */
         case "CLEAR":
           changeGif("green", currentMode);
           await timer(2500);
           turnOff("green");
           break;
-/* A switch statement that is checking the currentMode variable. If the currentMode variable is equal
-to "RED" then it will set the red variable to true and call the changeGif function with the
-parameters "red" and currentMode. It will then wait for 90 seconds and then call the turnOff
-function with the parameter "red". */
+        /* A switch statement that is checking the currentMode variable. If the currentMode variable is equal
+					to "RED" then it will set the red variable to true and call the changeGif function with the
+					parameters "red" and currentMode. It will then wait for 90 seconds and then call the turnOff
+					function with the parameter "red". */
         case "RED":
           red = true;
           changeGif("red", currentMode);
           await timer(90000);
           turnOff("red");
           break;
-/* A switch statement that is checking the currentMode variable. If the currentMode variable is equal
-to "BLUE" then it will set the red variable to true and call the changeGif function with the
-parameters "blue" and currentMode. It will then wait for 1 second and then call the turnOff
-function with the parameter "blue". */
+        /* A switch statement that is checking the currentMode variable. If the currentMode variable is equal
+					to "BLUE" then it will set the red variable to true and call the changeGif function with the
+					parameters "blue" and currentMode. It will then wait for 1 second and then call the turnOff
+					function with the parameter "blue". */
         case "BLUE":
           changeGif("blue", currentMode);
           await timer(1000);
@@ -603,9 +621,8 @@ function with the parameter "blue". */
  */
 async function checkStatus() {
   if (!started) return;
-  /* Getting the track status from the F1MV API. */
-  const urlStatus = F1MV_API_BuildLiveTimingUrl("TrackStatus");
-  const trackStatus = JSON.parse(httpGet(await urlStatus)).Status;
+  /* Getting the track status from the Live Timing Data. */
+  let trackStatus = LT_Data.TrackStatus.Status;
   // {"Status":"1","Message":"AllClear"}
   // {"Status":"2","Message":"Yellow"}
   // {"Status":"4","Message":"SCDeployed"}
@@ -653,7 +670,48 @@ async function checkStatus() {
     red = false;
   }
 }
+
+/**
+ * Check if it's raining, if it is, turn on the rain lights
+ * @returns if it's raining or not
+ * @author LapsTime
+ */
+
+async function checkRain() {
+  if (!started) return;
+  if (lightOn) return;
+
+  /* Extract if it's raining or not from the Live Timing data */
+  let Rain = LT_Data.WeatherData.Rainfall;
+
+  Rainning = Rain === "1";
+
+  if (Rainning && !lightOnRain) {
+    changeGif("rain", currentMode);
+  }
+}
+
+/**
+ * Update the Live Timing data
+ * @returns the live timing data
+ * @author LapsTime
+ */
+async function updateData() {
+  if (started)
+    LT_Data = JSON.parse(
+      await httpGet(
+        await F1MV_API_BuildLiveTimingUrl(
+          "RaceControlMessages,TrackStatus,WeatherData"
+        )
+      )
+    );
+}
+
+/* Update the Live Timing data every 100 milliseconds */
+setInterval(updateData, 100);
 /* Checking the RCM every 100 milliseconds. */
 setInterval(checkRCM, 100);
+/* Checking the Rain every 100 milliseconds */
+setInterval(checkRain, 100);
 /* Checking the status of the page every 100 milliseconds. */
 setInterval(checkStatus, 100);

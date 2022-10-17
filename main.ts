@@ -6,6 +6,15 @@ import request from "request";
 import { themes } from "./filesConfiguration.json";
 import { version } from "./package.json";
 
+/* Simple auto-reloading for Electron apps during development
+When files used in the main process are changed, the app is restarted.
+The try/catch is needed so it doesn't throw Cannot find module 'electron-reloader' in production.*/
+try {
+  require("electron-reloader")(module);
+} catch (error) {
+  console.error(error);
+}
+
 /* Creating an express app. */
 const expressApp = express();
 /* Creating a server that listens on port 9093. */
@@ -36,13 +45,13 @@ expressApp.get("/getGifPixoo/:gif/:themeID", (req, res) => {
 expressApp.get("/pixoo/:gif/:themeID/:ip", (req, res) => {
   const { gif, themeID, ip } = req.params;
   const theme = themes[themeID];
-/* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
+  /* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
   if (theme.compatibleWith.Pixoo64 !== true) {
     res.statusCode = 400;
     res.send("Theme requested doesn't support Pixoo64");
     return;
   }
-/* Sending a POST request to the Pixoo64. */
+  /* Sending a POST request to the Pixoo64. */
   request.post(
     `http://${ip}:80/post`,
     {
@@ -64,7 +73,6 @@ expressApp.get("/pixoo/:gif/:themeID/:ip", (req, res) => {
     }
   );
 });
-app.disableHardwareAcceleration()
 /**
  * `createWindow` is a function that takes three arguments: `width`, `height`, and `title`, and returns
  * a new `BrowserWindow` object
@@ -78,7 +86,7 @@ function createWindow(width: number, height: number, title: string) {
     width: width,
     height: height,
     title: title,
-    icon:'icon.ico',
+    icon: "icon.ico",
     // alwaysOnTop: true,
     autoHideMenuBar: true,
   });

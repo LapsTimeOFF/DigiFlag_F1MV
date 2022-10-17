@@ -1,7 +1,7 @@
-{ 
+{
   "compilerOptions": {
     "skipLibCheck": true,
-    "target": "ES6",
+    "target": "ES2022",
     "module": "CommonJS",
     "moduleResolution": "node",
     "allowJs": true,
@@ -9,6 +9,6 @@
     "esModuleInterop": true,
     "removeComments": true
   },
-  "include":["main.ts"],
+  "include": ["main.ts"],
   "exclude": ["node_modules"]
 }

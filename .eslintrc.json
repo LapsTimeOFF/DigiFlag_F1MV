@@ -2,7 +2,7 @@
     "env": {
         "browser": true,
         "commonjs": true,
-        "es6": true,
+        "es2022": true,
         "jquery": true
     },
     "extends": [
@@ -19,5 +19,6 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "@typescript-eslint/no-var-requires": "off"
     }
 }
