@@ -459,10 +459,8 @@ $(function () {
  */
 const checkRCM = async () => {
 	if (started === false) return;
-	/* Building the URL for the Race Control Messages. */
-	const urlRCM = await F1MV_API_BuildLiveTimingUrl("RaceControlMessages");
-	/* Making a GET request to the urlRCM and parsing the response as JSON. */
-	const result = await JSON.parse(httpGet(urlRCM));
+	/* Extract all the RCMs from the Live Timing data */
+	const result = LT_Data.RaceControlMessages
 	/* Checking to see if the number of messages in the result is the same as the number of messages in the
 oldMessages. If it is, then there are no new messages. */
 	if (result.Messages.length === oldMessages.Messages.length) {
@@ -624,9 +622,8 @@ is not, it is setting sc, vsc, and red to false, changing the gif to "green", wa
  */
 async function checkStatus() {
 	if (!started) return;
-	/* Getting the track status from the F1MV API. */
-	const urlStatus = F1MV_API_BuildLiveTimingUrl("TrackStatus");
-	const trackStatus = JSON.parse(httpGet(await urlStatus)).Status;
+	/* Getting the track status from the Live Timing Data. */
+	let trackStatus = LT_Data.TrackStatus.Status
 	// {"Status":"1","Message":"AllClear"}
 	// {"Status":"2","Message":"Yellow"}
 	// {"Status":"4","Message":"SCDeployed"}
@@ -678,18 +675,15 @@ async function checkStatus() {
 /**
  * Check if it's raining, if it is, turn on the rain lights
  * @returns if it's raining or not
+ * @author LapsTime
  */
 
 async function checkRain() {
     if(!started) return;
     if(lightOn) return;
 
-	/* Building the URL for the Race Control Messages. */
-	const urlRCM = await F1MV_API_BuildLiveTimingUrl("WeatherData");
-	/* Making a GET request to the urlRCM and parsing the response as JSON. */
-	const result = await JSON.parse(httpGet(urlRCM));
-
-    let Rain = result.Rainfall
+	/* Extract if it's raining or not from the Live Timing data */
+	let Rain = LT_Data.WeatherData.Rainfall
 
     Rainning = Rain === '1'
 
@@ -698,6 +692,17 @@ async function checkRain() {
     }
 }
 
+/**
+ * Update the Live Timing data
+ * @returns the live timing data
+ * @author LapsTime
+ */
+async function updateData() {
+    if(started) LT_Data = JSON.parse(await httpGet(await F1MV_API_BuildLiveTimingUrl('RaceControlMessages,TrackStatus,WeatherData')));
+}
+
+/* Update the Live Timing data every 100 milliseconds */
+setInterval(updateData, 100);
 /* Checking the RCM every 100 milliseconds. */
 setInterval(checkRCM, 100);
 /* Checking the Rain every 100 milliseconds */
