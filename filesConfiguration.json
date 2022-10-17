@@ -24,6 +24,7 @@
         "vsc": "gifs/square/vsc.gif",
         "white": "gifs/square/white.gif",
         "yellow": "gifs/square/yellow.gif",
+        "rain": "gifs/square/rain.gif",
         "pixoo64": {
           "blackandwhite": "gifs/pixoo64/blackandwhite.gif",
           "blue": "gifs/pixoo64/blue.gif",
@@ -39,7 +40,8 @@
           "void": "gifs/pixoo64/void.gif",
           "vsc": "gifs/pixoo64/vsc.gif",
           "white": "gifs/pixoo64/white.gif",
-          "yellow": "gifs/pixoo64/yellow.gif"
+          "yellow": "gifs/pixoo64/yellow.gif",
+          "rain": "gifs/pixoo64/rain.gif"
         }
       }
     },
@@ -65,7 +67,8 @@
         "void": "gifs/realistic_11/void.gif",
         "vsc": "gifs/realistic_11/vsc.gif",
         "white": "gifs/realistic_11/white.gif",
-        "yellow": "gifs/realistic_11/yellow.gif"
+        "yellow": "gifs/realistic_11/yellow.gif",
+        "rain": "gifs/realistic_11/rain.gif"
       }
     },
     {
@@ -90,7 +93,8 @@
         "void": "gifs/realistic_169/void.gif",
         "vsc": "gifs/realistic_169/vsc.gif",
         "white": "gifs/realistic_169/white.gif",
-        "yellow": "gifs/realistic_169/yellow.gif"
+        "yellow": "gifs/realistic_169/yellow.gif",
+        "rain": "gifs/realistic_169/rain.gif"
       }
     },
     {
@@ -115,9 +119,10 @@
           "void": "gifs/realistic_wip_11/void.gif",
           "vsc": "gifs/realistic_wip_11/vsc.gif",
           "white": "gifs/realistic_wip_11/white.gif",
-          "yellow": "gifs/realistic_wip_11/yellow.gif"
+          "yellow": "gifs/realistic_wip_11/yellow.gif",
+          "rain": "gifs/realistic_wip_11/rain.gif"
       }
-  },
+    },
     {
       "id": 4,
       "name": "Realistic V2 16:9",
@@ -140,8 +145,9 @@
         "void": "gifs/realistic_v2_169/void.gif",
         "vsc": "gifs/realistic_v2_169/vsc.gif",
         "white": "gifs/realistic_v2_169/white.gif",
-        "yellow": "gifs/realistic_v2_169/yellow.gif"
+        "yellow": "gifs/realistic_v2_169/yellow.gif",
+        "rain": "gifs/realistic_v2_169/rain.gif"
       }
-  }
+    }
   ]
 }
