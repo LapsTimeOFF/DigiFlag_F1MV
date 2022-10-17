@@ -130,6 +130,7 @@ let oldMessages = {
  * @param status - true or false
  * @returns the value of true.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function debugMode(status) {
 	if (status === true) {
 		console.log(`Debug mode enabled`);
