@@ -212,7 +212,12 @@ async function turnOff(flag) {
 				}
 				return;
 			}
-			$("#digiflag").prop("src", getGifPath("void"));
+			if(Rainning) {
+                changeGif('rain', 0)
+                return
+            }
+            $('#digiflag').prop('src', getGifPath('void'))
+            lightOn = false;
 		}
 	} else {
 		if (currentMode === 1) {
@@ -225,6 +230,7 @@ async function turnOff(flag) {
 			return;
 		}
 		$("#digiflag").prop("src", getGifPath("void"));
+		lightOn = false;
 	}
 }
 /**
