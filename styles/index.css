@@ -1,0 +1,73 @@
+.center-screen {
+    position: absolute;
+    top:  50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
+    font-size: calc(1px + 3vmin);
+    transition: all 0.2s ease-in-out;
+    
+  }
+.bottom-screen {
+    position: absolute;
+    top:  95%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.menu_box {
+    color: white;
+    background-color: #373737;
+}
+body {
+    background-color: #131416;
+    overflow: hidden;
+}
+#menu_content {
+    margin: 10px;
+}
+button{
+    border-radius: 128px !important;
+}
+button:hover,button:focus{
+    border: 2px solid white !important;
+    box-shadow: none !important;
+}
+.settingsButtons{
+    display: flex;
+    flex-direction: column;
+}
+.settingsButtons>button{
+margin: 5px;
+}
+#F1MV{
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+}
+#edit_hostInfo>input[type=text]:focus{
+border: none;
+}
+#F1MVLinkContainer{
+    display: flex;
+    flex-direction: column;
+}
+#F1MVLinkContainer>span{
+margin: 5px;
+}
+#DigiFlag{
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+}
+#DigiFlag>img{
+margin-top: 0.4rem;
+}
+#zoomControl{
+    z-index: 0;
+}
