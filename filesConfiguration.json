@@ -95,7 +95,7 @@
     },
     {
       "id": 3,
-      "name": "Realistic 2.0 WIP 1:1",
+      "name": "Realistic V2 WIP 1:1",
       "compatibleWith": {
           "Window": true,
           "Pixoo64": false
@@ -120,27 +120,27 @@
   },
     {
       "id": 4,
-      "name": "Realistic 2.0 WIP 16:9",
+      "name": "Realistic V2 16:9",
       "compatibleWith": {
           "Window": true,
           "Pixoo64": false
       },
       "gifs": {
         "blackandwhite": false,
-        "blue": "gifs/realistic_wip_169/blue.gif",
-        "chequered": "gifs/realistic_wip_169/chequered.gif",
-        "dyellow": "gifs/realistic_wip_169/dyellow.gif",
-        "green": "gifs/realistic_wip_169/green.gif",
-        "mec": "gifs/realistic_wip_169/mec.gif",
-        "red": "gifs/realistic_wip_169/red.gif",
-        "rs": "gifs/realistic_wip_169/rs.gif",
-        "sc": "gifs/realistic_wip_169/sc.gif",
-        "slippery": "gifs/realistic_wip_169/slippery.gif",
-        "ss": "gifs/realistic_wip_169/ss.gif",
-        "void": "gifs/realistic_wip_169/void.gif",
-        "vsc": "gifs/realistic_wip_169/vsc.gif",
-        "white": "gifs/realistic_wip_169/white.gif",
-        "yellow": "gifs/realistic_wip_169/yellow.gif"
+        "blue": "gifs/realistic_v2_169/blue.gif",
+        "chequered": "gifs/realistic_v2_169/chequered.gif",
+        "dyellow": "gifs/realistic_v2_169/dyellow.gif",
+        "green": "gifs/realistic_v2_169/green.gif",
+        "mec": "gifs/realistic_v2_169/mec.gif",
+        "red": "gifs/realistic_v2_169/red.gif",
+        "rs": "gifs/realistic_v2_169/rs.gif",
+        "sc": "gifs/realistic_v2_169/sc.gif",
+        "slippery": "gifs/realistic_v2_169/slippery.gif",
+        "ss": "gifs/realistic_v2_169/ss.gif",
+        "void": "gifs/realistic_v2_169/void.gif",
+        "vsc": "gifs/realistic_v2_169/vsc.gif",
+        "white": "gifs/realistic_v2_169/white.gif",
+        "yellow": "gifs/realistic_v2_169/yellow.gif"
       }
   }
   ]

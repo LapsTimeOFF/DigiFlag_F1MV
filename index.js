@@ -103,7 +103,7 @@ const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 /* Getting the themes from the filesConfiguration.json file. */
 const { themes } = JSON.parse(httpGet("./filesConfiguration.json"));
 /* Declaring a variable called debugOn and assigning it a value of false. */
-let debugOn = debugMode(true);
+let debugOn = true
 let zoom = 512;
 let started = false;
 let yellow = false;
