@@ -112,6 +112,10 @@ let yellow = false;
 let sc = false;
 let vsc = false;
 let red = false;
+let Rainning;
+let LT_Data = {};
+let lightOn = false;
+let lightOnRain = false;
 /* Declaring a variable called currentTheme and assigning it a value of 1. */
 let currentTheme = 1;
 const currentMode = 0; // 0 for window, 1 for pixoo64
@@ -246,6 +250,11 @@ async function changeGif(flag, mode) {
 	}
 	const flagPath = getGifPath(flag);
 	$("#digiflag").prop("src", flagPath);
+	if(flag !== 'rain') {
+        lightOn = true;
+        lightOnRain = false;
+    }
+    if(flag === 'rain') lightOnRain = true;
 }
 
 function linkSuccess() {
@@ -413,8 +422,8 @@ $(function () {
 			if (debugOn) console.log($("#port").val() !== "");
 			if (debugOn) console.log(`PORT = ${$("#port").val()} = ${port}`);
 			if (debugOn) console.log("Settings edited !");
-			/* Getting the version of the F1MV. */
 			saveSettings(host, port)
+			/* Getting the version of the F1MV. */
 			F1MV_version = getF1MVVersion();
 		});
 		$("#restoreSettings").on("click", () => {
@@ -546,7 +555,7 @@ is not, it is setting sc, vsc, and red to false, changing the gif to "green", wa
 			red = false;
 			changeGif("green", currentMode);
 			await timer(2500);
-			changeGif("void", currentMode);
+			turnOff('green')
 			return;
 		}
 
@@ -658,7 +667,33 @@ async function checkStatus() {
 		red = false;
 	}
 }
+
+/**
+ * Check if it's raining, if it is, turn on the rain lights
+ * @returns if it's raining or not
+ */
+
+async function checkRain() {
+    if(!started) return;
+    if(lightOn) return;
+
+	/* Building the URL for the Race Control Messages. */
+	const urlRCM = await F1MV_API_BuildLiveTimingUrl("WeatherData");
+	/* Making a GET request to the urlRCM and parsing the response as JSON. */
+	const result = await JSON.parse(httpGet(urlRCM));
+
+    let Rain = result.Rainfall
+
+    Rainning = Rain === '1'
+
+    if(Rainning && !lightOnRain) {
+        changeGif('rain', currentMode)
+    }
+}
+
 /* Checking the RCM every 100 milliseconds. */
 setInterval(checkRCM, 100);
+/* Checking the Rain every 100 milliseconds */
+setInterval(checkRain, 100);
 /* Checking the status of the page every 100 milliseconds. */
 setInterval(checkStatus, 100);
