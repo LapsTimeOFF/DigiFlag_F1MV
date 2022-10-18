@@ -10,10 +10,10 @@ let port = 10101;
  * unsuccessful or has not yet been sent.
  */
 function httpGet(theUrl) {
-  const xmlHttpReq = new XMLHttpRequest();
-  xmlHttpReq.open("GET", theUrl, false);
-  xmlHttpReq.send(null);
-  return xmlHttpReq.responseText;
+	const xmlHttpReq = new XMLHttpRequest();
+	xmlHttpReq.open("GET", theUrl, false);
+	xmlHttpReq.send(null);
+	return xmlHttpReq.responseText;
 }
 
 /**
@@ -69,13 +69,13 @@ async function getF1MVVersion() {
  * @returns A promise.
  */
 async function getAPIVersion() {
-  if ((await getF1MVVersion()) >= 180) {
-    console.log("Api version needed : v2");
-    return "v2";
-  } else {
-    console.log("Api version needed : v1");
-    return "v1";
-  }
+	if ((await getF1MVVersion()) >= 180) {
+		console.log("Api version needed : v2");
+		return "v2";
+	} else {
+		console.log("Api version needed : v1");
+		return "v1";
+	}
 }
 /* Getting the version of the F1MV. */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -88,7 +88,7 @@ const F1MV_APIVersion = getAPIVersion();
  * @returns A promise that resolves to a string.
  */
 async function F1MV_API_BuildLiveTimingUrl(topic) {
-  return `http://${host}:${port}/api/${await F1MV_APIVersion}/live-timing${
+	return `http://${host}:${port}/api/${await F1MV_APIVersion}/live-timing${
     (await F1MV_APIVersion) === "v2" ? "/state" : ""
   }/${topic}`;
 }
@@ -99,7 +99,9 @@ async function F1MV_API_BuildLiveTimingUrl(topic) {
  */
 const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 /* Getting the themes from the filesConfiguration.json file. */
-const { themes } = JSON.parse(httpGet("./filesConfiguration.json"));
+const {
+	themes
+} = JSON.parse(httpGet("./filesConfiguration.json"));
 /* Declaring a variable called debugOn and assigning it a value of false. */
 let debugOn = true;
 let zoom = 512;
@@ -108,7 +110,7 @@ let yellow = false;
 let sc = false;
 let vsc = false;
 let red = false;
-let raining= 0;
+let raining = 0;
 let LT_Data = {};
 let lightOn = false;
 let lightOnRain = false;
@@ -119,7 +121,7 @@ let disabledBlueFlag = false;
 const pixooIP = "";
 /* Creating an object called oldMessages and adding a property called Messages to it. */
 let oldMessages = {
-  Messages: [],
+	Messages: [],
 };
 /**
  * It's a function that enables or disables debug mode.
@@ -128,15 +130,15 @@ let oldMessages = {
  */
 
 function debugMode(status) {
-  if (status === true) {
-    console.log(`Debug mode enabled`);
-    debugOn = true;
-    linkSuccess();
-  } else {
-    console.log(`Debug mode disabled`);
-    debugOn = false;
-  }
-  return true;
+	if (status === true) {
+		console.log(`Debug mode enabled`);
+		debugOn = true;
+		linkSuccess();
+	} else {
+		console.log(`Debug mode disabled`);
+		debugOn = false;
+	}
+	return true;
 }
 /* Setting the debugMode to true or false based on the value of debugOn. */
 debugMode(debugOn);
@@ -146,24 +148,24 @@ debugMode(debugOn);
  * @returns The path to the gif.
  */
 function getGifPath(flag) {
-  let flagPath;
-  for (let _i = 0; _i < themes.length; _i++) {
-    const theme = themes[_i];
-    if (theme.id === currentTheme) {
-      flagPath = theme.gifs[flag];
-    }
-  }
-  if (debugOn) console.log(`${flag} requested, returning ${flagPath}`);
-  return flagPath;
+	let flagPath;
+	for (let _i = 0; _i < themes.length; _i++) {
+		const theme = themes[_i];
+		if (theme.id === currentTheme) {
+			flagPath = theme.gifs[flag];
+		}
+	}
+	if (debugOn) console.log(`${flag} requested, returning ${flagPath}`);
+	return flagPath;
 }
 /**
  * When the user clicks on a theme, the theme is selected and the next button is enabled.
  * @param id - the id of the theme
  */
 function selectTheme(id) {
-  if (debugOn) console.log("Mode selected : " + id);
-  currentTheme = id;
-  $("#nextTheme").prop("disabled", false);
+	if (debugOn) console.log("Mode selected : " + id);
+	currentTheme = id;
+	$("#nextTheme").prop("disabled", false);
 }
 
 /**
@@ -263,24 +265,24 @@ async function changeGif(flag, mode) {
 }
 
 function linkSuccess() {
-  $("#tagLink").addClass("text-bg-success");
-  $("#tagLink").removeClass("text-bg-primary");
-  $("#tagLink").removeClass("text-bg-warning");
-  $("#tagLink").text("Connected to F1MV");
-  $("#edit_hostInfo").remove();
-  $("#LinkF1MV").remove();
-  $("#infotag").text("");
-  $("#infolink").text("");
-  $("#select_theme").append(`
+	$("#tagLink").addClass("text-bg-success");
+	$("#tagLink").removeClass("text-bg-primary");
+	$("#tagLink").removeClass("text-bg-warning");
+	$("#tagLink").text("Connected to F1MV");
+	$("#edit_hostInfo").remove();
+	$("#LinkF1MV").remove();
+	$("#infotag").text("");
+	$("#infolink").text("");
+	$("#select_theme").append(`
         <div id="themes">
 
         </div>
         <button type="button" id="nextTheme" class="btn btn-success" disabled>Next</button>
     `);
-  let theme;
-  for (let _i = 0; _i < themes.length; _i++) {
-    theme = themes[_i];
-    $("#themes").append(`
+	let theme;
+	for (let _i = 0; _i < themes.length; _i++) {
+		theme = themes[_i];
+		$("#themes").append(`
             <div class="form-check" id="window">
                 <input class="form-check-input theme" type="radio" name="theme" id="${theme.id}">
                 <label class="form-check-label theme" for="${theme.id}">
@@ -288,13 +290,13 @@ function linkSuccess() {
                 </label>
             </div>
         `);
-  }
-  $(".theme").on("click", (e) => {
-    selectTheme(e.target.id * 1);
-  });
-  $("#nextTheme").on("click", () => {
-    $("#select_theme").remove();
-    $("#select_device").append(`
+	}
+	$(".theme").on("click", (e) => {
+		selectTheme(e.target.id * 1);
+	});
+	$("#nextTheme").on("click", () => {
+		$("#select_theme").remove();
+		$("#select_device").append(`
             <div class="form-check" id="window">
             <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
             <label class="form-check-label" for="flexRadioDefault1">
@@ -315,28 +317,28 @@ function linkSuccess() {
             </div>
             <button type="button" id="launchDigiFlag" class="btn btn-success">Start DigiFlag</button>
         `);
-    if (themes[currentTheme].compatibleWith.Pixoo64) {
-      $("#notAvailable").remove();
-      $("#flexRadioDefault2").prop("disabled", false);
-    }
-    $("#blueFlag").on("click", () => {
-      if (disabledBlueFlag) {
-        disabledBlueFlag = false;
-      } else {
-        disabledBlueFlag = true;
-      }
-    });
-    $("#launchDigiFlag").on("click", () => {
-      $(".menu_box").remove();
-      $("body").append(
-        `<img src="${getGifPath(
+		if (themes[currentTheme].compatibleWith.Pixoo64) {
+			$("#notAvailable").remove();
+			$("#flexRadioDefault2").prop("disabled", false);
+		}
+		$("#blueFlag").on("click", () => {
+			if (disabledBlueFlag) {
+				disabledBlueFlag = false;
+			} else {
+				disabledBlueFlag = true;
+			}
+		});
+		$("#launchDigiFlag").on("click", () => {
+			$(".menu_box").remove();
+			$("body").append(
+				`<img src="${getGifPath(
           "void"
         )}" height="512" id="digiflag" class="center-screen">`
-      );
-      $("#zoomControl").css("opacity", 1);
-      started = true;
-    });
-  });
+			);
+			$("#zoomControl").css("opacity", 1);
+			started = true;
+		});
+	});
 }
 /**
  * It's a function that checks if the F1MV is running and if it is, it will change the text of a tag to
@@ -345,55 +347,55 @@ function linkSuccess() {
  * @returns The response is a JSON object.
  */
 function linkF1MV(force) {
-  if (debugOn) console.log("Link started...");
-  $("#tagLink").removeClass("text-bg-secondary");
-  $("#tagLink").removeClass("text-bg-danger");
-  $("#tagLink").removeClass("text-bg-warning");
-  $("#tagLink").removeClass("text-bg-success");
-  $("#tagLink").addClass("text-bg-primary");
-  $("#tagLink").text("Linking to F1MV in progress...");
-  try {
-    if (debugOn)
-      console.log(
-        `URL = http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`
-      );
-    const response = JSON.parse(
-      httpGet(`http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`)
-    );
-    if (response.error === "No data found, do you have live timing running?") {
-      if (force) {
-        linkSuccess();
-        return;
-      }
-      $("#tagLink").addClass("text-bg-warning");
-      $("#tagLink").removeClass("text-bg-primary");
-      $("#tagLink").text(
-        "Your F1MV is connected, but it's seem like your Live Timing page is not running."
-      );
-    } else {
-      linkSuccess();
-    }
-  } catch (e) {
-    if (force) {
-      linkSuccess();
-      return;
-    }
-    $("#tagLink").addClass("text-bg-danger");
-    $("#tagLink").removeClass("text-bg-primary");
-    $("#tagLink").removeClass("text-bg-warning");
-    $("#tagLink").text("Failed to connect to F1MV");
-    $("#infotag").text(
-      "Maybe your port isn't the default one? Maybe are you trying to connect to another host?"
-    );
-    $("#infolink").text("Click here to edit the F1MV DigiFlag Config.");
-  }
+	if (debugOn) console.log("Link started...");
+	$("#tagLink").removeClass("text-bg-secondary");
+	$("#tagLink").removeClass("text-bg-danger");
+	$("#tagLink").removeClass("text-bg-warning");
+	$("#tagLink").removeClass("text-bg-success");
+	$("#tagLink").addClass("text-bg-primary");
+	$("#tagLink").text("Linking to F1MV in progress...");
+	try {
+		if (debugOn)
+			console.log(
+				`URL = http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`
+			);
+		const response = JSON.parse(
+			httpGet(`http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`)
+		);
+		if (response.error === "No data found, do you have live timing running?") {
+			if (force) {
+				linkSuccess();
+				return;
+			}
+			$("#tagLink").addClass("text-bg-warning");
+			$("#tagLink").removeClass("text-bg-primary");
+			$("#tagLink").text(
+				"Your F1MV is connected, but it's seem like your Live Timing page is not running."
+			);
+		} else {
+			linkSuccess();
+		}
+	} catch (e) {
+		if (force) {
+			linkSuccess();
+			return;
+		}
+		$("#tagLink").addClass("text-bg-danger");
+		$("#tagLink").removeClass("text-bg-primary");
+		$("#tagLink").removeClass("text-bg-warning");
+		$("#tagLink").text("Failed to connect to F1MV");
+		$("#infotag").text(
+			"Maybe your port isn't the default one? Maybe are you trying to connect to another host?"
+		);
+		$("#infolink").text("Click here to edit the F1MV DigiFlag Config.");
+	}
 }
 $(function () {
-  /* Making the opacity of the zoomControl div 0. */
-  $("#zoomControl").css("opacity", 0);
-  $("#LinkF1MV").on("click", () => {
-    linkF1MV();
-  });
+	/* Making the opacity of the zoomControl div 0. */
+	$("#zoomControl").css("opacity", 0);
+	$("#LinkF1MV").on("click", () => {
+		linkF1MV();
+	});
 
   /* Appending a paragraph tag with the text "IP : " and an input tag with the class "form-control" and a
 	placeholder of "localhost" and a value of the variable host and an id of "ip" to the div with the id
@@ -494,59 +496,59 @@ oldMessages. If it is, then there are no new messages. */
     }
     /* Checking if the message contains the text "TRACK SURFACE SLIPPERY" and if it does, it sets the
 Category to "TrackSurfaceSlippery". */
-    if (message.Message.match(/TRACK SURFACE SLIPPERY/i)) {
-      messageData.Category = "TrackSurfaceSlippery";
-    }
-    /* Checking if the message contains the text "ROLLING START" and if it does, it will change the gif to
+		if (message.Message.match(/TRACK SURFACE SLIPPERY/i)) {
+			messageData.Category = "TrackSurfaceSlippery";
+		}
+		/* Checking if the message contains the text "ROLLING START" and if it does, it will change the gif to
 the "rs" gif and then turn it off after 20 seconds. */
-    if (message.Message.match(/ROLLING START/i)) {
-      changeGif("rs", currentMode);
-      await timer(20000);
-      turnOff("rs");
-      return;
-    }
-    /* Checking if the message contains the text "STANDING START" and if it does, it will change the gif to
+		if (message.Message.match(/ROLLING START/i)) {
+			changeGif("rs", currentMode);
+			await timer(20000);
+			turnOff("rs");
+			return;
+		}
+		/* Checking if the message contains the text "STANDING START" and if it does, it will change the gif to
 the "ss" gif and then turn it off after 20 seconds. */
-    if (message.Message.match(/STANDING START/i)) {
-      changeGif("ss", currentMode);
-      await timer(20000);
-      turnOff("ss");
-      return;
-    }
-    /* Checking if the message.Flag is undefined. If it is, it will set the messageData.Category to "Flag"
+		if (message.Message.match(/STANDING START/i)) {
+			changeGif("ss", currentMode);
+			await timer(20000);
+			turnOff("ss");
+			return;
+		}
+		/* Checking if the message.Flag is undefined. If it is, it will set the messageData.Category to "Flag"
 and set the messageData.Flag, messageData.Sector, and messageData.Scope to the values of the
 message.Flag, message.Sector, and message.Scope. */
-    if (message.Flag !== undefined) {
-      messageData.Category = "Flag";
-      messageData.Flag = message.Flag;
-      messageData.Sector = message.Sector;
-      messageData.Scope = message.Scope;
-    }
-    if (debugOn) console.log(messageData);
-    /* Changing the gif image to a slippery image. */
-    if (messageData.Category === "TrackSurfaceSlippery")
-      changeGif("slippery", currentMode);
-    /* Checking if the messageData.Category is equal to "SafetyCar" and if it is, it sets the sc variable
+		if (message.Flag !== undefined) {
+			messageData.Category = "Flag";
+			messageData.Flag = message.Flag;
+			messageData.Sector = message.Sector;
+			messageData.Scope = message.Scope;
+		}
+		if (debugOn) console.log(messageData);
+		/* Changing the gif image to a slippery image. */
+		if (messageData.Category === "TrackSurfaceSlippery")
+			changeGif("slippery", currentMode);
+		/* Checking if the messageData.Category is equal to "SafetyCar" and if it is, it sets the sc variable
 to true and calls the changeGif function with the parameters "sc" and currentMode. */
-    if (messageData.Category === "SafetyCar") {
-      sc = true;
-      changeGif("sc", currentMode);
-    }
-    /* Checking if the messageData.Category is equal to "VirtualSafetyCar" and if it is, it sets the vsc
+		if (messageData.Category === "SafetyCar") {
+			sc = true;
+			changeGif("sc", currentMode);
+		}
+		/* Checking if the messageData.Category is equal to "VirtualSafetyCar" and if it is, it sets the vsc
 variable to true and calls the changeGif function with the parameters "vsc" and currentMode. */
-    if (messageData.Category === "VirtualSafetyCar") {
-      vsc = true;
-      changeGif("vsc", currentMode);
-    }
-    /* Checking if the messageData.Flag is equal to "CHEQUERED" and if it is, it will change the gif to
+		if (messageData.Category === "VirtualSafetyCar") {
+			vsc = true;
+			changeGif("vsc", currentMode);
+		}
+		/* Checking if the messageData.Flag is equal to "CHEQUERED" and if it is, it will change the gif to
 "chequered" and then wait for 60 seconds and then turn off the gif. */
-    if (messageData.Flag === "CHEQUERED") {
-      changeGif("chequered", currentMode);
-      await timer(60000);
-      turnOff("chequered");
-      return;
-    }
-    /* Checking if the messageData.Scope is equal to "Track" and if it is, it is checking if the
+		if (messageData.Flag === "CHEQUERED") {
+			changeGif("chequered", currentMode);
+			await timer(60000);
+			turnOff("chequered");
+			return;
+		}
+		/* Checking if the messageData.Scope is equal to "Track" and if it is, it is checking if the
 messageData.Flag is equal to "RED". If it is, it is changing the gif to "red" and returning. If it
 is not, it is setting sc, vsc, and red to false, changing the gif to "green", waiting 2.5 seconds, and changing the gif to "void". */
     if (messageData.Scope === "Track") {
@@ -678,7 +680,6 @@ async function checkStatus() {
  */
 
 async function checkRain() {
-/* Checking if the game has started. If it hasn't, it will return. */
   if (!started) return;
 /* Checking to see if the light is on. If it is, it will return. */
   if (lightOn) return;
