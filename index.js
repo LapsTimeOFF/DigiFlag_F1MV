@@ -108,7 +108,7 @@ let yellow = false;
 let sc = false;
 let vsc = false;
 let red = false;
-let Rainning;
+let raining= 0;
 let LT_Data = {};
 let lightOn = false;
 let lightOnRain = false;
@@ -211,7 +211,7 @@ async function turnOff(flag) {
         }
         return;
       }
-      if (Rainning) {
+      if (raining) {
         changeGif("rain", 0);
         return;
       }
@@ -678,15 +678,21 @@ async function checkStatus() {
  */
 
 async function checkRain() {
+/* Checking if the game has started. If it hasn't, it will return. */
   if (!started) return;
+/* Checking to see if the light is on. If it is, it will return. */
   if (lightOn) return;
 
   /* Extract if it's raining or not from the Live Timing data */
   let Rain = LT_Data.WeatherData.Rainfall;
 
-  Rainning = Rain === "1";
+/* Checking if the value of the variable Rain is equal to 1. If it is, then the variable raining is set
+to true. */
+  raining = Rain === "1";
 
-  if (Rainning && !lightOnRain) {
+/* Checking if it is raining and if the light is on. If it is raining and the light is on, it will
+change the gif to rain. */
+  if (raining && !lightOnRain) {
     changeGif("rain", currentMode);
   }
 }
