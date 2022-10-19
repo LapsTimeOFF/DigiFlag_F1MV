@@ -1,90 +1,134 @@
 .center-screen {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 img#digiflag.center-screen {
-  user-select: none;
-  -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 * {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeSpeed;
-  font-size: calc(1px + 3vmin);
-  transition: all 0.2s ease-in-out;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
+    transition: all 0.2s ease-in-out;
 }
 
 .bottom-screen {
-  position: absolute;
-  top: 95%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+    position: absolute;
+    top: 95%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .menu_box {
-  color: white;
-  background-color: #373737;
+    color: white;
+    background-color: #373737;
 }
 
 body {
-  background-color: #131416;
-  overflow: hidden;
+    background-color: #131416;
+    overflow: hidden;
 }
 
 #menu_content {
-  margin: 10px;
+    margin: 10px;
 }
 
 button {
-  border-radius: 128px !important;
+    border-radius: 128px !important;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+    width: fit-content;
 }
 
 button:hover,
 button:focus {
-  border: 2px solid white !important;
-  box-shadow: none !important;
+    border: 1px solid white !important;
+    box-shadow: none !important;
 }
 
 .settingsButtons {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
-.settingsButtons>button {
-  margin: 5px;
+.settingsButtons > button {
+    margin: 5px;
 }
 
+#logoHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-self: center;
+}
+#infolink {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-self: center;
+}
+#infotag {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+#DigiFlag,
 #F1MV {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-items: center;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-#edit_hostInfo>input[type="text"]:focus {
-  border: none;
+#edit_hostInfo > input[type="text"] {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-self: center;
+}
+#edit_hostInfo > input[type="text"]:focus {
+    border: none;
+}
+#select_theme {
+    display: flex;
+    flex-direction: column;
+}
+#themes {
+    display: inline-flex;
+    flex-direction: inherit;
+    flex-wrap: wrap;
+    align-content: center;
+}
+#select_device {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #F1MVLinkContainer {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+}
+#tagLink {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+    margin-bottom: 10px !important;
+    border-radius: 128px !important;
 }
 
-#F1MVLinkContainer>span {
-  margin: 5px;
-}
-
-#DigiFlag {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-items: center;
+#F1MVLinkContainer > span {
+    margin: 5px;
 }
 
 #zoomControl {
-  z-index: 0;
+    z-index: 0;
 }

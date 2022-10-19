@@ -2,6 +2,7 @@ import { app, BrowserWindow } from "electron";
 import express from "express";
 import { address } from "ip";
 import request from "request";
+import path from "path";
 
 import { themes } from "./filesConfiguration.json";
 import { version } from "./package.json";
@@ -86,19 +87,39 @@ function createWindow(width: number, height: number, title: string) {
     width: width,
     height: height,
     title: title,
-    icon: "icon.ico",
+ /* Setting the icon of the window. */
+    icon: path.join(__dirname,"icon.ico"),
     // alwaysOnTop: true,
+    backgroundColor:'#131416',
     autoHideMenuBar: true,
+    /* Hiding the window until it is ready to be shown. */
+    show:false
   });
   return window;
 }
+/* Creating a window and loading the index.html file. */
 app.whenReady().then(() => {
   const mainWindow = createWindow(800, 600, "F1MV - DigiFlag - " + version);
   if (version.includes("dev")) mainWindow.webContents.openDevTools();
-  mainWindow.loadFile("index.html");
+   mainWindow.loadFile(path.join(__dirname, 'index.html'));
+   /* Waiting for the window to be ready before showing it. */
+   mainWindow.once('ready-to-show', () => {
+    mainWindow.show()
+})
 });
-/* A function that is called when all windows are closed. */
-app.on("window-all-closed", function () {
-  /* Closing the app. */
-  app.quit();
+// Quit when all windows are closed, except on macOS. There, it's common
+// for applications and their menu bar to stay active until the user quits
+// explicitly with Cmd + Q.
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+app.on('activate', () => {
+  // On OS X it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow(800, 600, "F1MV - DigiFlag - " + version);
+  }
 });
