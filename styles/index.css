@@ -5,7 +5,7 @@
     transform: translate(-50%, -50%);
 }
 
-img#digiflag.center-screen {
+img {
     user-select: none;
     -webkit-user-drag: none;
 }
@@ -15,6 +15,7 @@ img#digiflag.center-screen {
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeSpeed;
     transition: all 0.2s ease-in-out;
+    user-select: none;
 }
 
 .bottom-screen {
@@ -127,6 +128,41 @@ button:focus {
 
 #F1MVLinkContainer > span {
     margin: 5px;
+}
+
+label:hover {
+    color: #198754;
+    transition: color 0.2s ease-in-out;
+    cursor: pointer;
+}
+#removeBlueFlagsLabel:hover {
+    color: #0d6efd;
+    transition: color 0.2s ease-in-out;
+    cursor: pointer;
+}
+#removeBlueFlagCheck:hover {
+    background-color: #0d6efd;
+    transition: color 0.2s ease-in-out;
+    cursor: pointer;
+}
+.form-check-input[disabled] ~ .form-check-label:hover {
+    color: #dc3545;
+    font-weight: normal;
+    transition: color 0.1s linear;
+    cursor: not-allowed;
+}
+input[type="radio"]:hover {
+    background-color: #198754;
+    cursor: pointer;
+}
+.form-check-input[type="checkbox"]:hover {
+    background-color: #198754;
+    cursor: pointer;
+}
+#Pixoo64.form-check > .form-check-input[disabled]:hover {
+    background-color: #dc3545;
+    transition: color 0.1s linear;
+    cursor: not-allowed;
 }
 
 #zoomControl {
