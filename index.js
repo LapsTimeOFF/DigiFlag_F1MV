@@ -302,7 +302,7 @@ function linkSuccess() {
             <div class="form-check" id="blueFlag">
                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                 <label class="form-check-label" for="flexCheckDefault">
-                    Remove blue flag ?
+                    Remove Blue Flags?
                 </label>
             </div>
             <button type="button" id="launchDigiFlag" class="btn btn-success">Start DigiFlag</button>
