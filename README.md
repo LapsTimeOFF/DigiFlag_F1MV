@@ -1,9 +1,10 @@
 # DigiFlag_F1MV
 
-Adding a DigiFlag fonctionnality in MultiViewer For F1
+Adding a DigiFlag functionality to MultiViewer For F1
 
 # Credits
 
 Thanks to :<br>
-    - @walshaw#2248 (for the idea on the discord of F1MV and for some gifs)<br>
-    - Multiviewer For F1 (for the F1MV software)
+    - @JJWatMySelf (for the idea on the discord of F1MV and for some gifs)<br>
+    - @TheBaconCat (for his contributions on discord of F1MV and for updating some code & gifs)<br>
+    - @f1multiviewer (for the F1MV software)
