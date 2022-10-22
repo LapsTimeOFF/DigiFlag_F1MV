@@ -135,21 +135,6 @@ label:hover {
     transition: color 0.2s ease-in-out;
     cursor: pointer;
 }
-blueFlag:hover {
-    color: #0d6efd;
-    transition: color 0.2s ease-in-out;
-    cursor: pointer;
-}
-#blueFlag.form-check > .form-check-input[type="checkbox"]:hover {
-    background-color: #0d6efd;
-    transition: color 0.2s ease-in-out;
-    cursor: pointer;
-}
-#blueFlag.form-check > label:hover {
-    color: #0d6efd;
-    transition: color 0.2s ease-in-out;
-    cursor: pointer;
-}
 .form-check-input[disabled] ~ .form-check-label:hover {
     color: #dc3545;
     font-weight: normal;
