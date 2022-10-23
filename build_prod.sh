@@ -6,13 +6,13 @@ tsc
 echo 'Building .ts file done'
 echo 'Starting building...'
 echo 'Building Win32x64'
-electron-packager ./ F1MV-DigiFlag --platform=win32 --arch=x64
+electron-packager ./ F1MV-DigiFlag --platform=win32 --arch=x64 --icon=assets/logos/DigiFlag.png
 echo 'Building Win32x64 completed'
 echo 'Building Darwin'
-electron-packager ./ F1MV-DigiFlag --platform=darwin
+electron-packager ./ F1MV-DigiFlag --platform=darwin --icon=assets/logos/DigiFlag.png
 echo 'Building Darwin completed'
 echo 'Building Linux'
-electron-packager ./ F1MV-DigiFlag --platform=linux
+electron-packager ./ F1MV-DigiFlag --platform=linux --icon=assets/logos/DigiFlag.png
 echo 'Building Linux completed'
 echo 'Removing useless files...'
 rm -rf ./F1MV-DigiFlag-darwin-arm64/LICENSE*
