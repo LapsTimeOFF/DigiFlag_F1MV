@@ -101,11 +101,11 @@ function createWindow(width: number, height: number, title: string) {
 /* Creating a window and loading the index.html file. */
 app.whenReady().then(() => {
 	const mainWindow = createWindow(800, 600, 'F1MV - DigiFlag - ' + version);
-	if (version.includes('dev')) mainWindow.webContents.openDevTools();
 	mainWindow.loadFile(path.join(__dirname, 'index.html'));
 	/* Waiting for the window to be ready before showing it. */
 	mainWindow.once('ready-to-show', () => {
 		mainWindow.show();
+		if (version.includes('dev')) mainWindow.webContents.openDevTools();
 	});
 });
 // Quit when all windows are closed, except on macOS. There, it's common
