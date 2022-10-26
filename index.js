@@ -27,6 +27,20 @@ function saveSettings(host, port) {
 }
 
 /**
+ * Create a new instance of the DigiFlag
+ * @return nothing or an error
+ * @author LapsTime
+ */
+function createANewInstance() {
+    try {
+        httpGet('http://localhost:9093/newInstance')
+        return true
+    } catch (error) {
+        throw new Error('An error occurred during the creation of the instance.')
+    }
+}
+
+/**
  * It checks if the host and port data is not null, if it is not null, it sets the host and port
  * variables to the data stored in local storage.
  */
