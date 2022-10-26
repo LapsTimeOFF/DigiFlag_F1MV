@@ -75,19 +75,6 @@ expressApp.get('/pixoo/:gif/:themeID/:ip', (req, res) => {
 	);
 });
 
-/* A route for creating new instance of the DigiFlag*/
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-expressApp.get('/newInstance', (_, res) => {
-	const mainWindow = createWindow(800, 600, 'F1MV - DigiFlag - ' + version);
-	if (version.includes('dev')) mainWindow.webContents.openDevTools();
-	mainWindow.loadFile(path.join(__dirname, 'index.html'));
-	/* Waiting for the window to be ready before showing it. */
-	mainWindow.once('ready-to-show', () => {
-		mainWindow.show();
-		res.send(true);
-	});
-});
-
 /**
  * `createWindow` is a function that takes three arguments: `width`, `height`, and `title`, and returns
  * a new `BrowserWindow` object

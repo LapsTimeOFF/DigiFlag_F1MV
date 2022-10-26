@@ -33,7 +33,7 @@ function saveSettings(host, port) {
  */
 function createNewInstance() {
     try {
-        httpGet('http://localhost:9093/newInstance')
+        window.open('./index.html')
         return true
     } catch (error) {
         throw new Error('An error occurred during the creation of the instance.')
