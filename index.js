@@ -1,7 +1,9 @@
 /* Declaring a variable called host and assigning it the value of "localhost". */
-let host = "localhost";
+let host = 'localhost';
 /* Creating a variable called port and assigning it the value of 10101. */
 let port = 10101;
+
+const errorTable = require('./errorTable');
 
 /**
  * It makes a GET request to the URL passed in as a parameter.
@@ -11,7 +13,7 @@ let port = 10101;
  */
 function httpGet(theUrl) {
     const xmlHttpReq = new XMLHttpRequest();
-    xmlHttpReq.open("GET", theUrl, false);
+    xmlHttpReq.open('GET', theUrl, false);
     xmlHttpReq.send(null);
     return xmlHttpReq.responseText;
 }
@@ -22,8 +24,8 @@ function httpGet(theUrl) {
  * @param port - The port number of the server.
  */
 function saveSettings(host, port) {
-    localStorage.setItem("host", host);
-    localStorage.setItem("port", port);
+    localStorage.setItem('host', host);
+    localStorage.setItem('port', port);
 }
 
 /**
@@ -33,10 +35,10 @@ function saveSettings(host, port) {
  */
 function createNewInstance() {
     try {
-        window.open('./index.html')
-        return true
+        window.open('./index.html');
+        return true;
     } catch (error) {
-        throw new Error('An error occurred during the creation of the instance.')
+        throw errorTable.failedToCreateNewInstance;
     }
 }
 
@@ -45,8 +47,8 @@ function createNewInstance() {
  * variables to the data stored in local storage.
  */
 function loadSettings() {
-    const hostData = localStorage.getItem("host");
-    const portData = localStorage.getItem("port");
+    const hostData = localStorage.getItem('host');
+    const portData = localStorage.getItem('port');
     if (hostData && portData !== null) {
         host = hostData;
         port = parseInt(portData);
@@ -58,9 +60,9 @@ function loadSettings() {
 function restoreSettings() {
     console;
     if (localStorage !== null) localStorage.clear();
-    host = "localhost";
+    host = 'localhost';
     port = 10101;
-    console.log("Storage Cleared");
+    console.log('Storage Cleared');
 }
 
 /**
@@ -71,7 +73,7 @@ async function getF1MVVersion() {
     loadSettings();
     const res = await JSON.parse(httpGet(`http://${host}:${port}/api/v1/app/version`));
     let ver = res.version;
-    ver = parseInt(ver.replace(/[\D]/g, "").substring(0, 3));
+    ver = parseInt(ver.replace(/[\D]/g, '').substring(0, 3));
     console.log(`Current F1MV Version : ${ver}`);
     return ver;
 }
@@ -82,11 +84,11 @@ async function getF1MVVersion() {
  */
 async function getAPIVersion() {
     if ((await getF1MVVersion()) >= 180) {
-        console.log("Api version needed : v2");
-        return "v2";
+        console.log('Api version needed : v2');
+        return 'v2';
     } else {
-        console.log("Api version needed : v1");
-        return "v1";
+        console.log('Api version needed : v1');
+        return 'v1';
     }
 }
 /* Getting the version of the F1MV. */
@@ -101,7 +103,7 @@ const F1MV_APIVersion = getAPIVersion();
  */
 async function F1MV_API_BuildLiveTimingUrl(topic) {
     return `http://${host}:${port}/api/${await F1MV_APIVersion}/live-timing${
-        (await F1MV_APIVersion) === "v2" ? "/state" : ""
+        (await F1MV_APIVersion) === 'v2' ? '/state' : ''
     }/${topic}`;
 }
 /**
@@ -111,7 +113,7 @@ async function F1MV_API_BuildLiveTimingUrl(topic) {
  */
 const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 /* Getting the themes from the filesConfiguration.json file. */
-const {themes} = JSON.parse(httpGet("./filesConfiguration.json"));
+const {themes} = JSON.parse(httpGet('./filesConfiguration.json'));
 /* Declaring a variable called debugOn and assigning it a value of false. */
 let debugOn = true;
 let zoom = 512;
@@ -128,7 +130,7 @@ let lightOnRain = false;
 let currentTheme = 1;
 const currentMode = 0; // 0 for window, 1 for pixoo64
 let disabledBlueFlag = false;
-const pixooIP = "";
+const pixooIP = '';
 /* Creating an object called oldMessages and adding a property called Messages to it. */
 let oldMessages = {
     Messages: [],
@@ -173,9 +175,9 @@ function getGifPath(flag) {
  * @param {number}id - the id of the theme
  */
 function selectTheme(id) {
-    if (debugOn) console.log("Mode selected : " + id);
+    if (debugOn) console.log('Mode selected : ' + id);
     currentTheme = id;
-    $("#nextTheme").prop("disabled", false);
+    $('#nextTheme').prop('disabled', false);
 }
 
 /**
@@ -190,53 +192,53 @@ function selectTheme(id) {
  */
 async function turnOff(flag) {
     if (
-        flag === "ss" ||
-        flag === "rs" ||
-        flag === "chequered" ||
-        flag === "green" ||
-        flag === "blue" ||
-        flag === "slippery"
+        flag === 'ss' ||
+        flag === 'rs' ||
+        flag === 'chequered' ||
+        flag === 'green' ||
+        flag === 'blue' ||
+        flag === 'slippery'
     ) {
         if (sc === true) {
-            $("#digiflag").prop("src", getGifPath("sc"));
+            $('#digiflag').prop('src', getGifPath('sc'));
         } else {
             if (vsc === true) {
-                $("#digiflag").prop("src", getGifPath("vsc"));
+                $('#digiflag').prop('src', getGifPath('vsc'));
                 return;
             } else {
                 if (red === true) {
-                    $("#digiflag").prop("src", getGifPath("red"));
+                    $('#digiflag').prop('src', getGifPath('red'));
                     return;
                 } else {
                     if (yellow === true) {
-                        $("#digiflag").prop("src", getGifPath("yellow"));
+                        $('#digiflag').prop('src', getGifPath('yellow'));
                         return;
                     }
                 }
             }
             if (currentMode === 1) {
                 const res = await httpGet(`http://localhost:9093/pixoo/void/${currentTheme}/${pixooIP}`);
-                if (res !== "OK") {
-                    console.log("Failed to change GIF on Pixoo64");
+                if (res !== 'OK') {
+                    console.log('Failed to change GIF on Pixoo64');
                 }
                 return;
             }
             if (raining) {
-                changeGif("rain", 0);
+                changeGif('rain', 0);
                 return;
             }
-            $("#digiflag").prop("src", getGifPath("void"));
+            $('#digiflag').prop('src', getGifPath('void'));
             lightOn = false;
         }
     } else {
         if (currentMode === 1) {
             const res = await httpGet(`http://localhost:9093/pixoo/void/${currentTheme}/${pixooIP}`);
-            if (res !== "OK") {
-                console.log("Failed to change GIF on Pixoo64");
+            if (res !== 'OK') {
+                console.log('Failed to change GIF on Pixoo64');
             }
             return;
         }
-        $("#digiflag").prop("src", getGifPath("void"));
+        $('#digiflag').prop('src', getGifPath('void'));
         lightOn = false;
     }
 }
@@ -251,33 +253,33 @@ async function turnOff(flag) {
  * @returns a Promise.
  */
 async function changeGif(flag, mode) {
-    if (flag === "blue" && disabledBlueFlag) return;
+    if (flag === 'blue' && disabledBlueFlag) return;
     if (mode === 1 && currentMode === 1) {
         const res = await httpGet(`http://localhost:9093/pixoo/${flag}/${currentTheme}/${pixooIP}`);
-        if (res !== "OK") {
-            console.log("Failed to change GIF on Pixoo64");
+        if (res !== 'OK') {
+            console.log('Failed to change GIF on Pixoo64');
         }
         return;
     }
     const flagPath = getGifPath(flag);
-    $("#digiflag").prop("src", flagPath);
-    if (flag !== "rain") {
+    $('#digiflag').prop('src', flagPath);
+    if (flag !== 'rain') {
         lightOn = true;
         lightOnRain = false;
     }
-    if (flag === "rain") lightOnRain = true;
+    if (flag === 'rain') lightOnRain = true;
 }
 
 function linkSuccess() {
-    $("#tagLink").addClass("text-bg-success");
-    $("#tagLink").removeClass("text-bg-primary");
-    $("#tagLink").removeClass("text-bg-warning");
-    $("#tagLink").text("Connected to F1MV");
-    $("#edit_hostInfo").remove();
-    $("#LinkF1MV").remove();
-    $("#infotag").text("");
-    $("#infolink").text("");
-    $("#select_theme").append(`
+    $('#tagLink').addClass('text-bg-success');
+    $('#tagLink').removeClass('text-bg-primary');
+    $('#tagLink').removeClass('text-bg-warning');
+    $('#tagLink').text('Connected to F1MV');
+    $('#edit_hostInfo').remove();
+    $('#LinkF1MV').remove();
+    $('#infotag').text('');
+    $('#infolink').text('');
+    $('#select_theme').append(`
         <div id="themes">
 
         </div>
@@ -286,7 +288,7 @@ function linkSuccess() {
     let theme;
     for (let _i = 0; _i < themes.length; _i++) {
         theme = themes[_i];
-        $("#themes").append(`
+        $('#themes').append(`
             <div class="form-check" id="window">
                 <input class="form-check-input theme" type="radio" name="theme" id="${theme.id}">
                 <label class="form-check-label theme" for="${theme.id}">
@@ -295,12 +297,12 @@ function linkSuccess() {
             </div>
         `);
     }
-    $(".theme").on("click", (e) => {
+    $('.theme').on('click', (e) => {
         selectTheme(parseInt(e.target.id));
     });
-    $("#nextTheme").on("click", () => {
-        $("#select_theme").remove();
-        $("#select_device").append(`
+    $('#nextTheme').on('click', () => {
+        $('#select_theme').remove();
+        $('#select_device').append(`
             <div class="form-check" id="window">
             <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
             <label class="form-check-label" for="flexRadioDefault1">
@@ -322,20 +324,20 @@ function linkSuccess() {
             <button type="button" id="launchDigiFlag" class="btn btn-success">Start DigiFlag</button>
         `);
         if (themes[currentTheme].compatibleWith.Pixoo64) {
-            $("#notAvailable").remove();
-            $("#flexRadioDefault2").prop("disabled", false);
+            $('#notAvailable').remove();
+            $('#flexRadioDefault2').prop('disabled', false);
         }
-        $("#blueFlag").on("click", () => {
+        $('#blueFlag').on('click', () => {
             if (disabledBlueFlag) {
                 disabledBlueFlag = false;
             } else {
                 disabledBlueFlag = true;
             }
         });
-        $("#launchDigiFlag").on("click", () => {
-            $(".menu_box").remove();
-            $("body").append(`<img src="${getGifPath("void")}" height="512" id="digiflag" class="center-screen">`);
-            $("#zoomControl").css("opacity", 1);
+        $('#launchDigiFlag').on('click', () => {
+            $('.menu_box').remove();
+            $('body').append(`<img src="${getGifPath('void')}" height="512" id="digiflag" class="center-screen">`);
+            $('#zoomControl').css('opacity', 1);
             started = true;
         });
     });
@@ -347,24 +349,24 @@ function linkSuccess() {
  * @returns The response is a JSON object.
  */
 function linkF1MV(force) {
-    if (debugOn) console.log("Link started...");
-    $("#tagLink").removeClass("text-bg-secondary");
-    $("#tagLink").removeClass("text-bg-danger");
-    $("#tagLink").removeClass("text-bg-warning");
-    $("#tagLink").removeClass("text-bg-success");
-    $("#tagLink").addClass("text-bg-primary");
-    $("#tagLink").text("Linking to F1MV in progress...");
+    if (debugOn) console.log('Link started...');
+    $('#tagLink').removeClass('text-bg-secondary');
+    $('#tagLink').removeClass('text-bg-danger');
+    $('#tagLink').removeClass('text-bg-warning');
+    $('#tagLink').removeClass('text-bg-success');
+    $('#tagLink').addClass('text-bg-primary');
+    $('#tagLink').text('Linking to F1MV in progress...');
     try {
         if (debugOn) console.log(`URL = http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`);
         const response = JSON.parse(httpGet(`http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`));
-        if (response.error === "No data found, do you have live timing running?") {
+        if (response.error === 'No data found, do you have live timing running?') {
             if (force) {
                 linkSuccess();
                 return;
             }
-            $("#tagLink").addClass("text-bg-warning");
-            $("#tagLink").removeClass("text-bg-primary");
-            $("#tagLink").text("Your F1MV is connected, but it's seem like your Live Timing page is not running.");
+            $('#tagLink').addClass('text-bg-warning');
+            $('#tagLink').removeClass('text-bg-primary');
+            $('#tagLink').text("Your F1MV is connected, but it's seem like your Live Timing page is not running.");
         } else {
             linkSuccess();
         }
@@ -373,78 +375,78 @@ function linkF1MV(force) {
             linkSuccess();
             return;
         }
-        $("#tagLink").addClass("text-bg-danger");
-        $("#tagLink").removeClass("text-bg-primary");
-        $("#tagLink").removeClass("text-bg-warning");
-        $("#tagLink").text("Failed to connect to F1MV");
-        $("#infotag").text("Maybe you are trying to connect to another host? Maybe your port isn't the default one?");
-        $("#infolink").text("Click here to edit the F1MV DigiFlag Config.");
+        $('#tagLink').addClass('text-bg-danger');
+        $('#tagLink').removeClass('text-bg-primary');
+        $('#tagLink').removeClass('text-bg-warning');
+        $('#tagLink').text('Failed to connect to F1MV');
+        $('#infotag').text("Maybe you are trying to connect to another host? Maybe your port isn't the default one?");
+        $('#infolink').text('Click here to edit the F1MV DigiFlag Config.');
     }
 }
 $(function () {
     /* Making the opacity of the zoomControl div 0. */
-    $("#zoomControl").css("opacity", 0);
-    $("#LinkF1MV").on("click", () => {
+    $('#zoomControl').css('opacity', 0);
+    $('#LinkF1MV').on('click', () => {
         linkF1MV();
     });
 
     /* Appending a paragraph tag with the text "IP : " and an input tag with the class "form-control" and a
 	placeholder of "localhost" and a value of the variable host and an id of "ip" to the div with the id
 	"edit_hostInfo". */
-    $("#infolink").on("click", () => {
-        $("#edit_hostInfo").append("<p>IP : </p>");
-        $("#edit_hostInfo").append(
+    $('#infolink').on('click', () => {
+        $('#edit_hostInfo').append('<p>IP : </p>');
+        $('#edit_hostInfo').append(
             `<input type="text" class="form-control" placeholder="localhost" value=${host} id="ip">`
         );
         /* Appending a paragraph tag with the text "Port : " and then appending an input tag with the class
 		"form-control" and the placeholder "10101" and the value of the variable port and the id "port". */
-        $("#edit_hostInfo").append("<p>Port : </p>");
-        $("#edit_hostInfo").append(
+        $('#edit_hostInfo').append('<p>Port : </p>');
+        $('#edit_hostInfo').append(
             `<input type="text" class="form-control" placeholder="10101" value=${port} id="port">`
         );
-        $("#edit_hostInfo").append(
-            $("<div/>", {
-                class: "settingsButtons",
+        $('#edit_hostInfo').append(
+            $('<div/>', {
+                class: 'settingsButtons',
             }).append([
                 '<button type="button" id="updateSettings" class="btn btn-primary">Save Network Settings</button>',
                 '<button type="button"  id="restoreSettings" class="btn btn-danger">Restore Default Settings </button>',
             ])
         );
-        $("#updateSettings").on("click", () => {
-            if (debugOn) console.log("Editing Settings...");
+        $('#updateSettings').on('click', () => {
+            if (debugOn) console.log('Editing Settings...');
             /* Assigning the value of the input field with the id of "ip" to the variable "host". */
-            host = $("#ip").val();
-            if (debugOn) console.log($("#ip").val() !== "");
-            if (debugOn) console.log(`IP = ${$("#ip").val()} = ${host}`);
+            host = $('#ip').val();
+            if (debugOn) console.log($('#ip').val() !== '');
+            if (debugOn) console.log(`IP = ${$('#ip').val()} = ${host}`);
             /* Assigning the value of the input field with the id of port to the variable port. */
-            port = $("#port").val();
-            if (debugOn) console.log($("#port").val() !== "");
-            if (debugOn) console.log(`PORT = ${$("#port").val()} = ${port}`);
-            if (debugOn) console.log("Settings edited !");
+            port = $('#port').val();
+            if (debugOn) console.log($('#port').val() !== '');
+            if (debugOn) console.log(`PORT = ${$('#port').val()} = ${port}`);
+            if (debugOn) console.log('Settings edited !');
             saveSettings(host, port);
             /* Getting the version of the F1MV. */
             F1MV_version = getF1MVVersion();
         });
-        $("#restoreSettings").on("click", () => {
+        $('#restoreSettings').on('click', () => {
             /* Setting the value of the input fields back to localhost and 10101. */
-            $("#ip").val("localhost");
-            $("#port").val(10101);
+            $('#ip').val('localhost');
+            $('#port').val(10101);
             restoreSettings();
             F1MV_version = getF1MVVersion();
         });
     });
     /* Increasing the zoom of the image by 20px when the button is clicked. */
-    $("#newInstance").on("click", () => {
-        createNewInstance()
+    $('#newInstance').on('click', () => {
+        createNewInstance();
     });
-    $("#zoomIn").on("click", () => {
+    $('#zoomIn').on('click', () => {
         zoom = zoom + 20;
-        $("#digiflag").prop("height", zoom);
+        $('#digiflag').prop('height', zoom);
     });
     /* Decreasing the zoom of the image by 20px when the button is clicked. */
-    $("#zoomOut").on("click", () => {
+    $('#zoomOut').on('click', () => {
         zoom = zoom - 20;
-        $("#digiflag").prop("height", zoom);
+        $('#digiflag').prop('height', zoom);
     });
 });
 /**
@@ -459,145 +461,145 @@ const checkRCM = async () => {
     /* Checking to see if the number of messages in the result is the same as the number of messages in the
 oldMessages. If it is, then there are no new messages. */
     if (result.Messages.length === oldMessages.Messages.length) {
-        if (debugOn) console.log("No new messages.");
+        if (debugOn) console.log('No new messages.');
     } else {
-        if (debugOn) console.log("New message");
+        if (debugOn) console.log('New message');
         /* Getting the last message from the oldMessages array and assigning it to the message variable. */
         const message = result.Messages[oldMessages.Messages.length];
         oldMessages = result;
         /* Creating an object with the properties Category, Flag, Sector, and Scope. */
         const messageData = {
-            Category: "",
-            Flag: "",
+            Category: '',
+            Flag: '',
             Sector: undefined,
             Scope: undefined,
         };
         /* Checking if the message contains the text "BLACK AND ORANGE" and if it does, it sets the
 		   category to "Flag" and the flag to "BLACK AND ORANGE". */
         if (message.Message.match(/BLACK AND ORANGE/i)) {
-            messageData.Category = "Flag";
-            messageData.Flag = "BLACK AND ORANGE";
+            messageData.Category = 'Flag';
+            messageData.Flag = 'BLACK AND ORANGE';
         }
         /* Checking if the message contains the word "Safety Car" and if it does, it sets the category
 		   to "SafetyCar". */
         if (message.Message.match(/SAFETY CAR/i)) {
-            messageData.Category = "SafetyCar";
+            messageData.Category = 'SafetyCar';
         }
         /* Checking if the message contains the words "Virtual Safety Car" and if it does, it sets the
 		category to "VirtualSafetyCar". */
         if (message.Message.match(/VIRTUAL SAFETY CAR/i)) {
-            messageData.Category = "VirtualSafetyCar";
+            messageData.Category = 'VirtualSafetyCar';
         }
         /* Checking if the message contains the text "TRACK SURFACE SLIPPERY" and if it does, it sets the
 Category to "TrackSurfaceSlippery". */
         if (message.Message.match(/TRACK SURFACE SLIPPERY/i)) {
-            messageData.Category = "TrackSurfaceSlippery";
+            messageData.Category = 'TrackSurfaceSlippery';
         }
         /* Checking if the message contains the text "ROLLING START" and if it does, it will change the gif to
 the "rs" gif and then turn it off after 20 seconds. */
         if (message.Message.match(/ROLLING START/i)) {
-            changeGif("rs", currentMode);
+            changeGif('rs', currentMode);
             await timer(20000);
-            turnOff("rs");
+            turnOff('rs');
             return;
         }
         /* Checking if the message contains the text "STANDING START" and if it does, it will change the gif to
 the "ss" gif and then turn it off after 20 seconds. */
         if (message.Message.match(/STANDING START/i)) {
-            changeGif("ss", currentMode);
+            changeGif('ss', currentMode);
             await timer(20000);
-            turnOff("ss");
+            turnOff('ss');
             return;
         }
         /* Checking if the message.Flag is undefined. If it is, it will set the messageData.Category to "Flag"
 and set the messageData.Flag, messageData.Sector, and messageData.Scope to the values of the
 message.Flag, message.Sector, and message.Scope. */
         if (message.Flag !== undefined) {
-            messageData.Category = "Flag";
+            messageData.Category = 'Flag';
             messageData.Flag = message.Flag;
             messageData.Sector = message.Sector;
             messageData.Scope = message.Scope;
         }
         if (debugOn) console.log(messageData);
         /* Changing the gif image to a slippery image. */
-        if (messageData.Category === "TrackSurfaceSlippery") changeGif("slippery", currentMode);
+        if (messageData.Category === 'TrackSurfaceSlippery') changeGif('slippery', currentMode);
         /* Checking if the messageData.Category is equal to "SafetyCar" and if it is, it sets the sc variable
 to true and calls the changeGif function with the parameters "sc" and currentMode. */
-        if (messageData.Category === "SafetyCar") {
+        if (messageData.Category === 'SafetyCar') {
             sc = true;
-            changeGif("sc", currentMode);
+            changeGif('sc', currentMode);
         }
         /* Checking if the messageData.Category is equal to "VirtualSafetyCar" and if it is, it sets the vsc
 variable to true and calls the changeGif function with the parameters "vsc" and currentMode. */
-        if (messageData.Category === "VirtualSafetyCar") {
+        if (messageData.Category === 'VirtualSafetyCar') {
             vsc = true;
-            changeGif("vsc", currentMode);
+            changeGif('vsc', currentMode);
         }
         /* Checking if the messageData.Flag is equal to "CHEQUERED" and if it is, it will change the gif to
 "chequered" and then wait for 60 seconds and then turn off the gif. */
-        if (messageData.Flag === "CHEQUERED") {
-            changeGif("chequered", currentMode);
+        if (messageData.Flag === 'CHEQUERED') {
+            changeGif('chequered', currentMode);
             await timer(60000);
-            turnOff("chequered");
+            turnOff('chequered');
             return;
         }
         /* Checking if the messageData.Scope is equal to "Track" and if it is, it is checking if the
 messageData.Flag is equal to "RED". If it is, it is changing the gif to "red" and returning. If it
 is not, it is setting sc, vsc, and red to false, changing the gif to "green", waiting 2.5 seconds, and changing the gif to "void". */
-        if (messageData.Scope === "Track") {
-            if (messageData.Flag === "RED") {
-                changeGif("red", currentMode);
+        if (messageData.Scope === 'Track') {
+            if (messageData.Flag === 'RED') {
+                changeGif('red', currentMode);
                 return;
             }
             sc = false;
             vsc = false;
             red = false;
-            changeGif("green", currentMode);
+            changeGif('green', currentMode);
             await timer(2500);
-            turnOff("green");
+            turnOff('green');
             return;
         }
 
         /* Checking to see if the messageData.Category is equal to "Flag" */
-        if (messageData.Category === "Flag") {
+        if (messageData.Category === 'Flag') {
             switch (messageData.Flag) {
                 /* A switch statement that is checking the value of the variable currentMode. If the value of
 				currentMode is "YELLOW", then the changeGif function is called with the parameters "yellow" and
 				currentMode. */
-                case "YELLOW":
-                    changeGif("yellow", currentMode);
+                case 'YELLOW':
+                    changeGif('yellow', currentMode);
                     break;
                 /* A switch statement that is checking the value of the variable currentMode. If the value of
 					currentMode is "DOUBLE YELLOW", then the function changeGif is called with the parameters "dyellow"
 					and currentMode. */
-                case "DOUBLE YELLOW":
-                    changeGif("dyellow", currentMode);
+                case 'DOUBLE YELLOW':
+                    changeGif('dyellow', currentMode);
                     break;
                 /* A switch statement that is checking the currentMode variable. If the currentMode variable is equal
 					to "CLEAR" then it will change the gif to green and then turn off the green light. */
-                case "CLEAR":
-                    changeGif("green", currentMode);
+                case 'CLEAR':
+                    changeGif('green', currentMode);
                     await timer(2500);
-                    turnOff("green");
+                    turnOff('green');
                     break;
                 /* A switch statement that is checking the currentMode variable. If the currentMode variable is equal
 					to "RED" then it will set the red variable to true and call the changeGif function with the
 					parameters "red" and currentMode. It will then wait for 90 seconds and then call the turnOff
 					function with the parameter "red". */
-                case "RED":
+                case 'RED':
                     red = true;
-                    changeGif("red", currentMode);
+                    changeGif('red', currentMode);
                     await timer(90000);
-                    turnOff("red");
+                    turnOff('red');
                     break;
                 /* A switch statement that is checking the currentMode variable. If the currentMode variable is equal
 					to "BLUE" then it will set the red variable to true and call the changeGif function with the
 					parameters "blue" and currentMode. It will then wait for 1 second and then call the turnOff
 					function with the parameter "blue". */
-                case "BLUE":
-                    changeGif("blue", currentMode);
+                case 'BLUE':
+                    changeGif('blue', currentMode);
                     await timer(1000);
-                    turnOff("blue");
+                    turnOff('blue');
                     break;
                 default:
                     break;
@@ -624,41 +626,41 @@ async function checkStatus() {
     // {"Status":"5","Message":"Red"}
     // {"Status":"6","Message":"VSCDeployed"}
     // {"Status":"7","Message":"VSCEnding"}
-    if (trackStatus === "1") {
+    if (trackStatus === '1') {
         if (sc || vsc || red || yellow) {
-            if (debugOn) console.log("New track status : Green");
+            if (debugOn) console.log('New track status : Green');
             sc = false;
             yellow = false;
             vsc = false;
             red = false;
-            changeGif("green", currentMode);
+            changeGif('green', currentMode);
             await timer(2500);
-            turnOff("green");
+            turnOff('green');
         }
     }
-    if (trackStatus === "2") {
-        if (debugOn) console.log("New track status : Yellow");
+    if (trackStatus === '2') {
+        if (debugOn) console.log('New track status : Yellow');
         sc = false;
         yellow = true;
         vsc = false;
         red = false;
     }
-    if (trackStatus === "4") {
-        if (debugOn) console.log("New track status : SC");
+    if (trackStatus === '4') {
+        if (debugOn) console.log('New track status : SC');
         sc = true;
         yellow = false;
         vsc = false;
         red = false;
     }
-    if (trackStatus === "5") {
-        if (debugOn) console.log("New track status : Red");
+    if (trackStatus === '5') {
+        if (debugOn) console.log('New track status : Red');
         sc = false;
         yellow = false;
         vsc = false;
         red = true;
     }
-    if (trackStatus === "6") {
-        if (debugOn) console.log("New track status : VSC");
+    if (trackStatus === '6') {
+        if (debugOn) console.log('New track status : VSC');
         sc = false;
         yellow = false;
         vsc = true;
@@ -682,12 +684,12 @@ async function checkRain() {
 
     /* Checking if the value of the variable Rain is equal to 1. If it is, then the variable raining is set
 to true. */
-    raining = Rain === "1";
+    raining = Rain === '1';
 
     /* Checking if it is raining and if the light is on. If it is raining and the light is on, it will
 change the gif to rain. */
     if (raining && !lightOnRain) {
-        changeGif("rain", currentMode);
+        changeGif('rain', currentMode);
     }
 }
 
@@ -699,7 +701,7 @@ change the gif to rain. */
 async function updateData() {
     if (started)
         LT_Data = JSON.parse(
-            await httpGet(await F1MV_API_BuildLiveTimingUrl("RaceControlMessages,TrackStatus,WeatherData"))
+            await httpGet(await F1MV_API_BuildLiveTimingUrl('RaceControlMessages,TrackStatus,WeatherData'))
         );
 }
 
