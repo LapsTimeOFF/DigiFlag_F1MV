@@ -31,7 +31,7 @@ function saveSettings(host, port) {
  * @return nothing or an error
  * @author LapsTime
  */
-function createANewInstance() {
+function createNewInstance() {
     try {
         httpGet('http://localhost:9093/newInstance')
         return true
@@ -434,6 +434,9 @@ $(function () {
         });
     });
     /* Increasing the zoom of the image by 20px when the button is clicked. */
+    $("#newInstance").on("click", () => {
+        createNewInstance()
+    });
     $("#zoomIn").on("click", () => {
         zoom = zoom + 20;
         $("#digiflag").prop("height", zoom);
