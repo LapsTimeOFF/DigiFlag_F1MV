@@ -3,8 +3,6 @@ let host = 'localhost';
 /* Creating a variable called port and assigning it the value of 10101. */
 let port = 10101;
 
-const errorTable = require('./errorTable');
-
 /**
  * It makes a GET request to the URL passed in as a parameter.
  * @param theUrl - The URL to send the request to.
@@ -34,12 +32,8 @@ function saveSettings(host, port) {
  * @author LapsTime
  */
 function createNewInstance() {
-    try {
-        window.open('./index.html');
-        return true;
-    } catch (error) {
-        throw errorTable.failedToCreateNewInstance;
-    }
+    window.open('./index.html');
+    return true;
 }
 
 /**
