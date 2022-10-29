@@ -32,7 +32,7 @@ function saveSettings(host, port) {
  * @author LapsTime
  */
 function createNewInstance() {
-    window.open('./index.html');
+    window.open('./index.html', '', 'menubar=no,toolbar=no');
     return true;
 }
 
