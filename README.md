@@ -40,7 +40,12 @@
 Feel Free to Zoom-In & Zoom-Out and Resize Window to your personal preferences.
 
 # 🧰 Troubleshooting
-If you are unable to connect. Click on the Edit Digiflag config link.
+
+If you receive an error stating that you have failed to connect to F1MV. 
+
+Follow the steps below
+
+Click on the Edit Digiflag config link.
 ![image](https://user-images.githubusercontent.com/11319293/198863136-e817ed78-34c6-45f9-9425-6cbd8f2b9de7.png)
 
 Make sure that the IP & Port of the **API Base URL** under the `Experimental Settings` section in Multiviewer for F1 match your **Network Settings** in DigiFlag.
