@@ -40,6 +40,28 @@
 Feel Free to Zoom-In & Zoom-Out and Resize Window to your personal preferance.
 
 # 🧰 Troubleshooting
+If you are unable to connect. Click on the Edit Digiflag config link.
+![image](https://user-images.githubusercontent.com/11319293/198863136-e817ed78-34c6-45f9-9425-6cbd8f2b9de7.png)
+
+Make sure that the IP & Port of the **API Base URL** under the `Experimental Settings` section in Multiviewer for F1 match your **Network Settings** in DigiFlag.
+
+![image](https://user-images.githubusercontent.com/11319293/198863293-2845feac-5427-4368-a585-6672712af15b.png)
+
+After making any changes to DigiFlag Config Make Sure you click the **Save Network Settings** button.
+
+![image](https://user-images.githubusercontent.com/11319293/198863216-e0d67528-bf1a-4e42-a390-977e5ee3fe4f.png)
+
+Finally to avoid any other issues also check the `Experimental Settings` section in Multiviewer and make sure the option **Allow all websites to access the API** is checked. Also open the Live Timing Window Before you connect to DigiFlag.
+
+![image](https://user-images.githubusercontent.com/11319293/198863380-c106c56e-af2d-418e-a539-e6f94787e626.png)
+
+You can now attempt to Connect Again using the Link to F1MV.
+
+If there are no other issues you should see that you have succesfully connected to F1MV and can now select your DigiFlag theme and other options.
+
+![image](https://user-images.githubusercontent.com/11319293/198863694-978293e2-bb52-443d-a9a9-b1a753f27b09.png)
+
+
 
 <!-- TODO -->
 
