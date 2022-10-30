@@ -37,7 +37,7 @@
 7. Select Any Other Preferences.
 8. Click on the Start DigiFlag Button.
 
-Feel Free to Zoom-In & Zoom-Out and Resize Window to your personal preferance.
+Feel Free to Zoom-In & Zoom-Out and Resize Window to your personal preferences.
 
 # 🧰 Troubleshooting
 If you are unable to connect. Click on the Edit Digiflag config link.
@@ -47,7 +47,7 @@ Make sure that the IP & Port of the **API Base URL** under the `Experimental Set
 
 ![image](https://user-images.githubusercontent.com/11319293/198863293-2845feac-5427-4368-a585-6672712af15b.png)
 
-After making any changes to DigiFlag Config Make Sure you click the **Save Network Settings** button.
+After making any changes to DigiFlag Config Make Sure you click the **Save Network Settings** Button.
 
 ![image](https://user-images.githubusercontent.com/11319293/198863216-e0d67528-bf1a-4e42-a390-977e5ee3fe4f.png)
 
@@ -55,7 +55,7 @@ Finally to avoid any other issues also check the `Experimental Settings` section
 
 ![image](https://user-images.githubusercontent.com/11319293/198863380-c106c56e-af2d-418e-a539-e6f94787e626.png)
 
-You can now attempt to Connect Again using the Link to F1MV.
+You can now attempt to Connect Again using the Link to F1MV Button.
 
 If there are no other issues you should see that you have succesfully connected to F1MV and can now select your DigiFlag theme and other options.
 
