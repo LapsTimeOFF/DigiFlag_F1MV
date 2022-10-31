@@ -27,13 +27,26 @@ function saveSettings(host, port) {
 }
 
 /**
- * Create a new instance of the DigiFlag
- * @return nothing or an error
- * @author LapsTime
+ * It creates a new instance of the application.
+ * @param url - The URL of the page to open.
+ * @param windowTitle - The title of the window.
+ * @returns The windowInstance variable is being returned.
  */
-function createNewInstance() {
-    window.open('./index.html', '', 'menubar=no,autoHideMenuBar=true');
-    return true;
+function createNewInstance(url, windowTitle) {
+    if (arguments.length == 0) {
+        url = './index.html';
+        windowTitle = 'DigiFlag Instance';
+    }
+    try {
+        let windowInstance = window.open(
+            url,
+            '',
+            `top=200,left=1000,menubar=no,autoHideMenuBar=true,width=${instanceWidth},height=${instanceHeight},title=${windowTitle},icon=./icon.ico`
+        );
+        return windowInstance;
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 /**
@@ -125,6 +138,8 @@ let currentTheme = 1;
 const currentMode = 0; // 0 for window, 1 for pixoo64
 let disabledBlueFlag = false;
 const pixooIP = '';
+let instanceWidth = 800;
+let instanceHeight = 600;
 /* Creating an object called oldMessages and adding a property called Messages to it. */
 let oldMessages = {
     Messages: [],
@@ -269,10 +284,9 @@ function linkSuccess() {
     $('#tagLink').removeClass('text-bg-primary');
     $('#tagLink').removeClass('text-bg-warning');
     $('#tagLink').text('Connected to F1MV');
-    $('#edit_hostInfo').remove();
+    $('#networkSettings').remove();
     $('#LinkF1MV').remove();
     $('#infotag').text('');
-    $('#infolink').text('');
     $('#select_theme').append(`
         <div id="themes">
 
@@ -374,7 +388,7 @@ function linkF1MV(force) {
         $('#tagLink').removeClass('text-bg-warning');
         $('#tagLink').text('Failed to connect to F1MV');
         $('#infotag').text("Maybe you are trying to connect to another host? Maybe your port isn't the default one?");
-        $('#infolink').text('Click here to edit the F1MV DigiFlag Config.');
+        $('#checkNetworkSettings').text('Click on the Settings Gear Above to check your Network Settings.');
     }
 }
 $(function () {
@@ -384,23 +398,32 @@ $(function () {
         linkF1MV();
     });
 
-    /* Appending a paragraph tag with the text "IP : " and an input tag with the class "form-control" and a
-	placeholder of "localhost" and a value of the variable host and an id of "ip" to the div with the id
-	"edit_hostInfo". */
-    $('#infolink').on('click', () => {
-        $('#edit_hostInfo').append('<p>IP : </p>');
-        $('#edit_hostInfo').append(
+    /* The above below is appending a SVG globe icon, a h5 tag with the text "Network", a paragraph tag
+    with the text "IP : ", an input tag with the class "form-control" and the placeholder
+    "localhost" and the value of the variable host and the id "ip", a paragraph tag with the text
+    "Port : ", an input tag with the class "form-control" and the placeholder "10101" and the value
+    of the variable port and the id "port", a div tag with the class "networkButtonsContainer" and
+    two button tags with the class networkButtonsContainer  */
+    $('#settingsButton').one('click', () => {
+        $('#networkSettings')
+            .append(`<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="globe" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>`);
+        $('#networkSettings').append('<h5>Network</h5>');
+        $('#networkSettings').append('<p>IP : </p>');
+        $('#networkSettings').append(
             `<input type="text" class="form-control" placeholder="localhost" value=${host} id="ip">`
         );
         /* Appending a paragraph tag with the text "Port : " and then appending an input tag with the class
 		"form-control" and the placeholder "10101" and the value of the variable port and the id "port". */
-        $('#edit_hostInfo').append('<p>Port : </p>');
-        $('#edit_hostInfo').append(
+        $('#networkSettings').append('<p>Port : </p>');
+        $('#networkSettings').append(
             `<input type="text" class="form-control" placeholder="10101" value=${port} id="port">`
         );
-        $('#edit_hostInfo').append(
+        $('#networkSettings').append(
             $('<div/>', {
-                class: 'settingsButtons',
+                class: 'networkButtonsContainer',
             }).append([
                 '<button type="button" id="updateSettings" class="btn btn-primary">Save Network Settings</button>',
                 '<button type="button"  id="restoreSettings" class="btn btn-danger">Restore Default Settings </button>',
@@ -429,10 +452,15 @@ $(function () {
             F1MV_version = getF1MVVersion();
         });
     });
-    /* Increasing the zoom of the image by 20px when the button is clicked. */
+    /* Creating a new instance of the class when the button is clicked. */
     $('#newInstance').on('click', () => {
         createNewInstance();
     });
+    /* Creating a new instance of the browser and opening the link to the Github Repo. */
+    $('#openGithub').on('click', () => {
+        createNewInstance('https://github.com/LapsTimeOFF/DigiFlag_F1MV');
+    });
+    /* Increasing the zoom of the image by 20px when the button is clicked. */
     $('#zoomIn').on('click', () => {
         zoom = zoom + 20;
         $('#digiflag').prop('height', zoom);

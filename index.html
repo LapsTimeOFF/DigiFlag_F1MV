@@ -8,52 +8,81 @@
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
   <!-- Import Bootstrap -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
-    integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous">
-  </script>
+    integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+    crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"
-    integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous">
-  </script>
+    integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK"
+    crossorigin="anonymous"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous" />
   <!-- Import JQuery -->
   <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
-
   <!-- JS -->
   <script src="index.js"></script>
-
   <!-- CSS -->
   <link rel="stylesheet" href="./styles/index.css" />
 </head>
 
 <body>
+  <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasSettings"
+    aria-labelledby="offcanvasResponsiveLabel">
+    <div class="offcanvas-header">
+      <div class="offcanvas-title" id="offcanvasResponsiveLabel">
+        <h5>DigiFlag Settings</h5>
+      </div>
+      <div id="closeButtonContainer">
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+          data-bs-target="#offcanvasSettings" aria-label="Close"></button>
+      </div>
+    </div>
+    <div class="offcanvas-body">
+      <div id="layout">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="#fff" stroke-linecap="round"
+          stroke-linejoin="round" stroke-width="2" class="layout" viewBox="0 0 24 24">
+          <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+          <path d="M3 9h18M9 21V9" />
+        </svg>
+        <h5>Layout</h5>
+        <button class="btn btn-primary" height="50px" id="newInstance">New DigiFlag Instance</button>
+        <div id="github"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg> <button class="btn btn-primary" height="50px" id="openGithub">Open DigiFlag Github</button></div>
+      </div>
+      <div id="networkSettings"></div>
+    </div>
+  </div>
   <div class="center-screen menu_box">
     <div id="menu_content">
-      <center>
-        <div class="logoContainer">
-          <h1 id="logoHeader">F1MV X DigiFlag</h1>
-          <div id="F1MV">
-            <img src="./assets/logos/F1MV.png" width="92px" height="92px" />
-          </div>
-          <div id="DigiFlag">
-            <img src="./assets/logos/DigiFlag.png" width="92x" height="92px" />
-          </div>
+      <h1 id="logoHeader">F1MV X DigiFlag</h1>
+      <div id="logoContainer">
+        <div id="F1MV">
+          <img src="./assets/logos/F1MV.png" width="92px" height="92px" />
         </div>
-      </center>
+        <div id="DigiFlag">
+          <img src="./assets/logos/DigiFlag.png" width="92x" height="92px" />
+        </div>
+      </div>
       <div id="F1MVLinkContainer">
         <span id="tagLink" class="badge text-bg-secondary">DigiFlag is currently not linked to F1MV</span>
         <button type="button" class="btn btn-primary" id="LinkF1MV">
           Link to F1MV
         </button>
+        <button id="settingsButton" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSettings"
+          aria-controls="offcanvasSettings">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#0d6efd"
+            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="settings" role="img"
+            focusable="false">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </button>
       </div>
       <p id="infotag"></p>
-      <a href="#" id="infolink"></a>
-      <div id="edit_hostInfo"></div>
+      <p id="checkNetworkSettings"></p>
       <div id="select_theme"></div>
       <div id="select_device"></div>
     </div>
   </div>
   <div class="bottom-screen" id="zoomControl">
-    <button class="btn btn-primary" height="50px" id="newInstance">Create a new instance</button>
     <button class="btn btn-primary" height="50px" id="zoomIn">+</button>
     <button class="btn btn-primary" height="50px" id="zoomOut">-</button>
   </div>
