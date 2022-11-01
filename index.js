@@ -41,7 +41,7 @@ function createNewInstance(url, windowTitle) {
         let windowInstance = window.open(
             url,
             '',
-            `top=200,left=1000,menubar=no,autoHideMenuBar=true,width=${instanceWidth},height=${instanceHeight},title=${windowTitle},icon=./icon.ico`
+            `left=${instanceWindowOffsetX},top=${instanceWindowOffsetY},menubar=no,autoHideMenuBar=true,backgroundColor=#131416,width=${instanceWindowWidth},height=${instanceWindowHeight},title=${windowTitle},icon=./icon.ico`
         );
         return windowInstance;
     } catch (error) {
@@ -138,8 +138,10 @@ let currentTheme = 1;
 const currentMode = 0; // 0 for window, 1 for pixoo64
 let disabledBlueFlag = false;
 const pixooIP = '';
-let instanceWidth = 800;
-let instanceHeight = 600;
+let instanceWindowWidth = 800;
+let instanceWindowHeight = 600;
+const instanceWindowOffsetX = 900;
+const instanceWindowOffsetY = 200;
 /* Creating an object called oldMessages and adding a property called Messages to it. */
 let oldMessages = {
     Messages: [],
@@ -284,9 +286,9 @@ function linkSuccess() {
     $('#tagLink').removeClass('text-bg-primary');
     $('#tagLink').removeClass('text-bg-warning');
     $('#tagLink').text('Connected to F1MV');
-    $('#networkSettings').remove();
+    $('#checkNetworkSettings').remove();
     $('#LinkF1MV').remove();
-    $('#infotag').text('');
+    $('#infotag').remove();
     $('#select_theme').append(`
         <div id="themes">
 
@@ -343,6 +345,7 @@ function linkSuccess() {
             }
         });
         $('#launchDigiFlag').on('click', () => {
+            $('#settingsButton').appendTo('body');
             $('.menu_box').remove();
             $('body').append(`<img src="${getGifPath('void')}" height="512" id="digiflag" class="center-screen">`);
             $('#zoomControl').css('opacity', 1);
@@ -383,14 +386,23 @@ function linkF1MV(force) {
             linkSuccess();
             return;
         }
+        /* Adding the class text-bg-danger to the element with the id tagLink. */
         $('#tagLink').addClass('text-bg-danger');
+        /* Removing the class text-bg-primary from the element with the id tagLink. */
         $('#tagLink').removeClass('text-bg-primary');
+        /* Removing the class text-bg-warning from the element with the id tagLink. */
         $('#tagLink').removeClass('text-bg-warning');
+        /* Changing the text of the tag with the id tagLink to Failed to connect to F1MV */
         $('#tagLink').text('Failed to connect to F1MV');
+        /* Changing the text of the element with the id "infotag" to "Maybe you are trying to connect
+        to another host? Maybe your port isn't the default one?" */
         $('#infotag').text("Maybe you are trying to connect to another host? Maybe your port isn't the default one?");
+        /* The above code is changing the text of the element with the id of checkNetworkSettings to
+       Click on the Settings Gear Above to check your Network Settings. */
         $('#checkNetworkSettings').text('Click on the Settings Gear Above to check your Network Settings.');
     }
 }
+/* A function that is called when the page is loaded. */
 $(function () {
     /* Making the opacity of the zoomControl div 0. */
     $('#zoomControl').css('opacity', 0);
@@ -398,7 +410,7 @@ $(function () {
         linkF1MV();
     });
 
-    /* The above below is appending a SVG globe icon, a h5 tag with the text "Network", a paragraph tag
+    /* The code below is appending a SVG globe icon, a h5 tag with the text "Network", a paragraph tag
     with the text "IP : ", an input tag with the class "form-control" and the placeholder
     "localhost" and the value of the variable host and the id "ip", a paragraph tag with the text
     "Port : ", an input tag with the class "form-control" and the placeholder "10101" and the value

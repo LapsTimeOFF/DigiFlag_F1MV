@@ -5,11 +5,8 @@
     transform: translate(-50%, -50%);
 }
 
-html,
-body {
+* {
     color-scheme: dark;
-    background-color: #131416;
-    overflow: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeSpeed;
@@ -18,8 +15,11 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    width: 100%;
-    min-height: 100vh;
+}
+
+body {
+    background-color: #131416;
+    overflow: hidden;
 }
 
 img {
@@ -158,7 +158,7 @@ button:focus {
 }
 
 #LinkF1MV {
-    margin-bottom: 2vh;
+    margin-bottom: 5px;
 }
 
 label:hover {
@@ -242,31 +242,13 @@ svg.globe {
     overflow-x: hidden;
 }
 
-#layout {
+.offcanvas-component {
     display: flex;
     flex-direction: column;
     width: 100%;
     align-items: center;
 }
 
-#github {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
-}
-
-#github > button {
+.offcanvas-component > button {
     margin-bottom: 10px;
-}
-
-#layout > button {
-    margin-bottom: 10px;
-}
-
-#networkSettings {
-    display: flex;
-    flex-direction: column;
-    width: fit-content;
-    align-items: center;
 }
