@@ -44,6 +44,7 @@ svg {
 .menu_box {
     color: white;
     background-color: #373737;
+    transition: transform 0.3s;
 }
 
 #menu_content {
@@ -191,7 +192,7 @@ input[type='radio']:hover {
 }
 
 #zoomControl {
-    z-index: 0;
+    z-index: 1;
 }
 
 #settingsButton {

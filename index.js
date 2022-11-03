@@ -124,6 +124,7 @@ const {themes} = JSON.parse(httpGet('./filesConfiguration.json'));
 /* Declaring a variable called debugOn and assigning it a value of false. */
 let debugOn = true;
 let zoom = 512;
+let scale = 1;
 let started = false;
 let yellow = false;
 let sc = false;
@@ -287,6 +288,7 @@ function linkSuccess() {
     $('#tagLink').removeClass('text-bg-warning');
     $('#tagLink').text('Connected to F1MV');
     $('#checkNetworkSettings').remove();
+    $('#networkSettings').remove();
     $('#LinkF1MV').remove();
     $('#infotag').remove();
     $('#select_theme').append(`
@@ -307,7 +309,7 @@ function linkSuccess() {
             </div>
         `);
     }
-    $('.theme').on('click', (e) => {
+    $('.theme').on('change', (e) => {
         selectTheme(parseInt(e.target.id));
     });
     $('#nextTheme').on('click', () => {
@@ -337,18 +339,40 @@ function linkSuccess() {
             $('#notAvailable').remove();
             $('#flexRadioDefault2').prop('disabled', false);
         }
-        $('#blueFlag').on('click', () => {
+        $('#blueFlag').on('change', () => {
             if (disabledBlueFlag) {
                 disabledBlueFlag = false;
+                console.log('Blue Flags Disabled: ' + disabledBlueFlag);
+                return disabledBlueFlag;
             } else {
                 disabledBlueFlag = true;
+                console.log('Blue Flags Disabled: ' + disabledBlueFlag);
+                return disabledBlueFlag;
             }
         });
         $('#launchDigiFlag').on('click', () => {
-            $('#settingsButton').appendTo('body');
+            $('#zoomControl').css('pointer-events', '');
+            $('#zoomControl').removeClass('nav');
+            $('#zoomControl').addClass('bottom-screen');
+            $('#settingsButton').appendTo('#zoomControl');
             $('.menu_box').remove();
             $('body').append(`<img src="${getGifPath('void')}" height="512" id="digiflag" class="center-screen">`);
-            $('#zoomControl').css('opacity', 1);
+            $('#zoomControl').show();
+            $('#zoomControl').css('z-index', 1);
+            /* Increasing the zoom of the image by 20px when the button is clicked. */
+            $('#zoomIn').on('click', () => {
+                zoom = zoom + 20;
+                $('#digiflag').css('height', zoom);
+            });
+            /* Decreasing the zoom of the image by 20px when the button is clicked. */
+            $('#zoomOut').on('click', () => {
+                zoom = zoom - 20;
+                $('#digiflag').css('height', zoom);
+            });
+            $('#zoomReset').on('click', () => {
+                zoom = zoom - 20;
+                $('#digiflag').removeAttr('style');
+            });
             started = true;
         });
     });
@@ -405,7 +429,8 @@ function linkF1MV(force) {
 /* A function that is called when the page is loaded. */
 $(function () {
     /* Making the opacity of the zoomControl div 0. */
-    $('#zoomControl').css('opacity', 0);
+    $('#zoomControl').hide();
+    $('#zoomControl').css('pointer-events', 'none');
     $('#LinkF1MV').on('click', () => {
         linkF1MV();
     });
@@ -474,13 +499,18 @@ $(function () {
     });
     /* Increasing the zoom of the image by 20px when the button is clicked. */
     $('#zoomIn').on('click', () => {
-        zoom = zoom + 20;
-        $('#digiflag').prop('height', zoom);
+        let zoomScaleAdd = (scale = scale + 0.25);
+        if (zoomScaleAdd >= 1.75) scale = 0.75;
+        $('.center-screen.menu_box').css({transform: 'translate(-50%,-50%) scale(' + zoomScaleAdd + ')'});
     });
     /* Decreasing the zoom of the image by 20px when the button is clicked. */
     $('#zoomOut').on('click', () => {
-        zoom = zoom - 20;
-        $('#digiflag').prop('height', zoom);
+        let zoomScaleSubtract = (scale = scale - 0.25);
+        if (zoomScaleSubtract <= 0.25) scale = 1.25;
+        $('.center-screen.menu_box').css({transform: 'translate(-50%,-50%) scale(' + zoomScaleSubtract + ')'});
+    });
+    $('#zoomReset').on('click', () => {
+        $('.center-screen.menu_box').removeAttr('style');
     });
 });
 /**

@@ -75,9 +75,8 @@
         </button>
         <button id="settingsButton" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSettings"
           aria-controls="offcanvasSettings">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#0d6efd"
-            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="settings" role="img"
-            focusable="false">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#0d6efd" stroke-linecap="round"
+            stroke-linejoin="round" stroke-width="2" class="settings" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="3" />
             <path
               d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
@@ -90,9 +89,27 @@
       <div id="select_device"></div>
     </div>
   </div>
-  <div class="bottom-screen" id="zoomControl">
-    <button class="btn btn-primary" height="50px" id="zoomIn">+</button>
-    <button class="btn btn-primary" height="50px" id="zoomOut">-</button>
+  <div class="nav" id="zoomControl">
+    <button class="btn btn-primary" height="50px" id="zoomOut">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#fff" stroke-linecap="round"
+        stroke-linejoin="round" stroke-width="2" class="zoom-out">
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.35-4.35M8 11h6" />
+      </svg>
+    </button>
+    <button class="btn btn-primary" height="50px" id="zoomIn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"  fill="none" stroke="#fff" stroke-linecap="round"
+        stroke-linejoin="round" stroke-width="2" class="zoom-in">
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.35-4.35M11 8v6M8 11h6" />
+      </svg>
+    </button>
+    <button class="btn btn-primary" height="50px" id="zoomReset">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="white">
+        <path d="M22.448 21A10.855 10.855 0 0 0 25 14 10.99 10.99 0 0 0 6 6.466V2H4v8h8V8H7.332a8.977 8.977 0 1 1-2.1 8h-2.04A11.012 11.012 0 0 0 14 25a10.855 10.855 0 0 0 7-2.552L28.586 30 30 28.586Z"/>
+        <path d="M0 0h32v32H0z" data-name="&lt;Transparent Rectangle&gt;" style="fill:none"/>
+      </svg>
+    </button>
   </div>
 </body>
 
