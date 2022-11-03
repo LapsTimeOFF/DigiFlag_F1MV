@@ -17,6 +17,27 @@ function httpGet(theUrl) {
 }
 
 /**
+ * It gets the current race name from the F1MV API and displays it on the page.
+ */
+async function getCurrentRace() {
+    try {
+        const url = await F1MV_API_BuildLiveTimingUrl('SessionInfo');
+        const response = await fetch(url, {
+            method: 'GET',
+        });
+
+        if (response.status === 200) {
+            const result = await response.json();
+            const raceName = await result.Meeting.Name;
+            const raceYear = await parseInt(result.StartDate);
+            $('#raceName').text(raceYear + ' ' + raceName);
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+/**
  * It saves the host and port to local storage.
  * @param host - The hostname of the server.
  * @param port - The port number of the server.
@@ -38,7 +59,7 @@ function createNewInstance(url, windowTitle) {
         windowTitle = 'DigiFlag Instance';
     }
     try {
-        let windowInstance = window.open(
+        const windowInstance = window.open(
             url,
             '',
             `left=${instanceWindowOffsetX},top=${instanceWindowOffsetY},menubar=no,autoHideMenuBar=true,backgroundColor=#131416,width=${instanceWindowWidth},height=${instanceWindowHeight},title=${windowTitle},icon=./icon.ico`
@@ -139,8 +160,8 @@ let currentTheme = 1;
 const currentMode = 0; // 0 for window, 1 for pixoo64
 let disabledBlueFlag = false;
 const pixooIP = '';
-let instanceWindowWidth = 800;
-let instanceWindowHeight = 600;
+const instanceWindowWidth = 800;
+const instanceWindowHeight = 600;
 const instanceWindowOffsetX = 900;
 const instanceWindowOffsetY = 200;
 /* Creating an object called oldMessages and adding a property called Messages to it. */
@@ -284,18 +305,24 @@ async function changeGif(flag, mode) {
 
 function linkSuccess() {
     $('#tagLink').addClass('text-bg-success');
+    $('#tagSession').addClass('text-bg-success');
     $('#tagLink').removeClass('text-bg-primary');
     $('#tagLink').removeClass('text-bg-warning');
     $('#tagLink').text('Connected to F1MV');
+    $('#tagSession').show();
     $('#checkNetworkSettings').remove();
     $('#networkSettings').remove();
     $('#LinkF1MV').remove();
+    $('#settingsButton').appendTo('#menuContent');
     $('#infotag').remove();
-    $('#select_theme').append(`
+    $('#selectTheme').append(`
         <div id="themes">
 
         </div>
-        <button type="button" id="nextTheme" class="btn btn-success" disabled>Next</button>
+        <button type="button" id="nextTheme" class="btn btn-success" disabled>Next
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-arrow-right">
+  <path d="M5 12h14M12 5l7 7-7 7"/>
+</svg></button>
     `);
     let theme;
     for (let _i = 0; _i < themes.length; _i++) {
@@ -313,18 +340,19 @@ function linkSuccess() {
         selectTheme(parseInt(e.target.id));
     });
     $('#nextTheme').on('click', () => {
-        $('#select_theme').remove();
-        $('#select_device').append(`
+        $('#selectTheme').remove();
+        $('#selectDevice').append(`
             <div class="form-check" id="window">
             <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
             <label class="form-check-label" for="flexRadioDefault1">
                 Window DigiFlag
             </label>
             </div>
+            <span class="badge text-bg-danger" id="notAvailable" diabled>Not Available with this Theme</span>
             <div class="form-check" id="Pixoo64">
             <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" disabled>
             <label class="form-check-label" for="flexRadioDefault2">
-                Pixoo 64 DigiFlag <span class="badge text-bg-danger" id="notAvailable">Not available with this theme</span>
+                Pixoo 64 DigiFlag
             </label>
             </div>
             <div class="form-check" id="blueFlag">
@@ -351,13 +379,10 @@ function linkSuccess() {
             }
         });
         $('#launchDigiFlag').on('click', () => {
-            $('#zoomControl').css('pointer-events', '');
-            $('#zoomControl').removeClass('nav');
             $('#zoomControl').addClass('bottom-screen');
             $('#settingsButton').appendTo('#zoomControl');
-            $('.menu_box').remove();
+            $('.menuBox').remove();
             $('body').append(`<img src="${getGifPath('void')}" height="512" id="digiflag" class="center-screen">`);
-            $('#zoomControl').show();
             $('#zoomControl').css('z-index', 1);
             /* Increasing the zoom of the image by 20px when the button is clicked. */
             $('#zoomIn').on('click', () => {
@@ -370,7 +395,6 @@ function linkSuccess() {
                 $('#digiflag').css('height', zoom);
             });
             $('#zoomReset').on('click', () => {
-                zoom = zoom - 20;
                 $('#digiflag').removeAttr('style');
             });
             started = true;
@@ -400,8 +424,13 @@ function linkF1MV(force) {
                 return;
             }
             $('#tagLink').addClass('text-bg-warning');
+            $('#raceName').addClass('text-bg-warning');
+            $('#tagSession').addClass('text-bg-warning');
             $('#tagLink').removeClass('text-bg-primary');
-            $('#tagLink').text("Your F1MV is connected, but it's seem like your Live Timing page is not running.");
+            $('#raceName').removeClass('text-bg-primary');
+            $('#tagSession').removeClass('text-bg-primary');
+            $('#tagLink').text('You are Connected to F1MV, but it seems like your Live Timing Page is not running.');
+            $('#raceName').text('Unable to Retrive Current Sesssion from Live Timing');
         } else {
             linkSuccess();
         }
@@ -412,12 +441,14 @@ function linkF1MV(force) {
         }
         /* Adding the class text-bg-danger to the element with the id tagLink. */
         $('#tagLink').addClass('text-bg-danger');
+        $('#tagSession').addClass('text-bg-danger');
         /* Removing the class text-bg-primary from the element with the id tagLink. */
         $('#tagLink').removeClass('text-bg-primary');
         /* Removing the class text-bg-warning from the element with the id tagLink. */
         $('#tagLink').removeClass('text-bg-warning');
         /* Changing the text of the tag with the id tagLink to Failed to connect to F1MV */
         $('#tagLink').text('Failed to connect to F1MV');
+        $('#raceName').text('Failed to Retrieve Current Session');
         /* Changing the text of the element with the id "infotag" to "Maybe you are trying to connect
         to another host? Maybe your port isn't the default one?" */
         $('#infotag').text("Maybe you are trying to connect to another host? Maybe your port isn't the default one?");
@@ -428,11 +459,10 @@ function linkF1MV(force) {
 }
 /* A function that is called when the page is loaded. */
 $(function () {
-    /* Making the opacity of the zoomControl div 0. */
-    $('#zoomControl').hide();
-    $('#zoomControl').css('pointer-events', 'none');
+    $('#raceName').text('Unkown');
     $('#LinkF1MV').on('click', () => {
         linkF1MV();
+        getCurrentRace();
     });
 
     /* The code below is appending a SVG globe icon, a h5 tag with the text "Network", a paragraph tag
@@ -499,18 +529,18 @@ $(function () {
     });
     /* Increasing the zoom of the image by 20px when the button is clicked. */
     $('#zoomIn').on('click', () => {
-        let zoomScaleAdd = (scale = scale + 0.25);
+        const zoomScaleAdd = (scale = scale + 0.25);
         if (zoomScaleAdd >= 1.75) scale = 0.75;
-        $('.center-screen.menu_box').css({transform: 'translate(-50%,-50%) scale(' + zoomScaleAdd + ')'});
+        $('.menuBox').css({transform: 'scale(' + zoomScaleAdd + ')'});
     });
     /* Decreasing the zoom of the image by 20px when the button is clicked. */
     $('#zoomOut').on('click', () => {
-        let zoomScaleSubtract = (scale = scale - 0.25);
+        const zoomScaleSubtract = (scale = scale - 0.25);
         if (zoomScaleSubtract <= 0.25) scale = 1.25;
-        $('.center-screen.menu_box').css({transform: 'translate(-50%,-50%) scale(' + zoomScaleSubtract + ')'});
+        $('.menuBox').css({transform: 'translate(-50%,-50%) scale(' + zoomScaleSubtract + ')'});
     });
     $('#zoomReset').on('click', () => {
-        $('.center-screen.menu_box').removeAttr('style');
+        $('.menuBox').removeAttr('style');
     });
 });
 /**

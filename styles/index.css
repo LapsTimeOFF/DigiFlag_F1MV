@@ -1,5 +1,5 @@
 .center-screen {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -13,12 +13,15 @@
     -webkit-user-select: none;
     transition: all 0.2s ease-in-out;
     -moz-user-select: none;
+    font-size: calc(8px + 2vmin);
     -ms-user-select: none;
     user-select: none;
 }
 
 body {
     background-color: #131416;
+    width: 100%;
+    min-height: 100vh;
     overflow: hidden;
 }
 
@@ -36,34 +39,46 @@ svg {
 
 .bottom-screen {
     position: absolute;
-    top: 95%;
-    left: 50%;
+    left: 95%;
+    bottom: 0;
     transform: translate(-50%, -50%);
 }
 
-.menu_box {
+.menuBox {
+    display: flex;
+    background-color: #383838;
+    width: 100%;
+    min-height: 100vh;
+    flex-direction: row;
+    justify-content: center;
     color: white;
-    background-color: #373737;
     transition: transform 0.3s;
 }
 
-#menu_content {
+#menuContent {
+    display: flex;
+    width: 100%;
     margin: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
 }
 
 button {
     border-radius: 128px !important;
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-self: center;
     width: -webkit-fit-content;
     width: -moz-fit-content;
     width: fit-content;
+    border: 2px solid transparent !important;
 }
 
 button:hover,
-button:focus {
-    border: 1px solid white !important;
+button:focus-within {
+    border: 2px solid white !important;
     box-shadow: none !important;
 }
 
@@ -76,7 +91,7 @@ button:focus {
     margin: 5px;
 }
 
-#logoHeader {
+#digiflagHeader {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -86,7 +101,7 @@ button:focus {
 #logoContainer {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: center;
     margin-bottom: 1vh;
 }
 
@@ -104,9 +119,17 @@ button:focus {
 
 #DigiFlag,
 #F1MV {
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-around;
+}
+#DigiFlag > img,
+#F1MV > img {
+    display: inline-flex;
+    width: auto;
+    height: 100%;
+    max-height: 20vh;
+    padding: 5px;
 }
 
 #networkSettings > input[type='text'] {
@@ -120,7 +143,7 @@ button:focus {
     border: none;
 }
 
-#select_theme {
+#selectTheme {
     display: flex;
     flex-direction: column;
 }
@@ -132,7 +155,7 @@ button:focus {
     align-content: center;
 }
 
-#select_device {
+#selectDevice {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -153,9 +176,13 @@ button:focus {
     margin-bottom: 10px !important;
     border-radius: 128px !important;
 }
-
-#F1MVLinkContainer > span {
-    margin: 5px;
+#tagSession {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+    margin-bottom: 10px !important;
+    border-radius: 128px !important;
 }
 
 #LinkF1MV {
@@ -190,14 +217,50 @@ input[type='radio']:hover {
     transition: color 0.1s linear;
     cursor: not-allowed;
 }
-
 #zoomControl {
-    z-index: 1;
+    bottom: 0;
+    left: 95%;
+    position: absolute;
+}
+#zoomControl > button {
+    background-color: transparent;
+    border: 2px solid transparent !important;
+    opacity: 0.05;
+    width: fit-content;
+    height: fit-content;
+}
+
+#zoomControl > button:hover {
+    opacity: 1;
+    background-color: #0d6efd;
+    border: 2px solid white !important;
+}
+#zoomControl > button:focus-within {
+    background-color: #0d6efd !important;
+    border: 2px solid white !important;
+}
+#zoomControl > button:not(:hover) {
+    background-color: transparent;
+    border: 2px solid transparent;
+    stroke: none;
+}
+
+#zoomControl > button > svg.settings {
+    stroke: white;
+    width: 24px;
+    height: 24px;
+}
+#zoomControl > button {
+    margin-top: 5px;
 }
 
 #settingsButton {
     background: none;
-    border: none;
+    border: 2px solid transparent !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-self: center;
 }
 
 svg.settings {
@@ -212,16 +275,21 @@ svg.globe {
 
 #settingsButton:hover {
     background: transparent;
-    border: none !important;
+    border: 2px solid transparent !important;
+}
+#settingsButton:not(:hover) {
+    background: transparent;
+    border: 2px solid transparent !important;
 }
 
 #settingsButton:focus {
     background: transparent;
-    border: none !important;
+    border: 2px solid white !important;
 }
 
 #settingsButton:hover > svg.settings {
     stroke: white;
+    transition: stroke 0.2s ease-in-out;
 }
 
 .offcanvas {
@@ -240,7 +308,6 @@ svg.globe {
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow-x: hidden;
 }
 
 .offcanvas-component {

@@ -102,31 +102,31 @@ function createWindow(width: number, height: number, title: string) {
         /* Hiding the window until it is ready to be shown. */
         show: false,
     });
+        // Event listeners on the window
+        window.webContents.on("did-finish-load", () => {
+            window.show();
+            if (version.includes('dev')) window.webContents.openDevTools();
+        });
+        window.loadFile(path.join(__dirname, 'index.html'));
     return window;
 }
 /* Creating a window and loading the index.html file. */
 app.whenReady().then(() => {
-    const mainWindow = createWindow(800, 600, 'F1MV - DigiFlag - ' + version);
-    mainWindow.loadFile(path.join(__dirname, 'index.html'));
-    /* Waiting for the window to be ready before showing it. */
-    mainWindow.once('ready-to-show', () => {
-        mainWindow.show();
-        if (version.includes('dev')) mainWindow.webContents.openDevTools();
+    createWindow(800, 600, 'F1MV - DigiFlag - ' + version);
+    app.on('activate', () => {
+        // On OS X it's common to re-create a window in the app when the
+        // dock icon is clicked and there are no other windows open.
+        if (BrowserWindow.getAllWindows().length === 0) {
+            createWindow(800, 600, 'F1MV - DigiFlag - ' + version);
+        }
     });
 });
+
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
-    }
-});
-
-app.on('activate', () => {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow(800, 600, 'F1MV - DigiFlag - ' + version);
     }
 });
