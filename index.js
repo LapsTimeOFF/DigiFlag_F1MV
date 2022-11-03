@@ -537,7 +537,7 @@ $(function () {
     $('#zoomOut').on('click', () => {
         const zoomScaleSubtract = (scale = scale - 0.25);
         if (zoomScaleSubtract <= 0.25) scale = 1.25;
-        $('.menuBox').css({transform: 'translate(-50%,-50%) scale(' + zoomScaleSubtract + ')'});
+        $('.menuBox').css({transform: 'scale(' + zoomScaleSubtract + ')'});
     });
     $('#zoomReset').on('click', () => {
         $('.menuBox').removeAttr('style');
