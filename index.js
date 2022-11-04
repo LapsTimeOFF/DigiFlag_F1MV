@@ -53,7 +53,7 @@ function makeid(length) {
 
 async function sendTelemetry(eulaAccept) {
     log('Checking if telemetry server is available...');
-    var {url} = await JSON.parse(httpGet('https://digiflagtelemetryurl.000webhostapp.com/url.json'))
+    var url = 'https://DigiFlagTelemetryServer.4rkjjdzwv2.repl.co'
     var {available} = await JSON.parse(httpGet(`${url}/telemetryAvailable`))
 
     if(!available) {
