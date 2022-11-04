@@ -16,6 +16,89 @@ function httpGet(theUrl) {
     return xmlHttpReq.responseText;
 }
 
+let logs = [];
+
+function log(text) {
+    console.log(text)
+    if(logs[logs.length-1] === text) return;
+    logs.push(text)
+}
+
+function httpPost(url, body) {
+    var method = "POST";
+    var postData = body;
+    // log(postData);
+
+    var shouldBeAsync = true;
+
+    var request = new XMLHttpRequest();
+
+    request.open(method, url, shouldBeAsync);
+
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+    request.send(postData);
+}
+
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
+
+async function sendTelemetry(eulaAccept) {
+    log('Checking if telemetry server is available...');
+    var {url} = await JSON.parse(httpGet('https://digiflagtelemetryurl.000webhostapp.com/url.json'))
+    var {available} = await JSON.parse(httpGet(`${url}/telemetryAvailable`))
+
+    if(!available) {
+        log(`Telemetry isn't available for now, please contact @🇫🇷| LapsTime#6837 on the F1MV Discord`)
+        return false;
+    } else {
+        log('Telemetry server is available.')
+        if(eulaAccept !== true) {
+            console.warn('EULA not accepted. Requesting EULA...');
+            log(await httpGet(`${url}/eula`));
+            log('Execute "sendTelemetry(true)" to accept EULA.');
+            return
+        }
+        log(`Generating unique telemetry ID...`);
+        var id = makeid(6);
+        log(`Getting all the data...`);
+        const telemetryPackage = {
+            "logs": logs,
+            "platform": window.navigator.platform,
+            "LT_Dump": await httpGet(await F1MV_API_BuildLiveTimingUrl('RaceControlMessages,TrackStatus,WeatherData')),
+            "DigiFlag_Version": DigiFlag_Version,
+            "F1MV_Host": host,
+            "F1MV_Port": port,
+            "F1MV_Version": await getF1MVVersion(),
+            "F1MV_APIVersion": await getAPIVersion(),
+            "debugMode": debugOn,
+            "currentTrackStatus": {
+                "yellow": yellow,
+                "sc": sc,
+                "vsc": vsc,
+                "red": red
+            },
+            "currentTheme": currentTheme,
+            "currentMode": currentMode,
+            "disabledBlueFlag": disabledBlueFlag,
+            "themes": themes,
+            "started": started
+        }
+        log(`Data Collected`);
+        log(`Sending DATA...`);
+        await httpPost(`${url}/uploadTelemetry/${id}`, JSON.stringify(telemetryPackage));
+        log(`Your telemetry report has been successfully send. Here is your data ID : ${id}. If you want to see your telemetryPackage, go to ${url}/downloadTelemetryReport/${id}`);
+    }
+}
+
 /**
  * It gets the current race name from the F1MV API and displays it on the page.
  */
@@ -90,7 +173,7 @@ function restoreSettings() {
     if (localStorage !== null) localStorage.clear();
     host = 'localhost';
     port = 10101;
-    console.log('Storage Cleared');
+    log('Storage Cleared');
 }
 
 /**
@@ -102,7 +185,7 @@ async function getF1MVVersion() {
     const res = await JSON.parse(httpGet(`http://${host}:${port}/api/v1/app/version`));
     let ver = res.version;
     ver = parseInt(ver.replace(/[\D]/g, '').substring(0, 3));
-    console.log(`Current F1MV Version : ${ver}`);
+    log(`Current F1MV Version : ${ver}`);
     return ver;
 }
 /**
@@ -112,10 +195,10 @@ async function getF1MVVersion() {
  */
 async function getAPIVersion() {
     if ((await getF1MVVersion()) >= 180) {
-        console.log('Api version needed : v2');
+        log('Api version needed : v2');
         return 'v2';
     } else {
-        console.log('Api version needed : v1');
+        log('Api version needed : v1');
         return 'v1';
     }
 }
@@ -152,6 +235,7 @@ let sc = false;
 let vsc = false;
 let red = false;
 let raining = 0;
+let DigiFlag_Version = JSON.parse(httpGet('./package.json')).version
 let LT_Data = {};
 let lightOn = false;
 let lightOnRain = false;
@@ -176,11 +260,11 @@ let oldMessages = {
 
 function debugMode(status) {
     if (status === true) {
-        console.log(`Debug mode enabled`);
+        log(`Debug mode enabled`);
         debugOn = true;
         linkSuccess();
     } else {
-        console.log(`Debug mode disabled`);
+        log(`Debug mode disabled`);
         debugOn = false;
     }
     return true;
@@ -200,7 +284,7 @@ function getGifPath(flag) {
             flagPath = theme.gifs[flag];
         }
     }
-    if (debugOn) console.log(`${flag} requested, returning ${flagPath}`);
+    if (debugOn) log(`${flag} requested, returning ${flagPath}`);
     return flagPath;
 }
 /**
@@ -208,7 +292,7 @@ function getGifPath(flag) {
  * @param {number}id - the id of the theme
  */
 function selectTheme(id) {
-    if (debugOn) console.log('Mode selected : ' + id);
+    if (debugOn) log('Mode selected : ' + id);
     currentTheme = id;
     $('#nextTheme').prop('disabled', false);
 }
@@ -252,7 +336,7 @@ async function turnOff(flag) {
             if (currentMode === 1) {
                 const res = await httpGet(`http://localhost:9093/pixoo/void/${currentTheme}/${pixooIP}`);
                 if (res !== 'OK') {
-                    console.log('Failed to change GIF on Pixoo64');
+                    log('Failed to change GIF on Pixoo64');
                 }
                 return;
             }
@@ -267,7 +351,7 @@ async function turnOff(flag) {
         if (currentMode === 1) {
             const res = await httpGet(`http://localhost:9093/pixoo/void/${currentTheme}/${pixooIP}`);
             if (res !== 'OK') {
-                console.log('Failed to change GIF on Pixoo64');
+                log('Failed to change GIF on Pixoo64');
             }
             return;
         }
@@ -290,7 +374,7 @@ async function changeGif(flag, mode) {
     if (mode === 1 && currentMode === 1) {
         const res = await httpGet(`http://localhost:9093/pixoo/${flag}/${currentTheme}/${pixooIP}`);
         if (res !== 'OK') {
-            console.log('Failed to change GIF on Pixoo64');
+            log('Failed to change GIF on Pixoo64');
         }
         return;
     }
@@ -370,11 +454,11 @@ function linkSuccess() {
         $('#blueFlag').on('change', () => {
             if (disabledBlueFlag) {
                 disabledBlueFlag = false;
-                console.log('Blue Flags Disabled: ' + disabledBlueFlag);
+                log('Blue Flags Disabled: ' + disabledBlueFlag);
                 return disabledBlueFlag;
             } else {
                 disabledBlueFlag = true;
-                console.log('Blue Flags Disabled: ' + disabledBlueFlag);
+                log('Blue Flags Disabled: ' + disabledBlueFlag);
                 return disabledBlueFlag;
             }
         });
@@ -408,7 +492,7 @@ function linkSuccess() {
  * @returns The response is a JSON object.
  */
 function linkF1MV(force) {
-    if (debugOn) console.log('Link started...');
+    if (debugOn) log('Link started...');
     $('#tagLink').removeClass('text-bg-secondary');
     $('#tagLink').removeClass('text-bg-danger');
     $('#tagLink').removeClass('text-bg-warning');
@@ -416,7 +500,7 @@ function linkF1MV(force) {
     $('#tagLink').addClass('text-bg-primary');
     $('#tagLink').text('Linking to F1MV in progress...');
     try {
-        if (debugOn) console.log(`URL = http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`);
+        if (debugOn) log(`URL = http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`);
         const response = JSON.parse(httpGet(`http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`));
         if (response.error === 'No data found, do you have live timing running?') {
             if (force) {
@@ -497,16 +581,16 @@ $(function () {
             ])
         );
         $('#updateSettings').on('click', () => {
-            if (debugOn) console.log('Editing Settings...');
+            if (debugOn) log('Editing Settings...');
             /* Assigning the value of the input field with the id of "ip" to the variable "host". */
             host = $('#ip').val();
-            if (debugOn) console.log($('#ip').val() !== '');
-            if (debugOn) console.log(`IP = ${$('#ip').val()} = ${host}`);
+            if (debugOn) log($('#ip').val() !== '');
+            if (debugOn) log(`IP = ${$('#ip').val()} = ${host}`);
             /* Assigning the value of the input field with the id of port to the variable port. */
             port = $('#port').val();
-            if (debugOn) console.log($('#port').val() !== '');
-            if (debugOn) console.log(`PORT = ${$('#port').val()} = ${port}`);
-            if (debugOn) console.log('Settings edited !');
+            if (debugOn) log($('#port').val() !== '');
+            if (debugOn) log(`PORT = ${$('#port').val()} = ${port}`);
+            if (debugOn) log('Settings edited !');
             saveSettings(host, port);
             /* Getting the version of the F1MV. */
             F1MV_version = getF1MVVersion();
@@ -555,9 +639,9 @@ const checkRCM = async () => {
     /* Checking to see if the number of messages in the result is the same as the number of messages in the
 oldMessages. If it is, then there are no new messages. */
     if (result.Messages.length === oldMessages.Messages.length) {
-        if (debugOn) console.log('No new messages.');
+        if (debugOn) log('No new messages.');
     } else {
-        if (debugOn) console.log('New message');
+        if (debugOn) log('New message');
         /* Getting the last message from the oldMessages array and assigning it to the message variable. */
         const message = result.Messages[oldMessages.Messages.length];
         oldMessages = result;
@@ -614,7 +698,7 @@ message.Flag, message.Sector, and message.Scope. */
             messageData.Sector = message.Sector;
             messageData.Scope = message.Scope;
         }
-        if (debugOn) console.log(messageData);
+        if (debugOn) log(messageData);
         /* Changing the gif image to a slippery image. */
         if (messageData.Category === 'TrackSurfaceSlippery') changeGif('slippery', currentMode);
         /* Checking if the messageData.Category is equal to "SafetyCar" and if it is, it sets the sc variable
@@ -722,7 +806,7 @@ async function checkStatus() {
     // {"Status":"7","Message":"VSCEnding"}
     if (trackStatus === '1') {
         if (sc || vsc || red || yellow) {
-            if (debugOn) console.log('New track status : Green');
+            if (debugOn) log('New track status : Green');
             sc = false;
             yellow = false;
             vsc = false;
@@ -733,28 +817,28 @@ async function checkStatus() {
         }
     }
     if (trackStatus === '2') {
-        if (debugOn) console.log('New track status : Yellow');
+        if (debugOn) log('New track status : Yellow');
         sc = false;
         yellow = true;
         vsc = false;
         red = false;
     }
     if (trackStatus === '4') {
-        if (debugOn) console.log('New track status : SC');
+        if (debugOn) log('New track status : SC');
         sc = true;
         yellow = false;
         vsc = false;
         red = false;
     }
     if (trackStatus === '5') {
-        if (debugOn) console.log('New track status : Red');
+        if (debugOn) log('New track status : Red');
         sc = false;
         yellow = false;
         vsc = false;
         red = true;
     }
     if (trackStatus === '6') {
-        if (debugOn) console.log('New track status : VSC');
+        if (debugOn) log('New track status : VSC');
         sc = false;
         yellow = false;
         vsc = true;
