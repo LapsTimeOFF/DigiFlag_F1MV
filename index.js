@@ -19,83 +19,84 @@ function httpGet(theUrl) {
 let logs = [];
 
 function log(text) {
-    console.log(text)
-    if(logs[logs.length-1] === text) return;
-    logs.push(text)
+    console.log(text);
+    if (logs[logs.length - 1] === text) return;
+    logs.push(text);
 }
 
 function httpPost(url, body) {
-    var method = "POST";
-    var postData = body;
+    const method = 'POST';
+    const postData = body;
     // log(postData);
 
-    var shouldBeAsync = true;
+    const shouldBeAsync = true;
 
-    var request = new XMLHttpRequest();
+    const request = new XMLHttpRequest();
 
     request.open(method, url, shouldBeAsync);
 
-    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 
     request.send(postData);
 }
 
 function makeid(length) {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * 
- charactersLength));
-   }
-   return result;
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
 }
 
 async function sendTelemetry(eulaAccept) {
     log('Checking if telemetry server is available...');
-    var url = 'https://DigiFlagTelemetryServer.4rkjjdzwv2.repl.co'
-    var {available} = await JSON.parse(httpGet(`${url}/telemetryAvailable`))
+    const url = 'https://DigiFlagTelemetryServer.4rkjjdzwv2.repl.co';
+    const {available} = await JSON.parse(httpGet(`${url}/telemetryAvailable`));
 
-    if(!available) {
-        log(`Telemetry isn't available for now, please contact @🇫🇷| LapsTime#6837 on the F1MV Discord`)
+    if (!available) {
+        log(`Telemetry isn't available for now, please contact @🇫🇷| LapsTime#6837 on the F1MV Discord`);
         return false;
     } else {
-        log('Telemetry server is available.')
-        if(eulaAccept !== true) {
+        log('Telemetry server is available.');
+        if (eulaAccept !== true) {
             console.warn('EULA not accepted. Requesting EULA...');
             log(await httpGet(`${url}/eula`));
             log('Execute "sendTelemetry(true)" to accept EULA.');
-            return
+            return;
         }
         log(`Generating unique telemetry ID...`);
-        var id = makeid(6);
+        const id = makeid(6);
         log(`Getting all the data...`);
         const telemetryPackage = {
-            "logs": logs,
-            "platform": window.navigator.platform,
-            "LT_Dump": await httpGet(await F1MV_API_BuildLiveTimingUrl('RaceControlMessages,TrackStatus,WeatherData')),
-            "DigiFlag_Version": DigiFlag_Version,
-            "F1MV_Host": host,
-            "F1MV_Port": port,
-            "F1MV_Version": await getF1MVVersion(),
-            "F1MV_APIVersion": await getAPIVersion(),
-            "debugMode": debugOn,
-            "currentTrackStatus": {
-                "yellow": yellow,
-                "sc": sc,
-                "vsc": vsc,
-                "red": red
+            logs: logs,
+            platform: window.navigator.platform,
+            LT_Dump: await httpGet(await F1MV_API_BuildLiveTimingUrl('RaceControlMessages,TrackStatus,WeatherData')),
+            DigiFlag_Version: DigiFlag_Version,
+            F1MV_Host: host,
+            F1MV_Port: port,
+            F1MV_Version: await getF1MVVersion(),
+            F1MV_APIVersion: await getAPIVersion(),
+            debugMode: debugOn,
+            currentTrackStatus: {
+                yellow: yellow,
+                sc: sc,
+                vsc: vsc,
+                red: red,
             },
-            "currentTheme": currentTheme,
-            "currentMode": currentMode,
-            "disabledBlueFlag": disabledBlueFlag,
-            "themes": themes,
-            "started": started
-        }
+            currentTheme: currentTheme,
+            currentMode: currentMode,
+            disabledBlueFlag: disabledBlueFlag,
+            themes: themes,
+            started: started,
+        };
         log(`Data Collected`);
         log(`Sending DATA...`);
         await httpPost(`${url}/uploadTelemetry/${id}`, JSON.stringify(telemetryPackage));
-        log(`Your telemetry report has been successfully send. Here is your data ID : ${id}. If you want to see your telemetryPackage, go to ${url}/downloadTelemetryReport/${id}`);
+        log(
+            `Your telemetry report has been successfully send. Here is your data ID : ${id}. If you want to see your telemetryPackage, go to ${url}/downloadTelemetryReport/${id}`
+        );
     }
 }
 
@@ -235,7 +236,7 @@ let sc = false;
 let vsc = false;
 let red = false;
 let raining = 0;
-let DigiFlag_Version = JSON.parse(httpGet('./package.json')).version
+let DigiFlag_Version = JSON.parse(httpGet('./package.json')).version;
 let LT_Data = {};
 let lightOn = false;
 let lightOnRain = false;
