@@ -4,4 +4,3 @@ repos:
       hooks:
           - id: ggshield-push
             language_version: python3
-            stages: [push]
