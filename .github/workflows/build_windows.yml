@@ -1,0 +1,17 @@
+name: Test build on Windows
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-lastest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build on windows
+        run: sh ./build/build_windows.sh
