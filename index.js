@@ -16,14 +16,26 @@ function httpGet(theUrl) {
     return xmlHttpReq.responseText;
 }
 
-let logs = [];
+const logs = [];
 
+/**
+ * If the last item in the logs array is the same as the text passed in, then return. Otherwise, add
+ * the text to the logs array.
+ * @param text - The text to be logged.
+ * @returns the value of the last expression evaluated.
+ */
 function log(text) {
     console.log(text);
     if (logs[logs.length - 1] === text) return;
     logs.push(text);
 }
 
+/**
+ * It creates a new XMLHttpRequest object, sets the method to POST, sets the url to the url passed in,
+ * sets the async to true, sets the content type to application/json, and then sends the postData.
+ * @param url - The URL to send the request to.
+ * @param body - The body of the request.
+ */
 function httpPost(url, body) {
     const method = 'POST';
     const postData = body;
@@ -40,6 +52,11 @@ function httpPost(url, body) {
     request.send(postData);
 }
 
+/**
+ * It returns a string of random characters of a specified length.
+ * @param length - The length of the string you want to generate.
+ * @returns A string of random characters.
+ */
 function makeid(length) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -50,6 +67,14 @@ function makeid(length) {
     return result;
 }
 
+/**
+ * It sends a POST request to a server with a JSON object containing the logs, the platform, the
+ * LT_Dump, the DigiFlag version, the F1MV host, the F1MV port, the F1MV version, the F1MV API version,
+ * the debug mode, the current track status, the current theme, the current mode, the disabled blue
+ * flag, the themes and the started variable
+ * @param eulaAccept - Boolean, true if you accept the EULA, false if you don't.
+ * @returns a promise.
+ */
 async function sendTelemetry(eulaAccept) {
     log('Checking if telemetry server is available...');
     const url = 'https://DigiFlagTelemetryServer.4rkjjdzwv2.repl.co';
@@ -236,7 +261,7 @@ let sc = false;
 let vsc = false;
 let red = false;
 let raining = 0;
-let DigiFlag_Version = JSON.parse(httpGet('./package.json')).version;
+const DigiFlag_Version = JSON.parse(httpGet('./package.json')).version;
 let LT_Data = {};
 let lightOn = false;
 let lightOnRain = false;
@@ -582,11 +607,11 @@ $(function () {
         $('#updateSettings').on('click', () => {
             if (debugOn) log('Editing Settings...');
             /* Assigning the value of the input field with the id of "ip" to the variable "host". */
-            host = $('#ip').val();
+            const host = $('#ip').val();
             if (debugOn) log($('#ip').val() !== '');
             if (debugOn) log(`IP = ${$('#ip').val()} = ${host}`);
             /* Assigning the value of the input field with the id of port to the variable port. */
-            port = $('#port').val();
+            const port = $('#port').val();
             if (debugOn) log($('#port').val() !== '');
             if (debugOn) log(`PORT = ${$('#port').val()} = ${port}`);
             if (debugOn) log('Settings edited !');
