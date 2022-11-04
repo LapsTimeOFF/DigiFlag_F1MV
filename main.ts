@@ -94,6 +94,8 @@ function createWindow(width: number, height: number, title: string) {
         width: width,
         height: height,
         title: title,
+        frame: false,
+        titleBarStyle: 'hidden',
         /* Setting the icon of the window. */
         icon: path.join(__dirname, 'icon.ico'),
         // alwaysOnTop: true,
@@ -102,12 +104,35 @@ function createWindow(width: number, height: number, title: string) {
         /* Hiding the window until it is ready to be shown. */
         show: false,
     });
-        // Event listeners on the window
-        window.webContents.on("did-finish-load", () => {
-            window.show();
-            if (version.includes('dev')) window.webContents.openDevTools();
-        });
-        window.loadFile(path.join(__dirname, 'index.html'));
+    // Event listeners on the window
+    window.webContents.on('did-finish-load', () => {
+        window.show();
+        window.focus();
+        if (version.includes('dev')) window.webContents.openDevTools();
+    });
+    window.loadFile(path.join(__dirname, 'index.html'));
+   /* A function that is called when a new window is opened. It checks the URL of the window and sets
+   the options of the window accordingly. */
+    window.webContents.setWindowOpenHandler(({url}) => {
+        if (url === 'https://github.com/LapsTimeOFF/DigiFlag_F1MV') {
+            return {
+                action: 'allow',
+                overrideBrowserWindowOptions: {
+                    frame: true,
+                    backgroundColor: '#131416',
+                },
+            };
+        } else {(url === './index.html')
+        return {
+            action: 'allow',
+            overrideBrowserWindowOptions: {
+                frame: false,
+                fullscreenable: false,
+                backgroundColor: '#131416',
+            },
+        };
+    }
+});
     return window;
 }
 /* Creating a window and loading the index.html file. */

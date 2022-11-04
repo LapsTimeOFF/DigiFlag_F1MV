@@ -1,5 +1,5 @@
 echo 'Removing old builds'
-rm -rf F1MV-DigiFlag-*
+rm -rf build/F1MV-DigiFlag-*
 echo 'Old builds removed'
 echo 'Building .ts file...'
 tsc
@@ -33,4 +33,5 @@ echo 'Create the .dmg file'
 hdiutil create -srcfolder ./F1MV-DigiFlag-darwin-arm64 ./F1MV-DigiFlag-darwin-arm64.dmg
 hdiutil create -srcfolder ./F1MV-DigiFlag-darwin-x64 ./F1MV-DigiFlag-darwin-x64.dmg
 echo '.dmg file created'
+mv F1MV-DigiFlag-* build/
 echo 'Building completed'
