@@ -61,8 +61,8 @@ function createNewInstance(url, windowTitle) {
     try {
         const windowInstance = window.open(
             url,
-            '',
-            `left=${instanceWindowOffsetX},top=${instanceWindowOffsetY},menubar=no,autoHideMenuBar=true,backgroundColor=#131416,width=${instanceWindowWidth},height=${instanceWindowHeight},title=${windowTitle},icon=./icon.ico`
+            '_blank',
+            `left=${instanceWindowOffsetX},top=${instanceWindowOffsetY},frame=false,menubar=no,autoHideMenuBar=true,backgroundColor=#131416,width=${instanceWindowWidth},height=${instanceWindowHeight},title=${windowTitle},icon=./icon.ico`
         );
         return windowInstance;
     } catch (error) {
@@ -313,7 +313,6 @@ function linkSuccess() {
     $('#checkNetworkSettings').remove();
     $('#networkSettings').remove();
     $('#LinkF1MV').remove();
-    $('#settingsButton').appendTo('#menuContent');
     $('#infotag').remove();
     $('#selectTheme').append(`
         <div id="themes">
@@ -380,7 +379,6 @@ function linkSuccess() {
         });
         $('#launchDigiFlag').on('click', () => {
             $('#zoomControl').addClass('bottom-screen');
-            $('#settingsButton').appendTo('#zoomControl');
             $('.menuBox').remove();
             $('body').append(`<img src="${getGifPath('void')}" height="512" id="digiflag" class="center-screen">`);
             $('#zoomControl').css('z-index', 1);
@@ -531,13 +529,13 @@ $(function () {
     $('#zoomIn').on('click', () => {
         const zoomScaleAdd = (scale = scale + 0.25);
         if (zoomScaleAdd >= 1.75) scale = 0.75;
-        $('.menuBox').css({transform: 'scale(' + zoomScaleAdd + ')'});
+        $('.menuBox').css({transform: 'translate(-50%,-50%) scale(' + zoomScaleAdd + ')'});
     });
     /* Decreasing the zoom of the image by 20px when the button is clicked. */
     $('#zoomOut').on('click', () => {
         const zoomScaleSubtract = (scale = scale - 0.25);
         if (zoomScaleSubtract <= 0.25) scale = 1.25;
-        $('.menuBox').css({transform: 'scale(' + zoomScaleSubtract + ')'});
+        $('.menuBox').css({transform: 'translate(-50%,-50%) scale(' + zoomScaleSubtract + ')'});
     });
     $('#zoomReset').on('click', () => {
         $('.menuBox').removeAttr('style');

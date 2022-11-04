@@ -3,6 +3,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    -webkit-app-region: drag;
 }
 
 * {
@@ -16,10 +17,12 @@
     font-size: calc(8px + 2vmin);
     -ms-user-select: none;
     user-select: none;
+    -webkit-app-region: none;
 }
 
 body {
     background-color: #131416;
+    color: white;
     width: 100%;
     min-height: 100vh;
     overflow: hidden;
@@ -39,11 +42,22 @@ svg {
 
 .bottom-screen {
     position: absolute;
-    left: 95%;
+    box-sizing: border-box;
     bottom: 0;
-    transform: translate(-50%, -50%);
+    left: 92%;
+    border: 2px solid transparent;
+    opacity: 1;
+    transition: left 0.2s linear;
+    overflow-y: scroll;
 }
-
+.bottom-screen:not(:hover) {
+    position: absolute;
+    box-sizing: border-box;
+    bottom: 0;
+    left: 98%;
+    opacity: 1;
+    transition: left 0.2s linear;
+}
 .menuBox {
     display: flex;
     background-color: #383838;
@@ -53,6 +67,7 @@ svg {
     justify-content: center;
     color: white;
     transition: transform 0.3s;
+    -webkit-app-region: drag;
 }
 
 #menuContent {
@@ -62,6 +77,9 @@ svg {
     flex-direction: column;
     justify-content: center;
     align-self: center;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-app-region: drag;
 }
 
 button {
@@ -218,27 +236,23 @@ input[type='radio']:hover {
     cursor: not-allowed;
 }
 #zoomControl {
-    bottom: 0;
-    left: 95%;
-    position: absolute;
-}
-#zoomControl > button {
     background-color: transparent;
-    border: 2px solid transparent !important;
-    opacity: 0.05;
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
     width: fit-content;
     height: fit-content;
 }
 
+#zoomControl > button {
+    background-color: transparent;
+    border: 2px solid transparent !important;
+}
 #zoomControl > button:hover {
-    opacity: 1;
     background-color: #0d6efd;
     border: 2px solid white !important;
 }
-#zoomControl > button:focus-within {
-    background-color: #0d6efd !important;
-    border: 2px solid white !important;
-}
+
 #zoomControl > button:not(:hover) {
     background-color: transparent;
     border: 2px solid transparent;
@@ -247,13 +261,7 @@ input[type='radio']:hover {
 
 #zoomControl > button > svg.settings {
     stroke: white;
-    width: 24px;
-    height: 24px;
 }
-#zoomControl > button {
-    margin-top: 5px;
-}
-
 #settingsButton {
     background: none;
     border: 2px solid transparent !important;
@@ -264,8 +272,8 @@ input[type='radio']:hover {
 }
 
 svg.settings {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
 }
 
 svg.globe {
@@ -296,7 +304,6 @@ svg.globe {
     width: fit-content;
     display: flex;
     flex-direction: column;
-    transition: all 0.2s ease-in;
 }
 
 .offcanvas-header .btn-close {
@@ -319,4 +326,45 @@ svg.globe {
 
 .offcanvas-component > button {
     margin-bottom: 10px;
+}
+/*desktops - higher resolution*/
+@media (min-width: 1281px) {
+    .bottom-screen {
+        position: absolute;
+        box-sizing: border-box;
+        bottom: 0;
+        left: 95.6%;
+        border: 2px solid transparent;
+        opacity: 1;
+        transition: left 0.2s linear;
+    }
+    .bottom-screen:not(:hover) {
+        position: absolute;
+        box-sizing: border-box;
+        bottom: 0;
+        left: 99%;
+        opacity: 1;
+        transition: left 0.2s linear;
+    }
+}
+
+/*laptops, desktops*/
+@media (min-width: 1025px) and (max-width: 1280px) {
+    .bottom-screen {
+        position: absolute;
+        box-sizing: border-box;
+        bottom: 0;
+        left: 20%;
+        border: 2px solid transparent;
+        opacity: 1;
+        transition: left 0.2s linear;
+    }
+    .bottom-screen:not(:hover) {
+        position: absolute;
+        box-sizing: border-box;
+        bottom: 0;
+        left: 92%;
+        opacity: 1;
+        transition: left 0.2s linear;
+    }
 }
