@@ -270,9 +270,9 @@ let currentTheme = 1;
 const currentMode = 0; // 0 for window, 1 for pixoo64
 let disabledBlueFlag = false;
 const pixooIP = '';
-const instanceWindowWidth = 800;
-const instanceWindowHeight = 600;
-const instanceWindowOffsetX = 900;
+const instanceWindowWidth = 600;
+const instanceWindowHeight = 400;
+const instanceWindowOffsetX = 100;
 const instanceWindowOffsetY = 200;
 /* Creating an object called oldMessages and adding a property called Messages to it. */
 let oldMessages = {
