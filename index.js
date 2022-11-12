@@ -210,7 +210,7 @@ async function getF1MVVersion() {
     loadSettings();
     const res = await JSON.parse(httpGet(`http://${host}:${port}/api/v1/app/version`));
     let ver = res.version;
-    ver = parseInt(ver.replace(/[\D]/g, '').substring(0, 3));
+    ver = parseInt(ver.replace(/[\D]/g, ''));
     log(`Current F1MV Version : ${ver}`);
     return ver;
 }
