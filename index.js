@@ -488,9 +488,9 @@ function linkSuccess() {
             }
         });
         $('#launchDigiFlag').on('click', () => {
-            $('#zoomControl').addClass('bottom-screen');
             $('.menuBox').remove();
             $('body').append(`<img src="${getGifPath('void')}" height="512" id="digiflag" class="center-screen">`);
+            $('#digiflag').insertBefore('.bottom-screen');
             $('#zoomControl').css('z-index', 1);
             /* Increasing the zoom of the image by 20px when the button is clicked. */
             $('#zoomIn').on('click', () => {
