@@ -3,7 +3,7 @@
     "skipLibCheck": true,
     "target": "ES2022",
     "module": "CommonJS",
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "allowJs": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,

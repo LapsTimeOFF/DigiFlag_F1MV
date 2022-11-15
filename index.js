@@ -2,6 +2,42 @@
 let host = 'localhost';
 /* Creating a variable called port and assigning it the value of 10101. */
 let port = 10101;
+/**
+ * It takes a number of milliseconds as an argument, and returns a promise that resolves after that
+ * number of milliseconds.
+ * @param ms - The amount of time to wait before resolving the promise.
+ */
+const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+/* Getting the themes from the filesConfiguration.json file. */
+const {themes} = JSON.parse(httpGet('./filesConfiguration.json'));
+/* Declaring a variable called debugOn and assigning it a value of false. */
+let debugOn = true;
+let zoom = 512;
+let windowTransparency = false;
+let scale = 1;
+let started = false;
+let yellow = false;
+let sc = false;
+let vsc = false;
+let red = false;
+let raining = 0;
+const DigiFlag_Version = JSON.parse(httpGet('./package.json')).version;
+let LT_Data = {};
+let lightOn = false;
+let lightOnRain = false;
+/* Declaring a variable called currentTheme and assigning it a value of 1. */
+let currentTheme = 1;
+const currentMode = 0; // 0 for window, 1 for pixoo64
+let disabledBlueFlag = false;
+const pixooIP = '';
+const instanceWindowWidth = 800;
+const instanceWindowHeight = 600;
+const instanceWindowOffsetX = 100;
+const instanceWindowOffsetY = 200;
+/* Creating an object called oldMessages and adding a property called Messages to it. */
+let oldMessages = {
+    Messages: [],
+};
 
 /**
  * It makes a GET request to the URL passed in as a parameter.
@@ -128,17 +164,22 @@ async function sendTelemetry(eulaAccept) {
 /**
  * It gets the current race name from the F1MV API and displays it on the page.
  */
-async function getCurrentRace() {
+async function getCurrentSessionInfo() {
     try {
-        const url = await F1MV_API_BuildLiveTimingUrl('SessionInfo');
-        const response = await fetch(url, {
-            method: 'GET',
+        const response = await fetch('http://localhost:10101/api/graphql', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify({
+                query: 'query {\n  liveTimingState {\n    SessionInfo\n  }\n}',
+            }),
         });
 
         if (response.status === 200) {
             const result = await response.json();
-            const raceName = await result.Meeting.Name;
-            const raceYear = await parseInt(result.StartDate);
+            const raceName = await result.data.liveTimingState.SessionInfo.Meeting.Name;
+            const raceYear = await parseInt(result.data.liveTimingState.SessionInfo.StartDate);
             $('#raceName').text(raceYear + ' ' + raceName);
         }
     } catch (err) {
@@ -171,7 +212,7 @@ function createNewInstance(url, windowTitle) {
         const windowInstance = window.open(
             url,
             '_blank',
-            `left=${instanceWindowOffsetX},top=${instanceWindowOffsetY},frame=false,menubar=no,autoHideMenuBar=true,backgroundColor=#131416,width=${instanceWindowWidth},height=${instanceWindowHeight},title=${windowTitle},icon=./icon.ico`
+            `left=${instanceWindowOffsetX},top=${instanceWindowOffsetY},frame=${false},menubar=no,autoHideMenuBar==${false},width=${instanceWindowWidth},height=${instanceWindowHeight},title=${windowTitle},icon=./icon.ico`
         );
         return windowInstance;
     } catch (error) {
@@ -243,41 +284,7 @@ async function F1MV_API_BuildLiveTimingUrl(topic) {
         (await F1MV_APIVersion) === 'v2' ? '/state' : ''
     }/${topic}`;
 }
-/**
- * It takes a number of milliseconds as an argument, and returns a promise that resolves after that
- * number of milliseconds.
- * @param ms - The amount of time to wait before resolving the promise.
- */
-const timer = (ms) => new Promise((res) => setTimeout(res, ms));
-/* Getting the themes from the filesConfiguration.json file. */
-const {themes} = JSON.parse(httpGet('./filesConfiguration.json'));
-/* Declaring a variable called debugOn and assigning it a value of false. */
-let debugOn = true;
-let zoom = 512;
-let scale = 1;
-let started = false;
-let yellow = false;
-let sc = false;
-let vsc = false;
-let red = false;
-let raining = 0;
-const DigiFlag_Version = JSON.parse(httpGet('./package.json')).version;
-let LT_Data = {};
-let lightOn = false;
-let lightOnRain = false;
-/* Declaring a variable called currentTheme and assigning it a value of 1. */
-let currentTheme = 1;
-const currentMode = 0; // 0 for window, 1 for pixoo64
-let disabledBlueFlag = false;
-const pixooIP = '';
-const instanceWindowWidth = 600;
-const instanceWindowHeight = 400;
-const instanceWindowOffsetX = 100;
-const instanceWindowOffsetY = 200;
-/* Creating an object called oldMessages and adding a property called Messages to it. */
-let oldMessages = {
-    Messages: [],
-};
+
 /**
  * It's a function that enables or disables debug mode.
  * @param status - true or false
@@ -567,10 +574,10 @@ function linkF1MV(force) {
 }
 /* A function that is called when the page is loaded. */
 $(function () {
-    $('#raceName').text('Unkown');
+    $('#raceName').text('Unknown');
     $('#LinkF1MV').on('click', () => {
         linkF1MV();
-        getCurrentRace();
+        getCurrentSessionInfo();
     });
 
     /* The code below is appending a SVG globe icon, a h5 tag with the text "Network", a paragraph tag
@@ -913,5 +920,25 @@ setInterval(updateData, 100);
 setInterval(checkRCM, 100);
 /* Checking the Rain every 100 milliseconds */
 setInterval(checkRain, 100);
-/* Checking the status of the page every 100 milliseconds. */
+/* Checking the status of the track every 100 milliseconds. */
 setInterval(checkStatus, 100);
+
+/**
+ * If the background is transparent, make it opaque. If the background is opaque, make it transparent.
+ */
+function toggleTransparency() {
+    if (windowTransparency) {
+        $('body').removeAttr('style');
+        windowTransparency = false;
+    } else {
+        $('body').css('background', 'transparent');
+        $('#menuContent').removeAttr('style');
+        windowTransparency = true;
+    }
+}
+/* Listening for the escape key to be pressed and then calling the toggleBackground function. */
+document.addEventListener('keydown', (e) => {
+    if (e.key == 'Escape') {
+        toggleTransparency();
+    }
+});

@@ -17,11 +17,10 @@
     font-size: calc(8px + 2vmin);
     -ms-user-select: none;
     user-select: none;
-    -webkit-app-region: none;
 }
 
 body {
-    background-color: #131416;
+    background: #383838;
     color: white;
     width: 100%;
     min-height: 100vh;
@@ -41,26 +40,25 @@ svg {
 }
 
 .bottom-screen {
-    position: absolute;
+    position: fixed;
     box-sizing: border-box;
     bottom: 0;
-    left: 92%;
+    right: 0;
     border: 2px solid transparent;
     opacity: 1;
-    transition: left 0.2s linear;
-    overflow-y: scroll;
+    transition: all 0.2s ease-in;
+    overflow: hidden;
+    -webkit-app-region: none;
 }
 .bottom-screen:not(:hover) {
-    position: absolute;
+    position: fixed;
     box-sizing: border-box;
-    bottom: 0;
-    left: 98%;
-    opacity: 1;
-    transition: left 0.2s linear;
+    opacity: 0;
+    transition: all 0.2s ease-out;
+    overflow: hidden;
 }
 .menuBox {
     display: flex;
-    background-color: #383838;
     width: 100%;
     min-height: 100vh;
     flex-direction: row;
@@ -72,8 +70,9 @@ svg {
 
 #menuContent {
     display: flex;
-    width: 100%;
-    margin: 10px;
+    background: #383838;
+    width: fit-content;
+    padding: 10px;
     flex-direction: column;
     justify-content: center;
     align-self: center;
@@ -92,6 +91,7 @@ button {
     width: -moz-fit-content;
     width: fit-content;
     border: 2px solid transparent !important;
+    -webkit-app-region: none;
 }
 
 button:hover,
@@ -164,6 +164,7 @@ button:focus-within {
 #selectTheme {
     display: flex;
     flex-direction: column;
+    -webkit-app-region: none;
 }
 
 #themes {
@@ -177,6 +178,7 @@ button:focus-within {
     display: flex;
     flex-direction: column;
     align-items: center;
+    -webkit-app-region: none;
 }
 
 #F1MVLinkContainer {
@@ -310,6 +312,9 @@ svg.globe {
     transition: all 0.2s ease-in-out;
     border: none !important;
 }
+.offcanvas-backdrop {
+    -webkit-app-region: none;
+}
 
 .offcanvas-body {
     display: flex;
@@ -326,45 +331,5 @@ svg.globe {
 
 .offcanvas-component > button {
     margin-bottom: 10px;
-}
-/*desktops - higher resolution*/
-@media (min-width: 1281px) {
-    .bottom-screen {
-        position: absolute;
-        box-sizing: border-box;
-        bottom: 0;
-        left: 95.6%;
-        border: 2px solid transparent;
-        opacity: 1;
-        transition: left 0.2s linear;
-    }
-    .bottom-screen:not(:hover) {
-        position: absolute;
-        box-sizing: border-box;
-        bottom: 0;
-        left: 99%;
-        opacity: 1;
-        transition: left 0.2s linear;
-    }
-}
-
-/*laptops, desktops*/
-@media (min-width: 1025px) and (max-width: 1280px) {
-    .bottom-screen {
-        position: absolute;
-        box-sizing: border-box;
-        bottom: 0;
-        left: 20%;
-        border: 2px solid transparent;
-        opacity: 1;
-        transition: left 0.2s linear;
-    }
-    .bottom-screen:not(:hover) {
-        position: absolute;
-        box-sizing: border-box;
-        bottom: 0;
-        left: 92%;
-        opacity: 1;
-        transition: left 0.2s linear;
-    }
+    -webkit-app-region: none;
 }

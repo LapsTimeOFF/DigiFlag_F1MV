@@ -1,4 +1,4 @@
-import {app, BrowserWindow} from 'electron';
+import {app, BrowserWindow,screen} from 'electron';
 import express from 'express';
 import {address} from 'ip';
 import request from 'request';
@@ -95,11 +95,11 @@ function createWindow(width: number, height: number, title: string) {
         height: height,
         title: title,
         frame: false,
-        titleBarStyle: 'hidden',
+        transparent:true,
+        titleBarStyle: 'hiddenInset',
         /* Setting the icon of the window. */
         icon: path.join(__dirname, 'icon.ico'),
-        // alwaysOnTop: true,
-        backgroundColor: '#131416',
+        alwaysOnTop: false,
         autoHideMenuBar: true,
         /* Hiding the window until it is ready to be shown. */
         show: false,
@@ -110,6 +110,9 @@ function createWindow(width: number, height: number, title: string) {
         window.focus();
         if (version.includes('dev')) window.webContents.openDevTools();
     });
+    /* Setting the minimum size of the window to 426x240. */
+    window.setMinimumSize(200,200)
+    /* Loading the index.html file into the window. */
     window.loadFile(path.join(__dirname, 'index.html'));
    /* A function that is called when a new window is opened. It checks the URL of the window and sets
    the options of the window accordingly. */
@@ -137,12 +140,21 @@ function createWindow(width: number, height: number, title: string) {
 }
 /* Creating a window and loading the index.html file. */
 app.whenReady().then(() => {
-    createWindow(800, 600, 'F1MV - DigiFlag - ' + version);
+    /* Getting the primary display of the computer. */
+
+    const display = screen.getPrimaryDisplay();
+    /* Getting the dimensions of the screen. */
+    const dimensions = display.workAreaSize;
+    /* Getting the width of the screen and multiplying it by 0.8. */
+    const width= dimensions.width * 0.8
+    /* Getting the height of the screen and multiplying it by 0.8. */
+    const height= dimensions.height * 0.8
+    createWindow(width, height, 'F1MV - DigiFlag - ' + version);
     app.on('activate', () => {
         // On OS X it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
         if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow(800, 600, 'F1MV - DigiFlag - ' + version);
+            createWindow(width, height, 'F1MV - DigiFlag - ' + version);
         }
     });
 });
