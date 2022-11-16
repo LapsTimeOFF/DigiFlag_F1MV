@@ -1,11 +1,10 @@
-import {app, BrowserWindow,screen} from 'electron';
+import {app, BrowserWindow, screen} from 'electron';
 import express from 'express';
 import {address} from 'ip';
-import request from 'request';
 import path from 'path';
+import request from 'request';
 
 import {failedToLoadAPI} from './errorTable';
-
 import {themes} from './filesConfiguration.json';
 import {version} from './package.json';
 
@@ -95,8 +94,8 @@ function createWindow(width: number, height: number, title: string) {
         height: height,
         title: title,
         frame: false,
-        transparent:true,
-        titleBarStyle: 'hiddenInset',
+        transparent: true,
+        titleBarStyle: 'hidden',
         /* Setting the icon of the window. */
         icon: path.join(__dirname, 'icon.ico'),
         alwaysOnTop: false,
@@ -111,10 +110,10 @@ function createWindow(width: number, height: number, title: string) {
         if (version.includes('dev')) window.webContents.openDevTools();
     });
     /* Setting the minimum size of the window to 426x240. */
-    window.setMinimumSize(200,200)
+    window.setMinimumSize(256, 256);
     /* Loading the index.html file into the window. */
     window.loadFile(path.join(__dirname, 'index.html'));
-   /* A function that is called when a new window is opened. It checks the URL of the window and sets
+    /* A function that is called when a new window is opened. It checks the URL of the window and sets
    the options of the window accordingly. */
     window.webContents.setWindowOpenHandler(({url}) => {
         if (url === 'https://github.com/LapsTimeOFF/DigiFlag_F1MV') {
@@ -125,30 +124,30 @@ function createWindow(width: number, height: number, title: string) {
                     backgroundColor: '#131416',
                 },
             };
-        } else {(url === './index.html')
-        return {
-            action: 'allow',
-            overrideBrowserWindowOptions: {
-                frame: false,
-                fullscreenable: false,
-                backgroundColor: '#131416',
-            },
-        };
-    }
-});
+        } else {
+            url === './index.html';
+            return {
+                action: 'allow',
+                overrideBrowserWindowOptions: {
+                    frame: false,
+                    transparent: true,
+                    fullscreenable: false,
+                },
+            };
+        }
+    });
     return window;
 }
 /* Creating a window and loading the index.html file. */
 app.whenReady().then(() => {
     /* Getting the primary display of the computer. */
-
     const display = screen.getPrimaryDisplay();
     /* Getting the dimensions of the screen. */
     const dimensions = display.workAreaSize;
     /* Getting the width of the screen and multiplying it by 0.8. */
-    const width= dimensions.width * 0.8
+    const width = dimensions.width * 0.8;
     /* Getting the height of the screen and multiplying it by 0.8. */
-    const height= dimensions.height * 0.8
+    const height = dimensions.height * 0.8;
     createWindow(width, height, 'F1MV - DigiFlag - ' + version);
     app.on('activate', () => {
         // On OS X it's common to re-create a window in the app when the

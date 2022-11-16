@@ -14,7 +14,10 @@
     -webkit-user-select: none;
     transition: all 0.2s ease-in-out;
     -moz-user-select: none;
-    font-size: calc(8px + 2vmin);
+    --minFontSize: 12px;
+    --maxFontSize: 32px;
+    --scaler: 2vw;
+    font-size: clamp(var(--minFontSize), var(--scaler), var(--maxFontSize));
     -ms-user-select: none;
     user-select: none;
 }
@@ -33,6 +36,12 @@ img {
     -ms-user-select: none;
     user-select: none;
     -webkit-user-drag: none;
+}
+
+img#digiflag {
+    max-width: 100%;
+    height: auto;
+    transition: all 0.2s ease-in-out;
 }
 
 svg {
@@ -332,4 +341,9 @@ svg.globe {
 .offcanvas-component > button {
     margin-bottom: 10px;
     -webkit-app-region: none;
+}
+@media (width <= 375px) {
+    * {
+        font-size: calc(6px + 2vmin);
+    }
 }

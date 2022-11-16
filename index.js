@@ -12,7 +12,6 @@ const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 const {themes} = JSON.parse(httpGet('./filesConfiguration.json'));
 /* Declaring a variable called debugOn and assigning it a value of false. */
 let debugOn = true;
-let zoom = 512;
 let windowTransparency = false;
 let scale = 1;
 let started = false;
@@ -212,7 +211,8 @@ function createNewInstance(url, windowTitle) {
         const windowInstance = window.open(
             url,
             '_blank',
-            `left=${instanceWindowOffsetX},top=${instanceWindowOffsetY},frame=${false},menubar=no,autoHideMenuBar==${false},width=${instanceWindowWidth},height=${instanceWindowHeight},title=${windowTitle},icon=./icon.ico`
+            `left=${instanceWindowOffsetX},top=${instanceWindowOffsetY},frame=${false},
+            transparent=${true},menubar=no,autoHideMenuBar==${false},width=${instanceWindowWidth},height=${instanceWindowHeight},title=${windowTitle},icon=./icon.ico`
         );
         return windowInstance;
     } catch (error) {
@@ -496,22 +496,12 @@ function linkSuccess() {
         });
         $('#launchDigiFlag').on('click', () => {
             $('.menuBox').remove();
-            $('body').append(`<img src="${getGifPath('void')}" height="512" id="digiflag" class="center-screen">`);
+            $('body').append(`<img src="${getGifPath('void')}"id="digiflag" class="center-screen">`);
             $('#digiflag').insertBefore('.bottom-screen');
             $('#zoomControl').css('z-index', 1);
-            /* Increasing the zoom of the image by 20px when the button is clicked. */
-            $('#zoomIn').on('click', () => {
-                zoom = zoom + 20;
-                $('#digiflag').css('height', zoom);
-            });
-            /* Decreasing the zoom of the image by 20px when the button is clicked. */
-            $('#zoomOut').on('click', () => {
-                zoom = zoom - 20;
-                $('#digiflag').css('height', zoom);
-            });
-            $('#zoomReset').on('click', () => {
-                $('#digiflag').removeAttr('style');
-            });
+            $('#zoomIn').remove();
+            $('#zoomOut').remove();
+            $('#zoomReset').remove();
             started = true;
         });
     });
