@@ -1,9 +1,8 @@
-.center-screen {
+main {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    -webkit-app-region: drag;
 }
 
 * {
@@ -13,12 +12,7 @@
     text-rendering: optimizeSpeed;
     -webkit-user-select: none;
     transition: all 0.2s ease-in-out;
-    -moz-user-select: none;
-    --minFontSize: 12px;
-    --maxFontSize: 32px;
-    --scaler: 2vw;
-    font-size: clamp(var(--minFontSize), var(--scaler), var(--maxFontSize));
-    -ms-user-select: none;
+    font-size: calc(8px + 2vmin);
     user-select: none;
 }
 
@@ -59,6 +53,7 @@ svg {
     overflow: hidden;
     -webkit-app-region: none;
 }
+
 .bottom-screen:not(:hover) {
     position: fixed;
     box-sizing: border-box;
@@ -66,11 +61,12 @@ svg {
     transition: all 0.2s ease-out;
     overflow: hidden;
 }
+
 .menuBox {
     display: flex;
     width: 100%;
     min-height: 100vh;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     color: white;
     transition: transform 0.3s;
@@ -85,9 +81,17 @@ svg {
     flex-direction: column;
     justify-content: center;
     align-self: center;
-    -webkit-user-select: none;
-    user-select: none;
     -webkit-app-region: drag;
+    user-select: none;
+}
+
+#version {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+    margin-bottom: 10px !important;
+    border-radius: 128px !important;
 }
 
 button {
@@ -150,6 +154,7 @@ button:focus-within {
     flex-direction: column;
     justify-content: space-around;
 }
+
 #DigiFlag > img,
 #F1MV > img {
     display: inline-flex;
@@ -205,6 +210,7 @@ button:focus-within {
     margin-bottom: 10px !important;
     border-radius: 128px !important;
 }
+
 #tagSession {
     display: flex;
     flex-direction: column;
@@ -246,6 +252,7 @@ input[type='radio']:hover {
     transition: color 0.1s linear;
     cursor: not-allowed;
 }
+
 #zoomControl {
     background-color: transparent;
     border: 2px solid transparent;
@@ -259,6 +266,7 @@ input[type='radio']:hover {
     background-color: transparent;
     border: 2px solid transparent !important;
 }
+
 #zoomControl > button:hover {
     background-color: #0d6efd;
     border: 2px solid white !important;
@@ -266,13 +274,14 @@ input[type='radio']:hover {
 
 #zoomControl > button:not(:hover) {
     background-color: transparent;
-    border: 2px solid transparent;
+    border: 2px solid transparent !important;
     stroke: none;
 }
 
 #zoomControl > button > svg.settings {
     stroke: white;
 }
+
 #settingsButton {
     background: none;
     border: 2px solid transparent !important;
@@ -317,9 +326,19 @@ svg.globe {
     flex-direction: column;
 }
 
+.offcanvas-header {
+    flex-direction: column;
+    margin-top: 1vh;
+    padding: 0;
+}
+
 .offcanvas-header .btn-close {
     transition: all 0.2s ease-in-out;
     border: none !important;
+}
+
+#closeButtonContainer {
+    align-self: flex-start;
 }
 .offcanvas-backdrop {
     -webkit-app-region: none;

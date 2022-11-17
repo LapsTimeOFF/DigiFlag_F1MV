@@ -178,7 +178,7 @@ async function getCurrentSessionInfo() {
         if (response.status === 200) {
             const result = await response.json();
             const raceName = await result.data.liveTimingState.SessionInfo.Meeting.Name;
-            const raceYear = await parseInt(result.data.liveTimingState.SessionInfo.StartDate);
+            const raceYear = parseInt(result.data.liveTimingState.SessionInfo.StartDate);
             $('#raceName').text(raceYear + ' ' + raceName);
         }
     } catch (err) {
@@ -559,11 +559,14 @@ function linkF1MV(force) {
         $('#infotag').text("Maybe you are trying to connect to another host? Maybe your port isn't the default one?");
         /* The above code is changing the text of the element with the id of checkNetworkSettings to
        Click on the Settings Gear Above to check your Network Settings. */
-        $('#checkNetworkSettings').text('Click on the Settings Gear Above to check your Network Settings.');
+        $('#checkNetworkSettings').text(
+            ' Move your Mouse to the Bottom Right Corner & Click on the Settings Gear to check your Network Settings.'
+        );
     }
 }
 /* A function that is called when the page is loaded. */
 $(function () {
+    $('#version').text(`DigiFlag Version: ${DigiFlag_Version}`);
     $('#raceName').text('Unknown');
     $('#LinkF1MV').on('click', () => {
         linkF1MV();
@@ -922,7 +925,7 @@ function toggleTransparency() {
         windowTransparency = false;
     } else {
         $('body').css('background', 'transparent');
-        $('#menuContent').removeAttr('style');
+        $('#menuBox').removeAttr('style');
         windowTransparency = true;
     }
 }
