@@ -1,9 +1,9 @@
-import {app, BrowserWindow, screen} from 'electron';
+import {app, BrowserWindow} from 'electron';
 import express from 'express';
 import {address} from 'ip';
 import path from 'path';
 import request from 'request';
-
+import {getWindowSizeSettings,getWindowPositionSettings ,saveWindowPos,saveWindowSize} from './storage'
 import {failedToLoadAPI} from './errorTable';
 import {themes} from './filesConfiguration.json';
 import {version} from './package.json';
@@ -88,11 +88,13 @@ expressApp.get('/pixoo/:gif/:themeID/:ip', (req, res) => {
  * @param {string} title - The title of the window.
  * @returns A BrowserWindow object.
  */
-function createWindow(width: number, height: number, title: string) {
+function createWindow(width: number, height: number, windowPositionX:number,windowPositionY:number, title: string) {
     const window = new BrowserWindow({
         width: width,
         height: height,
         title: title,
+        x:windowPositionX,
+        y:windowPositionY,
         frame: false,
         transparent: true,
         titleBarStyle: 'hidden',
@@ -109,6 +111,9 @@ function createWindow(width: number, height: number, title: string) {
         window.focus();
         if (version.includes('dev')) window.webContents.openDevTools();
     });
+    window.on('moved',() => saveWindowPos(window.getPosition()))
+    /* Saving the window size when the window is resized. */
+    window.on('resized',() => saveWindowSize(window.getSize()))
     /* Setting the minimum size of the window to 426x240. */
     window.setMinimumSize(256, 256);
     /* Loading the index.html file into the window. */
@@ -138,26 +143,22 @@ function createWindow(width: number, height: number, title: string) {
     });
     return window;
 }
+
 /* Creating a window and loading the index.html file. */
 app.whenReady().then(() => {
-    /* Getting the primary display of the computer. */
-    const display = screen.getPrimaryDisplay();
-    /* Getting the dimensions of the screen. */
-    const dimensions = display.workAreaSize;
-    /* Getting the width of the screen and multiplying it by 0.8. */
-    const width = dimensions.width * 0.8;
-    /* Getting the height of the screen and multiplying it by 0.8. */
-    const height = dimensions.height * 0.8;
-    createWindow(width, height, 'F1MV - DigiFlag - ' + version);
+    const windowSize= getWindowSizeSettings();
+    const windowPosition=getWindowPositionSettings();
+    if (version.includes('dev')) console.log("WindowSize: ",windowSize)
+    if (version.includes('dev')) console.log("WindowPosition: ",windowPosition)
+    createWindow(windowSize[0], windowSize[1],windowPosition[0],windowPosition[1] ,'F1MV - DigiFlag - ' + version);
     app.on('activate', () => {
         // On OS X it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
         if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow(width, height, 'F1MV - DigiFlag - ' + version);
+            createWindow(windowSize[0], windowSize[1],windowPosition[0],windowPosition[1] , 'F1MV - DigiFlag - ' + version);
         }
     });
 });
-
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.

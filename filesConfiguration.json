@@ -143,11 +143,172 @@
         "sc": "gifs/T2_169/sc.gif",
         "slippery": "gifs/T2_169/slippery.gif",
         "ss": "gifs/T2_169/ss.gif",
-        "void": "gifs/T2_169/Brazil.gif",
+        "void": "gifs/T2_169/void.gif",
         "vsc": "gifs/T2_169/vsc.gif",
         "white": "gifs/T2_169/white.gif",
         "yellow": "gifs/T2_169/yellow.gif"
       }
+    }
+  ],
+  "tracks": [
+    {
+      "season": "2022",
+      "tracks": [
+        {
+          "name": "2022 Australian Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/Australia/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Emilia Romagna Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/Italy",
+            "satellite": "tracks/2022/Italy"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Bahrain Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 São Paulo Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/Sao_Palo/São Paulo Grand Prix_16-9",
+            "satellite": "tracks/2022/Sao_Palo/São Paulo Grand Prix_16-9_sat.png"
+          }
+        },
+        {
+          "name": "2022 Saudi Arabian Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/",
+            "satellite": "tracks/2022/"
+          }
+        },
+        {
+          "name": "2022 Abu Dhabi Grand Prix",
+          "trackMaps": {
+            "normal": "tracks/2022/Abu_Dhabi/Abu Dhabi Grand Prix_16-9.png",
+            "satellite": "tracks/2022/"
+          }
+        }
+      ]
     }
   ]
 }

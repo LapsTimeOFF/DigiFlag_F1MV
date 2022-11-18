@@ -1,4 +1,5 @@
-main {
+main,
+.center-screen {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -13,6 +14,8 @@ main {
     -webkit-user-select: none;
     transition: all 0.2s ease-in-out;
     font-size: calc(8px + 2vmin);
+    font-family: 'Inter', sans-serif;
+    -webkit-user-drag: none;
     user-select: none;
 }
 
@@ -22,6 +25,7 @@ body {
     width: 100%;
     min-height: 100vh;
     overflow: hidden;
+    -webkit-app-region: drag;
 }
 
 img {
@@ -34,8 +38,9 @@ img {
 
 img#digiflag {
     max-width: 100%;
-    height: auto;
+    min-height: 100vh;
     transition: all 0.2s ease-in-out;
+    -webkit-app-region: drag;
 }
 
 svg {
@@ -119,7 +124,7 @@ button:focus-within {
 }
 
 .networkButtonsContainer > button {
-    margin: 5px;
+    margin-top: 10px;
 }
 
 #digiflagHeader {
