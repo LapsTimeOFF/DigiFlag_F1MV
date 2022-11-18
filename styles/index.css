@@ -37,8 +37,7 @@ img {
 }
 
 img#digiflag {
-    width: 100%;
-    height: auto;
+    height: 100%;
     transition: all 0.2s ease-in-out;
     -webkit-app-region: drag;
 }
