@@ -26,7 +26,7 @@ specifiers:
   ip: ^1.1.8
   jquery: ^3.6.3
   lint-staged: ^13.0.3
-  npm_f1mv_api: ^1.0.2
+  npm_f1mv_api: ^1.0.3
   prettier: ^2.7.1
   request: ^2.88.2
   typescript: ^4.9.3
@@ -39,7 +39,7 @@ dependencies:
   express: 4.18.2
   ip: 1.1.8
   jquery: 3.6.3
-  npm_f1mv_api: 1.0.2
+  npm_f1mv_api: 1.0.3
   request: 2.88.2
 
 devDependencies:
@@ -3571,8 +3571,8 @@ packages:
       path-key: 4.0.0
     dev: true
 
-  /npm_f1mv_api/1.0.2:
-    resolution: {integrity: sha512-tMj5pdeJpYxbZ20bsnaWCSQs5HPPQpFbLJV68cz7m9WZ/Hr4+5iKTzLpSSEZD/IW0BVzNs4ThEwAv11FJdnSbw==}
+  /npm_f1mv_api/1.0.3:
+    resolution: {integrity: sha512-1t/PoCJibFjqPnTTV6ydiKzdsZj0nxPH8aFivyq4vm+tAK9I5V8GIyMew2wu27t7D5H9uumTPexUZQM6LG825w==}
     dependencies:
       node-fetch: 2.6.7
     transitivePeerDependencies:
