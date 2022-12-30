@@ -1009,7 +1009,6 @@ change the gif to rain. */
 async function updateData() {
     if (started)
         LT_Data = await LiveTimingAPIGraphQL(config, ['RaceControlMessages', 'TrackStatus', 'WeatherData'])
-        LT_Data = JSON.parse(httpGet(await F1MV_API_BuildLiveTimingUrl('RaceControlMessages,TrackStatus,WeatherData')));
     return LT_Data;
 }
 
