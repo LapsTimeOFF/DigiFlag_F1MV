@@ -13,7 +13,7 @@ main,
     text-rendering: optimizeSpeed;
     -webkit-user-select: none;
     transition: all 0.2s ease-in-out;
-    font-size: calc(8px + 2vmin);
+    font-size: calc(7px + 2vmin);
     font-family: 'Inter', sans-serif;
     -webkit-user-drag: none;
     user-select: none;
@@ -37,8 +37,8 @@ img {
 }
 
 img#digiflag {
-    height: 100%;
     width: auto;
+    height: 100%;
     transition: all 0.2s ease-in-out;
     -webkit-app-region: drag;
 }
@@ -169,20 +169,24 @@ button:focus-within {
     padding: 5px;
 }
 
-#networkSettings > input[type='text'] {
+#networkSettings > .form-control {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-self: center;
+    text-align: center;
+    border-radius: 50rem;
 }
 
-#networkSettings > input[type='text']:focus {
-    border: none;
+#networkSettings > input:focus {
+    border-color: #3ea6ff;
+    box-shadow: 0 0 0 0.1rem #3ea6ff;
 }
 
 #selectTheme {
     display: flex;
     flex-direction: column;
+    align-items: center;
     -webkit-app-region: none;
 }
 
@@ -190,7 +194,7 @@ button:focus-within {
     display: inline-flex;
     flex-direction: inherit;
     flex-wrap: wrap;
-    align-content: center;
+    align-items: center;
 }
 
 #selectDevice {
@@ -229,8 +233,8 @@ button:focus-within {
     margin-bottom: 5px;
 }
 
-label:hover {
-    color: #198754;
+.form-check-label.theme:hover {
+    color: #31e994;
     transition: color 0.2s ease-in-out;
     cursor: pointer;
 }
@@ -246,10 +250,54 @@ input[type='radio']:hover {
     background-color: #198754;
     cursor: pointer;
 }
+input[type='radio']:checked:hover {
+    background-color: #0d6efd;
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+}
+input[type='radio']:checked {
+    box-shadow: none;
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+#trackMapStyle {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#trackMapStyleSelect {
+    text-align: center;
+    border: 2px solid;
+}
+#trackMapStyleSelect:focus {
+    border: 2px solid #3ea6ff;
+    box-shadow: none;
+}
+select#trackMapStyleSelect:hover {
+    cursor: pointer;
+}
 
 .form-check-input[type='checkbox']:hover {
     background-color: #198754;
     cursor: pointer;
+}
+.form-check-input[type='checkbox']:checked {
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+    box-shadow: none;
+}
+.form-check-input[type='checkbox']:checked:hover {
+    background-color: #0d6efd;
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
 }
 
 #Pixoo64.form-check > .form-check-input[disabled]:hover {
@@ -340,6 +388,14 @@ svg.globe {
 .offcanvas-header .btn-close {
     transition: all 0.2s ease-in-out;
     border: none !important;
+}
+.toast .btn-close {
+    transition: all 0.2s ease-in-out;
+    border: none !important;
+}
+.toast-body > p {
+    user-select: text !important;
+    -webkit-user-select: text !important;
 }
 
 #closeButtonContainer {

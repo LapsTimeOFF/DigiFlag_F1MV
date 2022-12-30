@@ -10,6 +10,8 @@ let port = 10101;
 const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 /* Getting the themes from the filesConfiguration.json file. */
 const {themes} = JSON.parse(httpGet('./filesConfiguration.json'));
+/* Getting the tracks from the filesConfiguration.json file. */
+const {mapThemes} = JSON.parse(httpGet('./filesConfiguration.json'));
 /* Declaring a variable called debugOn and assigning it a value of false. */
 let debugOn = true;
 let windowTransparency = false;
@@ -26,8 +28,11 @@ let lightOn = false;
 let lightOnRain = false;
 /* Declaring a variable called currentTheme and assigning it a value of 1. */
 let currentTheme = 1;
+let currentMapTheme = 0;
+let raceName = 'Unknown';
 const currentMode = 0; // 0 for window, 1 for pixoo64
 let disabledBlueFlag = false;
+let useTrackMap = false;
 const pixooIP = '';
 const instanceWindowWidth = 800;
 const instanceWindowHeight = 600;
@@ -122,7 +127,7 @@ async function sendTelemetry(eulaAccept) {
         log('Telemetry server is available.');
         if (eulaAccept !== true) {
             console.warn('EULA not accepted. Requesting EULA...');
-            log(await httpGet(`${url}/eula`));
+            log(httpGet(`${url}/eula`));
             log('Execute "sendTelemetry(true)" to accept EULA.');
             return;
         }
@@ -132,7 +137,7 @@ async function sendTelemetry(eulaAccept) {
         const telemetryPackage = {
             logs: logs,
             platform: window.navigator.platform,
-            LT_Dump: await httpGet(await F1MV_API_BuildLiveTimingUrl('RaceControlMessages,TrackStatus,WeatherData')),
+            LT_Dump: httpGet(await F1MV_API_BuildLiveTimingUrl('RaceControlMessages,TrackStatus,WeatherData')),
             DigiFlag_Version: DigiFlag_Version,
             F1MV_Host: host,
             F1MV_Port: port,
@@ -153,7 +158,7 @@ async function sendTelemetry(eulaAccept) {
         };
         log(`Data Collected`);
         log(`Sending DATA...`);
-        await httpPost(`${url}/uploadTelemetry/${id}`, JSON.stringify(telemetryPackage));
+        httpPost(`${url}/uploadTelemetry/${id}`, JSON.stringify(telemetryPackage));
         log(
             `Your telemetry report has been successfully send. Here is your data ID : ${id}. If you want to see your telemetryPackage, go to ${url}/downloadTelemetryReport/${id}`
         );
@@ -165,7 +170,7 @@ async function sendTelemetry(eulaAccept) {
  */
 async function getCurrentSessionInfo() {
     try {
-        const response = await fetch('http://localhost:10101/api/graphql', {
+        const response = await fetch(`http://${host}:${port}/api/graphql`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -175,25 +180,82 @@ async function getCurrentSessionInfo() {
             }),
         });
 
-        if (response.status === 200) {
+        if (response.ok) {
             const result = await response.json();
-            const raceName = await result.data.liveTimingState.SessionInfo.Meeting.Name;
-            const raceYear = parseInt(result.data.liveTimingState.SessionInfo.StartDate);
-            $('#raceName').text(raceYear + ' ' + raceName);
+            const sessionName = await result.data.liveTimingState.SessionInfo.Meeting.Name;
+            const sessionYear = parseInt(result.data.liveTimingState.SessionInfo.StartDate);
+            raceName = `${sessionYear + ' ' + sessionName}`;
+            $('#raceName').text(raceName);
+            return raceName;
         }
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        console.log('Unable to Get Data From F1MV GraphQL API:');
+        console.error(error);
+    }
+}
+
+/**
+ * It takes the currentMapTheme as an argument and returns the trackMapPath for the current race.
+ * @param currentMapTheme - The current map theme that the user has selected.
+ * @returns The trackMapPath variable is being returned.
+ */
+function getCurrentTrackPath(currentMapTheme) {
+    let trackMapPath;
+    console.log(`Current Race Name: ${raceName}`);
+
+    /* Creating a variable called trackMaps and assigning it the value of the trackMaps property of the mapThemes JSON in filesConfiguration.json. */
+    const trackMaps = mapThemes[currentMapTheme].trackMaps;
+    /* Checking to see if the raceName is in the trackMaps object. If it is, it returns the mapPath for the current race. */
+    if (raceName in trackMaps) {
+        trackMapPath = trackMaps[raceName];
+        console.log(`Track Map Path: ${trackMapPath}`);
+        return trackMapPath;
+    } else {
+        return console.log('Map Not Found');
     }
 }
 
 /**
  * It saves the host and port to local storage.
  * @param host - The hostname of the server.
- * @param port - The port number of the server.
+ * @param port{number} - The port number of the server.
  */
 function saveSettings(host, port) {
+    $('.toast').remove();
     localStorage.setItem('host', host);
-    localStorage.setItem('port', port);
+    /* The code below is checking if the port is valid or not. If the port is valid, it will save the port in the local storage. If the port is invalid, it will throw an error. */
+    if (port >= 0 && port <= 65535) {
+        localStorage.setItem('port', port);
+        if (debugOn) log('Network Settings Saved !');
+        $('#networkSettings > h5')
+            .after(`<div class="toast text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+        <div class="toast-header text-bg-success">
+          <strong class="text-center me-auto">Network Settings Saved!</strong>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+        <p>Host:${host}</p>
+        <p>Port:${port}</p>
+        </div>
+    </div>
+    `);
+        $('.toast').toast('show');
+    } else {
+        if (debugOn) log('Only Host Settings Saved !');
+        $('#networkSettings > h5')
+            .after(`<div class="toast text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+        <div class="toast-header text-bg-danger">
+          <strong class="me-auto">ERROR: Invalid Port!</strong>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+        Only Host Settings Saved !
+        <p>The Port Number ${port} is invalid. Please Enter a Valid Port Number Between 0 to 65535.</p>
+        </div>
+    </div>
+        `);
+        $('.toast').toast('show');
+    }
 }
 
 /**
@@ -232,15 +294,27 @@ function loadSettings() {
         port = parseInt(portData);
     }
 }
-/**
- * It clears the local storage and sets host and port back to default.
+
+/** It clears the local storage and sets host and port back to default.
  */
 function restoreSettings() {
-    console;
+    $('.toast').remove();
     if (localStorage !== null) localStorage.clear();
     host = 'localhost';
     port = 10101;
-    log('Storage Cleared');
+    $('#networkSettings > h5')
+        .after(`<div class="toast text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+        <div class="toast-header text-bg-danger">
+          <strong class="text-center me-auto">Reset Network Settings!</strong>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+        Reset Network Settings To Default Values!
+        </div>
+    </div>
+    `);
+    $('.toast').toast('show');
+    log('Reset Network Settings To Default');
 }
 
 /**
@@ -271,7 +345,7 @@ async function getAPIVersion() {
 }
 /* Getting the version of the F1MV. */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-let F1MV_version = getF1MVVersion();
+const F1MV_version = getF1MVVersion();
 /* Getting the API version of the current page. */
 const F1MV_APIVersion = getAPIVersion();
 /**
@@ -311,10 +385,22 @@ debugMode(debugOn);
  */
 function getGifPath(flag) {
     let flagPath;
-    for (let _i = 0; _i < themes.length; _i++) {
-        const theme = themes[_i];
-        if (theme.id === currentTheme) {
-            flagPath = theme.gifs[flag];
+    /* Getting the current track path. */
+    const trackMapPath = getCurrentTrackPath(currentMapTheme);
+    /* Checking if the flag is 'void' and if the useTrackMap is true and if the trackMapPath has a file extension. */
+    if (
+        flag === 'void' &&
+        useTrackMap === true &&
+        trackMapPath.slice(((trackMapPath.lastIndexOf('.') - 1) >>> 0) + 2)
+    ) {
+        /* Setting only the void GIF to use TrackMap. */
+        flagPath = trackMapPath;
+    } else {
+        for (let themeIndex = 0; themeIndex < themes.length; themeIndex++) {
+            const theme = themes[themeIndex];
+            if (theme.id === currentTheme) {
+                flagPath = theme.gifs[flag];
+            }
         }
     }
     if (debugOn) log(`${flag} requested, returning ${flagPath}`);
@@ -328,6 +414,14 @@ function selectTheme(id) {
     if (debugOn) log('Mode selected : ' + id);
     currentTheme = id;
     $('#nextTheme').prop('disabled', false);
+}
+function selectMapTheme(id) {
+    if (useTrackMap == true) {
+        if (debugOn) log('Map Theme selected : ' + mapThemes[id].name);
+        currentMapTheme = id;
+        getCurrentTrackPath(currentMapTheme);
+        $('#launchDigiFlag').prop('disabled', true);
+    }
 }
 
 /**
@@ -367,7 +461,7 @@ async function turnOff(flag) {
                 }
             }
             if (currentMode === 1) {
-                const res = await httpGet(`http://localhost:9093/pixoo/void/${currentTheme}/${pixooIP}`);
+                const res = httpGet(`http://localhost:9093/pixoo/void/${currentTheme}/${pixooIP}`);
                 if (res !== 'OK') {
                     log('Failed to change GIF on Pixoo64');
                 }
@@ -382,7 +476,7 @@ async function turnOff(flag) {
         }
     } else {
         if (currentMode === 1) {
-            const res = await httpGet(`http://localhost:9093/pixoo/void/${currentTheme}/${pixooIP}`);
+            const res = httpGet(`http://localhost:9093/pixoo/void/${currentTheme}/${pixooIP}`);
             if (res !== 'OK') {
                 log('Failed to change GIF on Pixoo64');
             }
@@ -405,7 +499,7 @@ async function turnOff(flag) {
 async function changeGif(flag, mode) {
     if (flag === 'blue' && disabledBlueFlag) return;
     if (mode === 1 && currentMode === 1) {
-        const res = await httpGet(`http://localhost:9093/pixoo/${flag}/${currentTheme}/${pixooIP}`);
+        const res = httpGet(`http://localhost:9093/pixoo/${flag}/${currentTheme}/${pixooIP}`);
         if (res !== 'OK') {
             log('Failed to change GIF on Pixoo64');
         }
@@ -432,8 +526,8 @@ function linkSuccess() {
     $('#LinkF1MV').remove();
     $('#infotag').remove();
     $('#selectTheme').append(`
+    <p class="lead text-center fs-4 mb-1">Select a DigiFlag Theme</p>
         <div id="themes">
-
         </div>
         <button type="button" id="nextTheme" class="btn btn-success" disabled>Next
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-arrow-right">
@@ -441,8 +535,8 @@ function linkSuccess() {
 </svg></button>
     `);
     let theme;
-    for (let _i = 0; _i < themes.length; _i++) {
-        theme = themes[_i];
+    for (let themeIndex = 0; themeIndex < themes.length; themeIndex++) {
+        theme = themes[themeIndex];
         $('#themes').append(`
             <div class="form-check" id="window">
                 <input class="form-check-input theme" type="radio" name="theme" id="${theme.id}">
@@ -458,13 +552,14 @@ function linkSuccess() {
     $('#nextTheme').on('click', () => {
         $('#selectTheme').remove();
         $('#selectDevice').append(`
+        <div class="lead text-center fs-4">Select a Device</div>
             <div class="form-check" id="window">
             <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
             <label class="form-check-label" for="flexRadioDefault1">
                 Window DigiFlag
             </label>
             </div>
-            <span class="badge text-bg-danger" id="notAvailable" diabled>Not Available with this Theme</span>
+            <span class="badge text-bg-danger" id="notAvailable" diabled>Pixoo 64 is Not Compatible with the Selected Theme</span>
             <div class="form-check" id="Pixoo64">
             <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" disabled>
             <label class="form-check-label" for="flexRadioDefault2">
@@ -473,9 +568,13 @@ function linkSuccess() {
             </div>
             <div class="form-check" id="blueFlag">
                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">
+                <label class="form-check-label theme" for="flexCheckDefault">
                     Remove Blue Flags?
                 </label>
+            </div>
+            <div class="form-check form-switch" id="trackMapSwitch">
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+            <label class="form-check-label theme" for="flexSwitchCheckDefault">Use TrackMap as Background?</label>
             </div>
             <button type="button" id="launchDigiFlag" class="btn btn-success">Start DigiFlag</button>
         `);
@@ -483,10 +582,12 @@ function linkSuccess() {
             $('#notAvailable').remove();
             $('#flexRadioDefault2').prop('disabled', false);
         }
+        /* Checking if the blue flag is disabled, if it is, it will enable it. If it is not, it will disable
+it. */
         $('#blueFlag').on('change', () => {
             if (disabledBlueFlag) {
                 disabledBlueFlag = false;
-                log('Blue Flags Disabled: ' + disabledBlueFlag);
+                log('Blue Flags Enabled: ' + disabledBlueFlag);
                 return disabledBlueFlag;
             } else {
                 disabledBlueFlag = true;
@@ -494,14 +595,44 @@ function linkSuccess() {
                 return disabledBlueFlag;
             }
         });
+        /* Creating a switch that toggles the use of a track map as a background. */
+        $('#trackMapSwitch').on('change', () => {
+            if (useTrackMap) {
+                useTrackMap = false;
+                log('use TrackMap as Background? : ' + useTrackMap);
+                $('#launchDigiFlag').prop('disabled', false);
+                $('#trackMapStyle').remove();
+                return useTrackMap;
+            } else {
+                useTrackMap = true;
+                log('use TrackMap as Background? : ' + useTrackMap);
+                $('#launchDigiFlag').prop('disabled', true);
+                $('#trackMapSwitch').after(`<div id="trackMapStyle">
+                    <label id='trackMapLabel' for="trackMapStyleSelect" class="form-label">TrackMap Style</label>
+                    <select class="form-select form-select-sm text-bg-dark mapTheme" id="trackMapStyleSelect">`);
+                /* Creating a dropdown menu with the names of the map themes. */
+                $('#trackMapStyleSelect').append(
+                    `<option value="none" selected disabled hidden>Select a TrackMap Style</option>`
+                );
+                for (let mapIndex = 0; mapIndex < mapThemes.length; mapIndex++) {
+                    const mapTheme = mapThemes[mapIndex];
+                    $('#trackMapStyleSelect').append(
+                        `<option id=${mapTheme.id} value=${mapTheme.id}>${mapTheme.name}</option> `
+                    );
+                }
+                /* Changing the map style when the user selects a different style from the dropdown menu. */
+                $('#trackMapStyleSelect').on('change', () => {
+                    selectMapTheme($('#trackMapStyleSelect').val());
+                    $('#launchDigiFlag').prop('disabled', false);
+                });
+                return useTrackMap;
+            }
+        });
         $('#launchDigiFlag').on('click', () => {
             $('.menuBox').remove();
-            $('body').append(`<img src="${getGifPath('void')}"id="digiflag" class="center-screen">`);
+            $('body').append(`<img src="${getGifPath('void')}" id="digiflag" class="center-screen">`);
             $('#digiflag').insertBefore('.bottom-screen');
             $('#zoomControl').css('z-index', 1);
-            $('#zoomIn').remove();
-            $('#zoomOut').remove();
-            $('#zoomReset').remove();
             started = true;
         });
     });
@@ -518,6 +649,14 @@ function linkF1MV(force) {
     $('#tagLink').removeClass('text-bg-danger');
     $('#tagLink').removeClass('text-bg-warning');
     $('#tagLink').removeClass('text-bg-success');
+    $('#tagSession').removeClass('text-bg-secondary');
+    $('#tagSession').removeClass('text-bg-danger');
+    $('#tagSession').removeClass('text-bg-warning');
+    $('#tagSession').removeClass('text-bg-success');
+    $('#raceName').removeClass('text-bg-secondary');
+    $('#raceName').removeClass('text-bg-danger');
+    $('#raceName').removeClass('text-bg-warning');
+    $('#raceName').removeClass('text-bg-success');
     $('#tagLink').addClass('text-bg-primary');
     $('#tagLink').text('Linking to F1MV in progress...');
     try {
@@ -535,7 +674,7 @@ function linkF1MV(force) {
             $('#raceName').removeClass('text-bg-primary');
             $('#tagSession').removeClass('text-bg-primary');
             $('#tagLink').text('You are Connected to F1MV, but it seems like your Live Timing Page is not running.');
-            $('#raceName').text('Unable to Retrive Current Sesssion from Live Timing');
+            $('#raceName').text('Unable to Retrieve Current Session from Live Timing');
         } else {
             linkSuccess();
         }
@@ -567,7 +706,7 @@ function linkF1MV(force) {
 /* A function that is called when the page is loaded. */
 $(function () {
     $('#version').text(`DigiFlag Version: ${DigiFlag_Version}`);
-    $('#raceName').text('Unknown');
+    $('#raceName').text(raceName);
     $('#LinkF1MV').on('click', () => {
         linkF1MV();
         getCurrentSessionInfo();
@@ -588,21 +727,21 @@ $(function () {
         $('#networkSettings').append('<h5>Network</h5>');
         $('#networkSettings').append('<p>IP : </p>');
         $('#networkSettings').append(
-            `<input type="text" class="form-control" placeholder="localhost" value=${host} id="ip">`
+            `<input type="text" class="form-control text-bg-dark" placeholder="localhost" value=${host} id="ip">`
         );
         /* Appending a paragraph tag with the text "Port : " and then appending an input tag with the class
-		"form-control" and the placeholder "10101" and the value of the variable port and the id "port". */
+        "form-control" and the placeholder "10101" and the value of the variable port and the id "port". */
         $('#networkSettings').append('<p>Port : </p>');
         $('#networkSettings').append(
-            `<input type="text" class="form-control" placeholder="10101" value=${port} id="port">`
+            `<input type="number" class="form-control text-bg-dark" placeholder="10101" value=${port} id="port">`
         );
         $('#networkSettings').append(
             $('<div/>', {
                 class: 'networkButtonsContainer',
-            }).append([
+            }).append(
                 '<button type="button" id="updateSettings" class="btn btn-primary">Save Network Settings</button>',
-                '<button type="button"  id="restoreSettings" class="btn btn-danger">Restore Default Settings </button>',
-            ])
+                '<button type="button"  id="restoreSettings" class="btn btn-danger">Restore Default Settings </button>'
+            )
         );
         $('#updateSettings').on('click', () => {
             if (debugOn) log('Editing Settings...');
@@ -614,17 +753,16 @@ $(function () {
             const port = $('#port').val();
             if (debugOn) log($('#port').val() !== '');
             if (debugOn) log(`PORT = ${$('#port').val()} = ${port}`);
-            if (debugOn) log('Settings edited !');
             saveSettings(host, port);
             /* Getting the version of the F1MV. */
-            F1MV_version = getF1MVVersion();
+            getF1MVVersion();
         });
         $('#restoreSettings').on('click', () => {
             /* Setting the value of the input fields back to localhost and 10101. */
             $('#ip').val('localhost');
             $('#port').val(10101);
             restoreSettings();
-            F1MV_version = getF1MVVersion();
+            getF1MVVersion();
         });
     });
     /* Creating a new instance of the class when the button is clicked. */
@@ -639,16 +777,16 @@ $(function () {
     $('#zoomIn').on('click', () => {
         const zoomScaleAdd = (scale = scale + 0.25);
         if (zoomScaleAdd >= 1.75) scale = 0.75;
-        $('.menuBox').css({transform: 'translate(-50%,-50%) scale(' + zoomScaleAdd + ')'});
+        $('.center-screen').css({transform: 'translate(-50%,-50%) scale(' + zoomScaleAdd + ')'});
     });
     /* Decreasing the zoom of the image by 20px when the button is clicked. */
     $('#zoomOut').on('click', () => {
         const zoomScaleSubtract = (scale = scale - 0.25);
         if (zoomScaleSubtract <= 0.25) scale = 1.25;
-        $('.menuBox').css({transform: 'translate(-50%,-50%) scale(' + zoomScaleSubtract + ')'});
+        $('.center-screen').css({transform: 'translate(-50%,-50%) scale(' + zoomScaleSubtract + ')'});
     });
     $('#zoomReset').on('click', () => {
-        $('.menuBox').removeAttr('style');
+        $('.center-screen').removeAttr('style');
     });
 });
 /**
@@ -677,18 +815,18 @@ oldMessages. If it is, then there are no new messages. */
             Scope: undefined,
         };
         /* Checking if the message contains the text "BLACK AND ORANGE" and if it does, it sets the
-		   category to "Flag" and the flag to "BLACK AND ORANGE". */
+           category to "Flag" and the flag to "BLACK AND ORANGE". */
         if (message.Message.match(/BLACK AND ORANGE/i)) {
             messageData.Category = 'Flag';
             messageData.Flag = 'BLACK AND ORANGE';
         }
         /* Checking if the message contains the word "Safety Car" and if it does, it sets the category
-		   to "SafetyCar". */
+           to "SafetyCar". */
         if (message.Message.match(/SAFETY CAR/i)) {
             messageData.Category = 'SafetyCar';
         }
         /* Checking if the message contains the words "Virtual Safety Car" and if it does, it sets the
-		category to "VirtualSafetyCar". */
+        category to "VirtualSafetyCar". */
         if (message.Message.match(/VIRTUAL SAFETY CAR/i)) {
             messageData.Category = 'VirtualSafetyCar';
         }
@@ -766,28 +904,28 @@ is not, it is setting sc, vsc, and red to false, changing the gif to "green", wa
         if (messageData.Category === 'Flag') {
             switch (messageData.Flag) {
                 /* A switch statement that is checking the value of the variable currentMode. If the value of
-				currentMode is "YELLOW", then the changeGif function is called with the parameters "yellow" and
-				currentMode. */
+                currentMode is "YELLOW", then the changeGif function is called with the parameters "yellow" and
+                currentMode. */
                 case 'YELLOW':
                     changeGif('yellow', currentMode);
                     break;
                 /* A switch statement that is checking the value of the variable currentMode. If the value of
-					currentMode is "DOUBLE YELLOW", then the function changeGif is called with the parameters "dyellow"
-					and currentMode. */
+                    currentMode is "DOUBLE YELLOW", then the function changeGif is called with the parameters "dyellow"
+                    and currentMode. */
                 case 'DOUBLE YELLOW':
                     changeGif('dyellow', currentMode);
                     break;
                 /* A switch statement that is checking the currentMode variable. If the currentMode variable is equal
-					to "CLEAR" then it will change the gif to green and then turn off the green light. */
+                    to "CLEAR" then it will change the gif to green and then turn off the green light. */
                 case 'CLEAR':
                     changeGif('green', currentMode);
                     await timer(2500);
                     turnOff('green');
                     break;
                 /* A switch statement that is checking the currentMode variable. If the currentMode variable is equal
-					to "RED" then it will set the red variable to true and call the changeGif function with the
-					parameters "red" and currentMode. It will then wait for 90 seconds and then call the turnOff
-					function with the parameter "red". */
+                    to "RED" then it will set the red variable to true and call the changeGif function with the
+                    parameters "red" and currentMode. It will then wait for 90 seconds and then call the turnOff
+                    function with the parameter "red". */
                 case 'RED':
                     red = true;
                     changeGif('red', currentMode);
@@ -795,9 +933,9 @@ is not, it is setting sc, vsc, and red to false, changing the gif to "green", wa
                     turnOff('red');
                     break;
                 /* A switch statement that is checking the currentMode variable. If the currentMode variable is equal
-					to "BLUE" then it will set the red variable to true and call the changeGif function with the
-					parameters "blue" and currentMode. It will then wait for 1 second and then call the turnOff
-					function with the parameter "blue". */
+                    to "BLUE" then it will set the red variable to true and call the changeGif function with the
+                    parameters "blue" and currentMode. It will then wait for 1 second and then call the turnOff
+                    function with the parameter "blue". */
                 case 'BLUE':
                     changeGif('blue', currentMode);
                     await timer(1000);
@@ -902,9 +1040,8 @@ change the gif to rain. */
  */
 async function updateData() {
     if (started)
-        LT_Data = JSON.parse(
-            await httpGet(await F1MV_API_BuildLiveTimingUrl('RaceControlMessages,TrackStatus,WeatherData'))
-        );
+        LT_Data = JSON.parse(httpGet(await F1MV_API_BuildLiveTimingUrl('RaceControlMessages,TrackStatus,WeatherData')));
+    return LT_Data;
 }
 
 /* Update the Live Timing data every 100 milliseconds */
@@ -924,7 +1061,7 @@ function toggleTransparency() {
         $('body').removeAttr('style');
         windowTransparency = false;
     } else {
-        $('body').css('background', 'transparent');
+        $('body').css('background-color', 'transparent');
         $('#menuBox').removeAttr('style');
         windowTransparency = true;
     }
