@@ -1,17 +1,32 @@
+// Import JQuery
+const $ = require('jquery');
+// Import npm_f1mv_api
+const {
+    invalidTopic,
+    LiveTimingAPIGraphQL,
+    getF1MVVersion,
+    getAPIVersion,
+    LiveTimingAPIV1
+} = require('npm_f1mv_api')
+
 /* Declaring a variable called host and assigning it the value of "localhost". */
 let host = 'localhost';
 /* Creating a variable called port and assigning it the value of 10101. */
 let port = 10101;
+// Create the config object
+let config = {
+    host: host,
+    port: port
+};
+
 /**
  * It takes a number of milliseconds as an argument, and returns a promise that resolves after that
  * number of milliseconds.
  * @param ms - The amount of time to wait before resolving the promise.
  */
 const timer = (ms) => new Promise((res) => setTimeout(res, ms));
-/* Getting the themes from the filesConfiguration.json file. */
-const {themes} = JSON.parse(httpGet('./filesConfiguration.json'));
-/* Getting the tracks from the filesConfiguration.json file. */
-const {mapThemes} = JSON.parse(httpGet('./filesConfiguration.json'));
+/* Getting the themes and the tracks from the filesConfiguration.json file. */
+const {themes, mapThemes} = JSON.parse(httpGet('./filesConfiguration.json'));
 /* Declaring a variable called debugOn and assigning it a value of false. */
 let debugOn = true;
 let windowTransparency = false;
@@ -118,7 +133,9 @@ function makeid(length) {
 async function sendTelemetry(eulaAccept) {
     log('Checking if telemetry server is available...');
     const url = 'https://DigiFlagTelemetryServer.4rkjjdzwv2.repl.co';
-    const {available} = await JSON.parse(httpGet(`${url}/telemetryAvailable`));
+    const {
+        available
+    } = await JSON.parse(httpGet(`${url}/telemetryAvailable`));
 
     if (!available) {
         log(`Telemetry isn't available for now, please contact @🇫🇷| LapsTime#6837 on the F1MV Discord`);
@@ -137,7 +154,7 @@ async function sendTelemetry(eulaAccept) {
         const telemetryPackage = {
             logs: logs,
             platform: window.navigator.platform,
-            LT_Dump: httpGet(await F1MV_API_BuildLiveTimingUrl('RaceControlMessages,TrackStatus,WeatherData')),
+            LT_Dump: await LiveTimingAPIGraphQL(config, ['RaceControlMessages', 'TrackStatus', 'WeatherData']),
             DigiFlag_Version: DigiFlag_Version,
             F1MV_Host: host,
             F1MV_Port: port,
@@ -170,24 +187,12 @@ async function sendTelemetry(eulaAccept) {
  */
 async function getCurrentSessionInfo() {
     try {
-        const response = await fetch(`http://${host}:${port}/api/graphql`, {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json',
-            },
-            body: JSON.stringify({
-                query: 'query {\n  liveTimingState {\n    SessionInfo\n  }\n}',
-            }),
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            const sessionName = await result.data.liveTimingState.SessionInfo.Meeting.Name;
-            const sessionYear = parseInt(result.data.liveTimingState.SessionInfo.StartDate);
+        const response = await await LiveTimingAPIGraphQL(config, ['SessionInfo'])
+            const sessionName = await response.SessionInfo.Meeting.Name;
+            const sessionYear = parseInt(response.SessionInfo.StartDate);
             raceName = `${sessionYear + ' ' + sessionName}`;
             $('#raceName').text(raceName);
             return raceName;
-        }
     } catch (error) {
         console.log('Unable to Get Data From F1MV GraphQL API:');
         console.error(error);
@@ -274,7 +279,7 @@ function createNewInstance(url, windowTitle) {
             url,
             '_blank',
             `left=${instanceWindowOffsetX},top=${instanceWindowOffsetY},frame=${false},
-            transparent=${true},menubar=no,autoHideMenuBar==${false},width=${instanceWindowWidth},height=${instanceWindowHeight},title=${windowTitle},icon=./icon.ico`
+            transparent=${true},menubar=no,autoHideMenuBar==${false},width=${instanceWindowWidth},height=${instanceWindowHeight},title=${windowTitle},icon=./icon.ico,nodeIntegration=yes,contextIsolation=no`
         );
         return windowInstance;
     } catch (error) {
@@ -317,47 +322,11 @@ function restoreSettings() {
     log('Reset Network Settings To Default');
 }
 
-/**
- * It gets the version of the F1MV app from the server and returns it as an integer.
- * @returns The current version of the F1MV app.
- */
-async function getF1MVVersion() {
-    loadSettings();
-    const res = await JSON.parse(httpGet(`http://${host}:${port}/api/v1/app/version`));
-    let ver = res.version;
-    ver = parseInt(ver.replace(/[\D]/g, ''));
-    log(`Current F1MV Version : ${ver}`);
-    return ver;
-}
-/**
- * If the version of the F1MV is greater than or equal to 180, then the API version needed is v2,
- * otherwise it's v1.
- * @returns A promise.
- */
-async function getAPIVersion() {
-    if ((await getF1MVVersion()) >= 180) {
-        log('Api version needed : v2');
-        return 'v2';
-    } else {
-        log('Api version needed : v1');
-        return 'v1';
-    }
-}
 /* Getting the version of the F1MV. */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const F1MV_version = getF1MVVersion();
+let F1MV_version = getF1MVVersion(config);
 /* Getting the API version of the current page. */
-const F1MV_APIVersion = getAPIVersion();
-/**
- * It returns a URL for the live timing API
- * @param topic - The topic you want to subscribe to.
- * @returns A promise that resolves to a string.
- */
-async function F1MV_API_BuildLiveTimingUrl(topic) {
-    return `http://${host}:${port}/api/${await F1MV_APIVersion}/live-timing${
-        (await F1MV_APIVersion) === 'v2' ? '/state' : ''
-    }/${topic}`;
-}
+const F1MV_APIVersion = getAPIVersion(config);
 
 /**
  * It's a function that enables or disables debug mode.
@@ -643,7 +612,7 @@ it. */
  * @param force - boolean
  * @returns The response is a JSON object.
  */
-function linkF1MV(force) {
+async function linkF1MV(force) {
     if (debugOn) log('Link started...');
     $('#tagLink').removeClass('text-bg-secondary');
     $('#tagLink').removeClass('text-bg-danger');
@@ -660,9 +629,8 @@ function linkF1MV(force) {
     $('#tagLink').addClass('text-bg-primary');
     $('#tagLink').text('Linking to F1MV in progress...');
     try {
-        if (debugOn) log(`URL = http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`);
-        const response = JSON.parse(httpGet(`http://${host}:${port.toString()}/api/v1/live-timing/Heartbeat`));
-        if (response.error === 'No data found, do you have live timing running?') {
+        const response = await LiveTimingAPIV1(config, 'Heartbeat');
+        if (response === invalidTopic) {
             if (force) {
                 linkSuccess();
                 return;
@@ -1040,7 +1008,7 @@ change the gif to rain. */
  */
 async function updateData() {
     if (started)
-        LT_Data = JSON.parse(httpGet(await F1MV_API_BuildLiveTimingUrl('RaceControlMessages,TrackStatus,WeatherData')));
+        LT_Data = await LiveTimingAPIGraphQL(config, ['RaceControlMessages', 'TrackStatus', 'WeatherData'])
     return LT_Data;
 }
 
