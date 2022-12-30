@@ -104,6 +104,13 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
         autoHideMenuBar: true,
         /* Hiding the window until it is ready to be shown. */
         show: false,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            sandbox: false,
+            nodeIntegrationInSubFrames: true, //for subContent nodeIntegration Enable
+            webviewTag: true, //for webView
+        },
     });
     // Event listeners on the window
     window.webContents.on('did-finish-load', () => {
