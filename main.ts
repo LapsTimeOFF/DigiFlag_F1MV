@@ -3,7 +3,7 @@ import express from 'express';
 import {address} from 'ip';
 import path from 'path';
 import request from 'request';
-import {getWindowSizeSettings,getWindowPositionSettings ,saveWindowPos,saveWindowSize} from './storage'
+import {getWindowSizeSettings, getWindowPositionSettings, saveWindowPos, saveWindowSize} from './storage';
 import {failedToLoadAPI} from './errorTable';
 import {themes} from './filesConfiguration.json';
 import {version} from './package.json';
@@ -88,13 +88,13 @@ expressApp.get('/pixoo/:gif/:themeID/:ip', (req, res) => {
  * @param {string} title - The title of the window.
  * @returns A BrowserWindow object.
  */
-function createWindow(width: number, height: number, windowPositionX:number,windowPositionY:number, title: string) {
+function createWindow(width: number, height: number, windowPositionX: number, windowPositionY: number, title: string) {
     const window = new BrowserWindow({
         width: width,
         height: height,
         title: title,
-        x:windowPositionX,
-        y:windowPositionY,
+        x: windowPositionX,
+        y: windowPositionY,
         frame: false,
         transparent: true,
         titleBarStyle: 'hidden',
@@ -111,9 +111,9 @@ function createWindow(width: number, height: number, windowPositionX:number,wind
         window.focus();
         if (version.includes('dev')) window.webContents.openDevTools();
     });
-    window.on('moved',() => saveWindowPos(window.getPosition()))
+    window.on('moved', () => saveWindowPos(window.getPosition()));
     /* Saving the window size when the window is resized. */
-    window.on('resized',() => saveWindowSize(window.getSize()))
+    window.on('resized', () => saveWindowSize(window.getSize()));
     /* Setting the minimum size of the window to 426x240. */
     window.setMinimumSize(256, 256);
     /* Loading the index.html file into the window. */
@@ -146,16 +146,22 @@ function createWindow(width: number, height: number, windowPositionX:number,wind
 
 /* Creating a window and loading the index.html file. */
 app.whenReady().then(() => {
-    const windowSize= getWindowSizeSettings();
-    const windowPosition=getWindowPositionSettings();
-    if (version.includes('dev')) console.log("WindowSize: ",windowSize)
-    if (version.includes('dev')) console.log("WindowPosition: ",windowPosition)
-    createWindow(windowSize[0], windowSize[1],windowPosition[0],windowPosition[1] ,'F1MV - DigiFlag - ' + version);
+    const windowSize = getWindowSizeSettings();
+    const windowPosition = getWindowPositionSettings();
+    if (version.includes('dev')) console.log('WindowSize: ', windowSize);
+    if (version.includes('dev')) console.log('WindowPosition: ', windowPosition);
+    createWindow(windowSize[0], windowSize[1], windowPosition[0], windowPosition[1], 'F1MV - DigiFlag - ' + version);
     app.on('activate', () => {
         // On OS X it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
         if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow(windowSize[0], windowSize[1],windowPosition[0],windowPosition[1] , 'F1MV - DigiFlag - ' + version);
+            createWindow(
+                windowSize[0],
+                windowSize[1],
+                windowPosition[0],
+                windowPosition[1],
+                'F1MV - DigiFlag - ' + version
+            );
         }
     });
 });
