@@ -825,13 +825,13 @@ $(function () {
         $('#networkSettings').append('<h5>Network</h5>');
         $('#networkSettings').append('<span>IP : </span>');
         $('#networkSettings').append(
-            `<input type="text" class="form-control text-bg-dark" placeholder="localhost" value=${config.host} id="ip">`
+            `<input type="text" class="form-control text-bg-dark" placeholder="localhost" value="${config.host}" id="ip">`
         );
         /* Appending a paragraph tag with the text "Port : " and then appending an input tag with the class
         "form-control" and the placeholder "10101" and the value of the variable port and the id "port". */
         $('#networkSettings').append('<span>Port : </span>');
         $('#networkSettings').append(
-            `<input type="text" class="form-control text-bg-dark" maxlength="5" placeholder="10101" value=${config.port} id="port">`
+            `<input type="text" class="form-control text-bg-dark" maxlength="5" placeholder="10101" value="${config.port}" id="port">`
         );
         $('#networkSettings').append(
             $('<div/>', {
@@ -844,8 +844,8 @@ $(function () {
         $('#updateSettings').on('click', () => {
             if (debugOn) log('Editing Settings...');
             /* Assigning the value of the input field with the id of "ip" to the variable "host". */
-            const host = $('#ip').val();
-            config.host = host.toString();
+            const host = $('#ip').val().toString();
+            config.host = host
 
             if (debugOn) log($('#ip').text());
             if (debugOn) log(`IP = ${$('#ip').val()} = ${config.host}`);
