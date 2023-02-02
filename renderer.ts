@@ -1,22 +1,11 @@
-// Import JQuery
-const $ = require('jquery');
-// Import npm_f1mv_api
-const {
-    invalidTopic,
-    LiveTimingAPIGraphQL,
-    getF1MVVersion,
-    getAPIVersion,
-    LiveTimingAPIV1
-} = require('npm_f1mv_api')
-
 /* Declaring a variable called host and assigning it the value of "localhost". */
-let host = 'localhost';
+const host = 'localhost';
 /* Creating a variable called port and assigning it the value of 10101. */
-let port = 10101;
+const port = 10101;
 // Create the config object
-let config = {
+const config = {
     host: host,
-    port: port
+    port: port,
 };
 
 /**
@@ -24,7 +13,7 @@ let config = {
  * number of milliseconds.
  * @param ms - The amount of time to wait before resolving the promise.
  */
-const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+const timer = (ms: number) => new Promise((res) => setTimeout(res, ms));
 /* Getting the themes and the tracks from the filesConfiguration.json file. */
 const {themes, mapThemes} = JSON.parse(httpGet('./filesConfiguration.json'));
 /* Declaring a variable called debugOn and assigning it a value of false. */
@@ -37,15 +26,42 @@ let sc = false;
 let vsc = false;
 let red = false;
 let raining = 0;
-const DigiFlag_Version = JSON.parse(httpGet('./package.json')).version;
-let LT_Data = {};
+const DigiFlag_Version: string = JSON.parse(httpGet('./package.json')).version;
+let LT_Data = {
+    RaceControlMessages: {
+        Messages: [
+            {
+                Message: '',
+                Category: '',
+                SubCategory: '',
+                Flag: '',
+                Scope: '',
+                Sector: '',
+                Mode: '',
+            },
+        ],
+    },
+    TrackStatus: {
+        Status: '',
+        Message: '',
+    },
+    WeatherData: {
+        AirTemp: '',
+        Humidity: '',
+        Pressure: '',
+        Rainfall: '',
+        TrackTemp: '',
+        WindDirection: '',
+        WindSpeed: '',
+    },
+};
 let lightOn = false;
 let lightOnRain = false;
 /* Declaring a variable called currentTheme and assigning it a value of 1. */
 let currentTheme = 1;
 let currentMapTheme = 0;
 let raceName = 'Unknown';
-const currentMode = 0; // 0 for window, 1 for pixoo64
+let currentMode = 0; // 0 for window, 1 for pixoo64
 let disabledBlueFlag = false;
 let useTrackMap = false;
 const pixooIP = '';
@@ -55,7 +71,17 @@ const instanceWindowOffsetX = 100;
 const instanceWindowOffsetY = 200;
 /* Creating an object called oldMessages and adding a property called Messages to it. */
 let oldMessages = {
-    Messages: [],
+    Messages: [
+        {
+            Message: '',
+            Category: '',
+            SubCategory: '',
+            Flag: '',
+            Scope: '',
+            Sector: '',
+            Mode: '',
+        },
+    ],
 };
 
 /**
@@ -64,14 +90,14 @@ let oldMessages = {
  * @returns The responseText property returns the response as a string, or null if the request was
  * unsuccessful or has not yet been sent.
  */
-function httpGet(theUrl) {
+function httpGet(theUrl: string | URL) {
     const xmlHttpReq = new XMLHttpRequest();
     xmlHttpReq.open('GET', theUrl, false);
     xmlHttpReq.send(null);
     return xmlHttpReq.responseText;
 }
 
-const logs = [];
+const logs: string[] = [];
 
 /**
  * If the last item in the logs array is the same as the text passed in, then return. Otherwise, add
@@ -79,7 +105,7 @@ const logs = [];
  * @param text - The text to be logged.
  * @returns the value of the last expression evaluated.
  */
-function log(text) {
+function log(text: string) {
     console.log(text);
     if (logs[logs.length - 1] === text) return;
     logs.push(text);
@@ -91,7 +117,7 @@ function log(text) {
  * @param url - The URL to send the request to.
  * @param body - The body of the request.
  */
-function httpPost(url, body) {
+function httpPost(url: string | URL, body: string) {
     const method = 'POST';
     const postData = body;
     // log(postData);
@@ -112,7 +138,7 @@ function httpPost(url, body) {
  * @param length - The length of the string you want to generate.
  * @returns A string of random characters.
  */
-function makeid(length) {
+function makeid(length: number) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
@@ -130,12 +156,11 @@ function makeid(length) {
  * @param eulaAccept - Boolean, true if you accept the EULA, false if you don't.
  * @returns a promise.
  */
-async function sendTelemetry(eulaAccept) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function sendTelemetry(eulaAccept: boolean) {
     log('Checking if telemetry server is available...');
     const url = 'https://DigiFlagTelemetryServer.4rkjjdzwv2.repl.co';
-    const {
-        available
-    } = await JSON.parse(httpGet(`${url}/telemetryAvailable`));
+    const {available} = await JSON.parse(httpGet(`${url}/telemetryAvailable`));
 
     if (!available) {
         log(`Telemetry isn't available for now, please contact @🇫🇷| LapsTime#6837 on the F1MV Discord`);
@@ -154,12 +179,16 @@ async function sendTelemetry(eulaAccept) {
         const telemetryPackage = {
             logs: logs,
             platform: window.navigator.platform,
-            LT_Dump: await LiveTimingAPIGraphQL(config, ['RaceControlMessages', 'TrackStatus', 'WeatherData']),
+            LT_Dump: await window.api.LiveTimingAPIGraphQL(config, [
+                'RaceControlMessages',
+                'TrackStatus',
+                'WeatherData',
+            ]),
             DigiFlag_Version: DigiFlag_Version,
             F1MV_Host: host,
             F1MV_Port: port,
-            F1MV_Version: await getF1MVVersion(),
-            F1MV_APIVersion: await getAPIVersion(),
+            F1MV_Version: await window.api.getF1MVVersion(config),
+            F1MV_APIVersion: await window.api.getAPIVersion(config),
             debugMode: debugOn,
             currentTrackStatus: {
                 yellow: yellow,
@@ -182,20 +211,57 @@ async function sendTelemetry(eulaAccept) {
     }
 }
 
+let countDownRunning = false;
+/**
+ * If the F1MV Instance is found, start a countdown timer, and when the timer is finished, run the
+ * getCurrentSessionInfo() function and the linkF1MV() function.
+ */
+async function autoConnectF1MV() {
+    try {
+            let timeleft = 3;
+            if (countDownRunning === false) {
+                const countdownTimer = setInterval(function () {
+                    if (timeleft <= 0) {
+                        clearInterval(countdownTimer);
+                        setTimeout(() => {
+                            getCurrentSessionInfo();
+                            linkF1MV();
+                        }, 10);
+                        countDownRunning = false;
+                    } else {
+                        countDownRunning = true;
+                        if ($('#tagLink').hasClass('badge text-bg-danger')) {
+                            $('#tagLink').text('Retrying to Connect to F1MV in : ' + timeleft + ' seconds');
+                        } else if ($('#tagLink').hasClass('badge text-bg-warning')) {
+                            $('#tagLink').text(
+                                'Attempting to Connect to Live / Replay Timing Window : ' + timeleft + ' seconds'
+                            );
+                        } else {
+                            $('#tagLink').text('Attempting to Connect to F1MV in : ' + timeleft + ' seconds');
+                        }
+                    }
+                    timeleft -= 1;
+                }, 1000);
+        }
+    } catch (error) {
+        console.error(error);
+        linkF1MV();
+    }
+}
 /**
  * It gets the current race name from the F1MV API and displays it on the page.
  */
-async function getCurrentSessionInfo() {
+async function getCurrentSessionInfo(): Promise<string> {
     try {
-        const response = await await LiveTimingAPIGraphQL(config, ['SessionInfo'])
-            const sessionName = await response.SessionInfo.Meeting.Name;
-            const sessionYear = parseInt(response.SessionInfo.StartDate);
-            raceName = `${sessionYear + ' ' + sessionName}`;
-            $('#raceName').text(raceName);
-            return raceName;
+        const response = await window.api.LiveTimingAPIGraphQL(config, ['SessionInfo']);
+        const sessionName = await response.SessionInfo.Meeting.Name;
+        const sessionYear = parseInt(response.SessionInfo.StartDate);
+        raceName = `${sessionYear + ' ' + sessionName}`;
+        $('#raceName').text(raceName);
+        if (debugOn) console.log(`Current Race Name: ${raceName}`);
+        return raceName;
     } catch (error) {
-        console.log('Unable to Get Data From F1MV GraphQL API:');
-        console.error(error);
+        console.error('Unable to Get Data From F1MV GraphQL API:' + '\n' + error.message);
     }
 }
 
@@ -204,19 +270,17 @@ async function getCurrentSessionInfo() {
  * @param currentMapTheme - The current map theme that the user has selected.
  * @returns The trackMapPath variable is being returned.
  */
-function getCurrentTrackPath(currentMapTheme) {
-    let trackMapPath;
-    console.log(`Current Race Name: ${raceName}`);
-
+function getCurrentTrackPath(currentMapTheme: number): string {
+    let trackMapPath: string;
     /* Creating a variable called trackMaps and assigning it the value of the trackMaps property of the mapThemes JSON in filesConfiguration.json. */
     const trackMaps = mapThemes[currentMapTheme].trackMaps;
     /* Checking to see if the raceName is in the trackMaps object. If it is, it returns the mapPath for the current race. */
     if (raceName in trackMaps) {
         trackMapPath = trackMaps[raceName];
-        console.log(`Track Map Path: ${trackMapPath}`);
+        if (debugOn) console.log(`Track Map Path: ${trackMapPath}`);
         return trackMapPath;
     } else {
-        return console.log('Map Not Found');
+        if (debugOn) console.log('Map Not Found');
     }
 }
 
@@ -225,15 +289,15 @@ function getCurrentTrackPath(currentMapTheme) {
  * @param host - The hostname of the server.
  * @param port{number} - The port number of the server.
  */
-function saveSettings(host, port) {
+function saveSettings(host: string, port: number): void {
     $('.toast').remove();
     localStorage.setItem('host', host);
     /* The code below is checking if the port is valid or not. If the port is valid, it will save the port in the local storage. If the port is invalid, it will throw an error. */
     if (port >= 0 && port <= 65535) {
-        localStorage.setItem('port', port);
+        localStorage.setItem('port', port.toString());
         if (debugOn) log('Network Settings Saved !');
         $('#networkSettings > h5')
-            .after(`<div class="toast text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+            .after(`<div class="toast text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000" data-bs-autohide="true">
         <div class="toast-header text-bg-success">
           <strong class="text-center me-auto">Network Settings Saved!</strong>
           <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -244,11 +308,14 @@ function saveSettings(host, port) {
         </div>
     </div>
     `);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         $('.toast').toast('show');
+        autoConnectF1MV();
     } else {
         if (debugOn) log('Only Host Settings Saved !');
         $('#networkSettings > h5')
-            .after(`<div class="toast text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            .after(`<div class="toast text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000" data-bs-autohide="true">
         <div class="toast-header text-bg-danger">
           <strong class="me-auto">ERROR: Invalid Port!</strong>
           <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -259,6 +326,8 @@ function saveSettings(host, port) {
         </div>
     </div>
         `);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         $('.toast').toast('show');
     }
 }
@@ -269,7 +338,7 @@ function saveSettings(host, port) {
  * @param windowTitle - The title of the window.
  * @returns The windowInstance variable is being returned.
  */
-function createNewInstance(url, windowTitle) {
+function createNewInstance(url?: string | URL, windowTitle?: string): Window {
     if (arguments.length == 0) {
         url = './index.html';
         windowTitle = 'DigiFlag Instance';
@@ -291,24 +360,25 @@ function createNewInstance(url, windowTitle) {
  * It checks if the host and port data is not null, if it is not null, it sets the host and port
  * variables to the data stored in local storage.
  */
+/**
+ * It clears the local storage and sets host and port back to default.
+ */
 function loadSettings() {
     const hostData = localStorage.getItem('host');
     const portData = localStorage.getItem('port');
     if (hostData && portData !== null) {
-        host = hostData;
-        port = parseInt(portData);
+        config.host = hostData;
+        config.port = parseInt(portData);
     }
 }
 
-/** It clears the local storage and sets host and port back to default.
- */
 function restoreSettings() {
     $('.toast').remove();
     if (localStorage !== null) localStorage.clear();
-    host = 'localhost';
-    port = 10101;
+    config.host = 'localhost';
+    config.port = 10101;
     $('#networkSettings > h5')
-        .after(`<div class="toast text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+        .after(`<div class="toast text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000" data-bs-autohide="true">
         <div class="toast-header text-bg-danger">
           <strong class="text-center me-auto">Reset Network Settings!</strong>
           <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -318,15 +388,15 @@ function restoreSettings() {
         </div>
     </div>
     `);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     $('.toast').toast('show');
     log('Reset Network Settings To Default');
+    autoConnectF1MV();
 }
 
-/* Getting the version of the F1MV. */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-let F1MV_version = getF1MVVersion(config);
-/* Getting the API version of the current page. */
-const F1MV_APIVersion = getAPIVersion(config);
+/** It clears the local storage and sets host and port back to default.
+ */
 
 /**
  * It's a function that enables or disables debug mode.
@@ -334,13 +404,12 @@ const F1MV_APIVersion = getAPIVersion(config);
  * @returns the value of true.
  */
 
-function debugMode(status) {
+function debugMode(status: boolean) {
     if (status === true) {
-        log(`Debug mode enabled`);
+        if (debugOn) log(`Debug Mode Enabled`);
         debugOn = true;
-        linkSuccess();
     } else {
-        log(`Debug mode disabled`);
+        if (debugOn) log(`Debug Mode Disabled`);
         debugOn = false;
     }
     return true;
@@ -348,12 +417,14 @@ function debugMode(status) {
 /* Setting the debugMode to true or false based on the value of debugOn. */
 debugMode(debugOn);
 /**
- * If the current theme is the same as the theme in the array, then return the flag path.
- * @param flag - the name of the flag you want to get the path for
- * @returns The path to the gif.
+ * If the flag is 'void' and the useTrackMap is true and the trackMapPath has a file extension, then
+ * set the flagPath to the trackMapPath, otherwise, loop through the themes and if the theme.id is
+ * equal to the currentTheme, then set the flagPath to the theme.gifs[flag]
+ * @param flag - The flag to get the path for.
+ * @returns The path to the GIF file.
  */
-function getGifPath(flag) {
-    let flagPath;
+function getGifPath(flag: string) {
+    let flagPath = '';
     /* Getting the current track path. */
     const trackMapPath = getCurrentTrackPath(currentMapTheme);
     /* Checking if the flag is 'void' and if the useTrackMap is true and if the trackMapPath has a file extension. */
@@ -379,15 +450,21 @@ function getGifPath(flag) {
  * When the user clicks on a theme, the theme is selected and the next button is enabled.
  * @param {number}id - the id of the theme
  */
-function selectTheme(id) {
+function selectTheme(id: number) {
     if (debugOn) log('Mode selected : ' + id);
     currentTheme = id;
     $('#nextTheme').prop('disabled', false);
 }
-function selectMapTheme(id) {
+
+/**
+ * If the useTrackMap variable is true, then set the currentMapTheme variable to the id of the map
+ * theme selected, get the current track path, and disable the launchDigiFlag button.
+ * @param id - the id of the map theme selected
+ */
+function selectMapTheme(id: string) {
     if (useTrackMap == true) {
         if (debugOn) log('Map Theme selected : ' + mapThemes[id].name);
-        currentMapTheme = id;
+        currentMapTheme = parseInt(id);
         getCurrentTrackPath(currentMapTheme);
         $('#launchDigiFlag').prop('disabled', true);
     }
@@ -403,7 +480,7 @@ function selectMapTheme(id) {
  * @param {string}flag - The flag to turn off
  * @returns The return value of the last statement in the function.
  */
-async function turnOff(flag) {
+async function turnOff(flag: string) {
     if (
         flag === 'ss' ||
         flag === 'rs' ||
@@ -429,7 +506,7 @@ async function turnOff(flag) {
                     }
                 }
             }
-            if (currentMode === 1) {
+            if (currentMode.valueOf() === 1) {
                 const res = httpGet(`http://localhost:9093/pixoo/void/${currentTheme}/${pixooIP}`);
                 if (res !== 'OK') {
                     log('Failed to change GIF on Pixoo64');
@@ -444,7 +521,7 @@ async function turnOff(flag) {
             lightOn = false;
         }
     } else {
-        if (currentMode === 1) {
+        if (currentMode.valueOf() === 1) {
             const res = httpGet(`http://localhost:9093/pixoo/void/${currentTheme}/${pixooIP}`);
             if (res !== 'OK') {
                 log('Failed to change GIF on Pixoo64');
@@ -462,12 +539,12 @@ async function turnOff(flag) {
  * element to the flag path."
  * </code>
  * @param {string}flag - the flag to change to
- * @param {number}mode - 1 = Pixoo64, 2 = DigiFlag
+ * @param {number}mode -  0 = DigiFlag, 1 = Pixoo64
  * @returns a Promise.
  */
-async function changeGif(flag, mode) {
+async function changeGif(flag: string, mode: number) {
     if (flag === 'blue' && disabledBlueFlag) return;
-    if (mode === 1 && currentMode === 1) {
+    if (mode === 1 && currentMode.valueOf() === 1) {
         const res = httpGet(`http://localhost:9093/pixoo/${flag}/${currentTheme}/${pixooIP}`);
         if (res !== 'OK') {
             log('Failed to change GIF on Pixoo64');
@@ -483,17 +560,28 @@ async function changeGif(flag, mode) {
     if (flag === 'rain') lightOnRain = true;
 }
 
+/**
+ * It creates a menu that allows the user to select a theme, a device, and a track map style.
+ */
 function linkSuccess() {
     $('#tagLink').addClass('text-bg-success');
-    $('#tagSession').addClass('text-bg-success');
     $('#tagLink').removeClass('text-bg-primary');
     $('#tagLink').removeClass('text-bg-warning');
-    $('#tagLink').text('Connected to F1MV');
+
+    $('#tagSession').addClass('text-bg-success');
+    $('#tagSession').removeClass('text-bg-primary');
+    $('#tagSession').removeClass('text-bg-warning');
+
+    $('#raceName').addClass('text-bg-success');
+    $('#raceName').removeClass('text-bg-primary');
+    $('#raceName').removeClass('text-bg-warning');
+
+    $('#tagLink').text('Successfully Connected to F1MV Timing Window');
     $('#tagSession').show();
-    $('#checkNetworkSettings').remove();
-    $('#networkSettings').remove();
     $('#LinkF1MV').remove();
     $('#infotag').remove();
+    $('#checkNetworkSettings').remove();
+    $('#networkSettings').remove();
     $('#selectTheme').append(`
     <p class="lead text-center fs-4 mb-1">Select a DigiFlag Theme</p>
         <div id="themes">
@@ -503,7 +591,7 @@ function linkSuccess() {
   <path d="M5 12h14M12 5l7 7-7 7"/>
 </svg></button>
     `);
-    let theme;
+    let theme: {id: number; name: string};
     for (let themeIndex = 0; themeIndex < themes.length; themeIndex++) {
         theme = themes[themeIndex];
         $('#themes').append(`
@@ -523,44 +611,59 @@ function linkSuccess() {
         $('#selectDevice').append(`
         <div class="lead text-center fs-4">Select a Device</div>
             <div class="form-check" id="window">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
-            <label class="form-check-label" for="flexRadioDefault1">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="windowRadio" checked>
+            <label class="form-check-label" for="windowRadio">
                 Window DigiFlag
             </label>
             </div>
             <span class="badge text-bg-danger" id="notAvailable" diabled>Pixoo 64 is Not Compatible with the Selected Theme</span>
             <div class="form-check" id="Pixoo64">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" disabled>
-            <label class="form-check-label" for="flexRadioDefault2">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="pixoo64Radio" disabled>
+            <label class="form-check-label" for="pixoo64Radio">
                 Pixoo 64 DigiFlag
             </label>
             </div>
-            <div class="form-check" id="blueFlag">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                <label class="form-check-label theme" for="flexCheckDefault">
-                    Remove Blue Flags?
-                </label>
-            </div>
-            <div class="form-check form-switch" id="trackMapSwitch">
-            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-            <label class="form-check-label theme" for="flexSwitchCheckDefault">Use TrackMap as Background?</label>
-            </div>
-            <button type="button" id="launchDigiFlag" class="btn btn-success">Start DigiFlag</button>
         `);
+        $('#selectMisc').append(`
+        <div class="lead text-center fs-4">Misc Options</div>
+        <div class="form-check" id="blueFlag">
+        <input class="form-check-input" type="checkbox" value="" id="blueFlagCheckbox">
+        <label class="form-check-label theme" for="blueFlagCheckbox">
+            Remove Blue Flags?
+        </label>
+        </div>
+        <div class="form-check form-switch" id="trackMapSwitch">
+        <input class="form-check-input" type="checkbox" role="switch" id="mapSwitch">
+        <label class="form-check-label theme" for="mapSwitch">Use TrackMap as Background?</label>
+        </div>
+        <button type="button" id="launchDigiFlag" class="btn btn-success">Start DigiFlag</button>`);
         if (themes[currentTheme].compatibleWith.Pixoo64) {
             $('#notAvailable').remove();
-            $('#flexRadioDefault2').prop('disabled', false);
+            $('#pixoo64Radio').prop('disabled', false);
         }
+        $('#selectDevice').on('change', (e) => {
+            if (e.target.id === 'pixoo64Radio') {
+                if (debugOn) console.log('Pixoo64 was Selected');
+                currentMode = 1;
+                if (debugOn) console.log('Current Mode: ' + currentMode);
+                $('#mapSwitch').prop('disabled', true);
+            } else {
+                if (debugOn) console.log('Window was Selected');
+                currentMode = 0;
+                if (debugOn) console.log('Current Mode: ' + currentMode);
+                $('#mapSwitch').prop('disabled', false);
+            }
+        });
         /* Checking if the blue flag is disabled, if it is, it will enable it. If it is not, it will disable
 it. */
         $('#blueFlag').on('change', () => {
             if (disabledBlueFlag) {
                 disabledBlueFlag = false;
-                log('Blue Flags Enabled: ' + disabledBlueFlag);
+                if (debugOn) log('Blue Flags Enabled: ' + disabledBlueFlag);
                 return disabledBlueFlag;
             } else {
                 disabledBlueFlag = true;
-                log('Blue Flags Disabled: ' + disabledBlueFlag);
+                if (debugOn) log('Blue Flags Disabled: ' + disabledBlueFlag);
                 return disabledBlueFlag;
             }
         });
@@ -568,16 +671,15 @@ it. */
         $('#trackMapSwitch').on('change', () => {
             if (useTrackMap) {
                 useTrackMap = false;
-                log('use TrackMap as Background? : ' + useTrackMap);
+                if (debugOn) log('use TrackMap as Background? : ' + useTrackMap);
                 $('#launchDigiFlag').prop('disabled', false);
                 $('#trackMapStyle').remove();
                 return useTrackMap;
             } else {
                 useTrackMap = true;
-                log('use TrackMap as Background? : ' + useTrackMap);
+                if (debugOn) log('use TrackMap as Background? : ' + useTrackMap);
                 $('#launchDigiFlag').prop('disabled', true);
                 $('#trackMapSwitch').after(`<div id="trackMapStyle">
-                    <label id='trackMapLabel' for="trackMapStyleSelect" class="form-label">TrackMap Style</label>
                     <select class="form-select form-select-sm text-bg-dark mapTheme" id="trackMapStyleSelect">`);
                 /* Creating a dropdown menu with the names of the map themes. */
                 $('#trackMapStyleSelect').append(
@@ -591,7 +693,8 @@ it. */
                 }
                 /* Changing the map style when the user selects a different style from the dropdown menu. */
                 $('#trackMapStyleSelect').on('change', () => {
-                    selectMapTheme($('#trackMapStyleSelect').val());
+                    const mapID = $('#trackMapStyleSelect').val();
+                    selectMapTheme(mapID.toString());
                     $('#launchDigiFlag').prop('disabled', false);
                 });
                 return useTrackMap;
@@ -601,6 +704,17 @@ it. */
             $('.menuBox').remove();
             $('body').append(`<img src="${getGifPath('void')}" id="digiflag" class="center-screen">`);
             $('#digiflag').insertBefore('.bottom-screen');
+            $('.bottom-screen:not(:hover)').animate(
+                {
+                    opacity: 0,
+                },
+                2000,
+                'swing',
+                function () {
+                    $('.bottom-screen').removeAttr('style');
+                }
+            );
+            $('#zoomIn,#zoomOut,#zoomReset').show();
             $('#zoomControl').css('z-index', 1);
             started = true;
         });
@@ -612,7 +726,7 @@ it. */
  * @param force - boolean
  * @returns The response is a JSON object.
  */
-async function linkF1MV(force) {
+async function linkF1MV(force?: boolean) {
     if (debugOn) log('Link started...');
     $('#tagLink').removeClass('text-bg-secondary');
     $('#tagLink').removeClass('text-bg-danger');
@@ -627,10 +741,10 @@ async function linkF1MV(force) {
     $('#raceName').removeClass('text-bg-warning');
     $('#raceName').removeClass('text-bg-success');
     $('#tagLink').addClass('text-bg-primary');
-    $('#tagLink').text('Linking to F1MV in progress...');
+    $('#tagLink').text('Linking to F1MV In Progress...');
     try {
-        const response = await LiveTimingAPIV1(config, 'Heartbeat');
-        if (response === invalidTopic) {
+        const response = await window.api.LiveTimingAPIGraphQL(config, 'Heartbeat');
+        if (!response) {
             if (force) {
                 linkSuccess();
                 return;
@@ -641,8 +755,16 @@ async function linkF1MV(force) {
             $('#tagLink').removeClass('text-bg-primary');
             $('#raceName').removeClass('text-bg-primary');
             $('#tagSession').removeClass('text-bg-primary');
-            $('#tagLink').text('You are Connected to F1MV, but it seems like your Live Timing Page is not running.');
+            $('#networkSettings').hide();
+            $('#tagLink').text(
+                'You are Connected to F1MV, but it seems like your Live / Replay Timing Window is not running.'
+            );
+            $('#checkNetworkSettings,#infotag').hide();
             $('#raceName').text('Unable to Retrieve Current Session from Live Timing');
+            $('#LinkF1MV').text('Link to F1MV');
+            setTimeout(() => {
+                autoConnectF1MV();
+            }, 1000);
         } else {
             linkSuccess();
         }
@@ -654,31 +776,39 @@ async function linkF1MV(force) {
         /* Adding the class text-bg-danger to the element with the id tagLink. */
         $('#tagLink').addClass('text-bg-danger');
         $('#tagSession').addClass('text-bg-danger');
-        /* Removing the class text-bg-primary from the element with the id tagLink. */
+        $('#raceName').addClass('text-bg-danger');
         $('#tagLink').removeClass('text-bg-primary');
-        /* Removing the class text-bg-warning from the element with the id tagLink. */
         $('#tagLink').removeClass('text-bg-warning');
         /* Changing the text of the tag with the id tagLink to Failed to connect to F1MV */
         $('#tagLink').text('Failed to connect to F1MV');
         $('#raceName').text('Failed to Retrieve Current Session');
+        $('#networkSettings').show();
+        $('#checkNetworkSettings,#infotag').show();
         /* Changing the text of the element with the id "infotag" to "Maybe you are trying to connect
         to another host? Maybe your port isn't the default one?" */
         $('#infotag').text("Maybe you are trying to connect to another host? Maybe your port isn't the default one?");
         /* The above code is changing the text of the element with the id of checkNetworkSettings to
        Click on the Settings Gear Above to check your Network Settings. */
         $('#checkNetworkSettings').text(
-            ' Move your Mouse to the Bottom Right Corner & Click on the Settings Gear to check your Network Settings.'
+            'Move your Mouse to the Bottom Right Corner & Click on the Settings Gear to check your Network Settings.'
         );
+        setTimeout(() => {
+            autoConnectF1MV();
+        }, 1000);
     }
 }
+
 /* A function that is called when the page is loaded. */
 $(function () {
+    loadSettings();
+    if(countDownRunning===false){
+        autoConnectF1MV()
+     }
     $('#version').text(`DigiFlag Version: ${DigiFlag_Version}`);
     $('#raceName').text(raceName);
-    $('#LinkF1MV').on('click', () => {
-        linkF1MV();
-        getCurrentSessionInfo();
-    });
+    $('.bottom-screen:not(:hover)').css('opacity', 1);
+    $('#zoomIn,#zoomOut,#zoomReset').hide();
+    $('#LinkF1MV').remove()
 
     /* The code below is appending a SVG globe icon, a h5 tag with the text "Network", a paragraph tag
     with the text "IP : ", an input tag with the class "form-control" and the placeholder
@@ -693,15 +823,15 @@ $(function () {
         <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
       </svg>`);
         $('#networkSettings').append('<h5>Network</h5>');
-        $('#networkSettings').append('<p>IP : </p>');
+        $('#networkSettings').append('<span>IP : </span>');
         $('#networkSettings').append(
-            `<input type="text" class="form-control text-bg-dark" placeholder="localhost" value=${host} id="ip">`
+            `<input type="text" class="form-control text-bg-dark" placeholder="localhost" value=${config.host} id="ip">`
         );
         /* Appending a paragraph tag with the text "Port : " and then appending an input tag with the class
         "form-control" and the placeholder "10101" and the value of the variable port and the id "port". */
-        $('#networkSettings').append('<p>Port : </p>');
+        $('#networkSettings').append('<span>Port : </span>');
         $('#networkSettings').append(
-            `<input type="number" class="form-control text-bg-dark" placeholder="10101" value=${port} id="port">`
+            `<input type="text" class="form-control text-bg-dark" maxlength="5" placeholder="10101" value=${config.port} id="port">`
         );
         $('#networkSettings').append(
             $('<div/>', {
@@ -715,22 +845,24 @@ $(function () {
             if (debugOn) log('Editing Settings...');
             /* Assigning the value of the input field with the id of "ip" to the variable "host". */
             const host = $('#ip').val();
-            if (debugOn) log($('#ip').val() !== '');
-            if (debugOn) log(`IP = ${$('#ip').val()} = ${host}`);
+            config.host = host.toString();
+
+            if (debugOn) log($('#ip').text());
+            if (debugOn) log(`IP = ${$('#ip').val()} = ${config.host}`);
             /* Assigning the value of the input field with the id of port to the variable port. */
-            const port = $('#port').val();
-            if (debugOn) log($('#port').val() !== '');
-            if (debugOn) log(`PORT = ${$('#port').val()} = ${port}`);
-            saveSettings(host, port);
-            /* Getting the version of the F1MV. */
-            getF1MVVersion();
+            const port = $('#port').val().toString();
+
+            config.port = parseInt(port);
+
+            if (debugOn) log($('#port').text());
+            if (debugOn) log(`PORT = ${$('#port').val()} = ${config.port}`);
+            saveSettings(config.host, config.port);
         });
         $('#restoreSettings').on('click', () => {
             /* Setting the value of the input fields back to localhost and 10101. */
             $('#ip').val('localhost');
             $('#port').val(10101);
             restoreSettings();
-            getF1MVVersion();
         });
     });
     /* Creating a new instance of the class when the button is clicked. */
@@ -745,117 +877,93 @@ $(function () {
     $('#zoomIn').on('click', () => {
         const zoomScaleAdd = (scale = scale + 0.25);
         if (zoomScaleAdd >= 1.75) scale = 0.75;
-        $('.center-screen').css({transform: 'translate(-50%,-50%) scale(' + zoomScaleAdd + ')'});
+        $('.center-screen').css({
+            transform: 'translate(-50%,-50%) scale(' + zoomScaleAdd + ')',
+        });
     });
     /* Decreasing the zoom of the image by 20px when the button is clicked. */
     $('#zoomOut').on('click', () => {
         const zoomScaleSubtract = (scale = scale - 0.25);
         if (zoomScaleSubtract <= 0.25) scale = 1.25;
-        $('.center-screen').css({transform: 'translate(-50%,-50%) scale(' + zoomScaleSubtract + ')'});
+        $('.center-screen').css({
+            transform: 'translate(-50%,-50%) scale(' + zoomScaleSubtract + ')',
+        });
     });
     $('#zoomReset').on('click', () => {
         $('.center-screen').removeAttr('style');
     });
 });
-/**
- * It checks for new messages from the F1MV API, and if there are any, it checks what the message is and
- * then displays the appropriate GIF
- * @returns a promise.
- */
+
 const checkRCM = async () => {
     if (started === false) return;
-    /* Extract all the RCMs from the Live Timing data */
     const result = LT_Data.RaceControlMessages;
-    /* Checking to see if the number of messages in the result is the same as the number of messages in the
-oldMessages. If it is, then there are no new messages. */
     if (result.Messages.length === oldMessages.Messages.length) {
         if (debugOn) log('No new messages.');
     } else {
         if (debugOn) log('New message');
-        /* Getting the last message from the oldMessages array and assigning it to the message variable. */
-        const message = result.Messages[oldMessages.Messages.length];
         oldMessages = result;
-        /* Creating an object with the properties Category, Flag, Sector, and Scope. */
-        const messageData = {
-            Category: '',
-            Flag: '',
-            Sector: undefined,
-            Scope: undefined,
-        };
-        /* Checking if the message contains the text "BLACK AND ORANGE" and if it does, it sets the
-           category to "Flag" and the flag to "BLACK AND ORANGE". */
-        if (message.Message.match(/BLACK AND ORANGE/i)) {
-            messageData.Category = 'Flag';
-            messageData.Flag = 'BLACK AND ORANGE';
+
+        /* Filtering the messages to only include the ones that are of interest to us. */
+        const filteredMessages = result.Messages.filter(
+            (message) =>
+                message.Category === 'Flag' ||
+                message.Category === 'SafetyCar' ||
+                message.Category === 'TrackSurfaceSlippery' ||
+                message.Message.match(/ROLLING START/i) ||
+                message.Message.match(/STANDING START/i)
+        );
+        /* Taking the last element of the array and returning it. */
+        const recentMessage = filteredMessages.slice(-1)[0];
+
+        if (debugOn) console.log('Most Recent Filtered Message: ');
+        console.table(recentMessage);
+        if (debugOn) console.log('Most Recent RCM Message: ');
+        console.table(result.Messages.slice(-1)[0]);
+        /* Checking if the message contains the word "BLACK AND ORANGE" and if it does, it sets the category to "Flag" and the flag to "BLACK AND ORANGE". */
+        if (recentMessage.Message.match(/BLACK AND ORANGE/i)) {
+            recentMessage.Category = 'Flag';
+            recentMessage.Flag = 'BLACK AND ORANGE';
         }
-        /* Checking if the message contains the word "Safety Car" and if it does, it sets the category
-           to "SafetyCar". */
-        if (message.Message.match(/SAFETY CAR/i)) {
-            messageData.Category = 'SafetyCar';
-        }
-        /* Checking if the message contains the words "Virtual Safety Car" and if it does, it sets the
-        category to "VirtualSafetyCar". */
-        if (message.Message.match(/VIRTUAL SAFETY CAR/i)) {
-            messageData.Category = 'VirtualSafetyCar';
-        }
-        /* Checking if the message contains the text "TRACK SURFACE SLIPPERY" and if it does, it sets the
-Category to "TrackSurfaceSlippery". */
-        if (message.Message.match(/TRACK SURFACE SLIPPERY/i)) {
-            messageData.Category = 'TrackSurfaceSlippery';
-        }
-        /* Checking if the message contains the text "ROLLING START" and if it does, it will change the gif to
-the "rs" gif and then turn it off after 20 seconds. */
-        if (message.Message.match(/ROLLING START/i)) {
+        /* Checking if the message contains the word "ROLLING START" and if it does, it will change the gif to "rs" and then turn it off after 20 seconds. */
+        if (
+            recentMessage.Message.match(/ROLLING START/i) &&
+            //Fixes an issue When the Rolling Start Flag Would Display when a ROLLING START PROCEDURE INFRINGEMENT Occurs
+            recentMessage.SubCategory !== 'IncidentInvestigationAfterSession'
+        ) {
             changeGif('rs', currentMode);
             await timer(20000);
             turnOff('rs');
             return;
         }
-        /* Checking if the message contains the text "STANDING START" and if it does, it will change the gif to
-the "ss" gif and then turn it off after 20 seconds. */
-        if (message.Message.match(/STANDING START/i)) {
+        if (recentMessage.Message.match(/STANDING START/i)) {
             changeGif('ss', currentMode);
             await timer(20000);
             turnOff('ss');
             return;
         }
-        /* Checking if the message.Flag is undefined. If it is, it will set the messageData.Category to "Flag"
-and set the messageData.Flag, messageData.Sector, and messageData.Scope to the values of the
-message.Flag, message.Sector, and message.Scope. */
-        if (message.Flag !== undefined) {
-            messageData.Category = 'Flag';
-            messageData.Flag = message.Flag;
-            messageData.Sector = message.Sector;
-            messageData.Scope = message.Scope;
-        }
-        if (debugOn) log(messageData);
-        /* Changing the gif image to a slippery image. */
-        if (messageData.Category === 'TrackSurfaceSlippery') changeGif('slippery', currentMode);
-        /* Checking if the messageData.Category is equal to "SafetyCar" and if it is, it sets the sc variable
-to true and calls the changeGif function with the parameters "sc" and currentMode. */
-        if (messageData.Category === 'SafetyCar') {
+
+        if (recentMessage.Category === 'TrackSurfaceSlippery') changeGif('slippery', currentMode);
+
+        if (recentMessage.Category === 'SafetyCar') {
             sc = true;
             changeGif('sc', currentMode);
         }
-        /* Checking if the messageData.Category is equal to "VirtualSafetyCar" and if it is, it sets the vsc
-variable to true and calls the changeGif function with the parameters "vsc" and currentMode. */
-        if (messageData.Category === 'VirtualSafetyCar') {
+        if (recentMessage.Mode === 'VIRTUAL SAFETY CAR') {
             vsc = true;
             changeGif('vsc', currentMode);
         }
-        /* Checking if the messageData.Flag is equal to "CHEQUERED" and if it is, it will change the gif to
-"chequered" and then wait for 60 seconds and then turn off the gif. */
-        if (messageData.Flag === 'CHEQUERED') {
+        if (recentMessage.Flag === 'CHEQUERED') {
             changeGif('chequered', currentMode);
             await timer(60000);
             turnOff('chequered');
             return;
         }
-        /* Checking if the messageData.Scope is equal to "Track" and if it is, it is checking if the
-messageData.Flag is equal to "RED". If it is, it is changing the gif to "red" and returning. If it
-is not, it is setting sc, vsc, and red to false, changing the gif to "green", waiting 2.5 seconds, and changing the gif to "void". */
-        if (messageData.Scope === 'Track') {
-            if (messageData.Flag === 'RED') {
+        /* Checking if the recent message is a track message and if it is, it is checking if the flag is
+red. If it is, it changes the gif to red. If it is not, it sets the sc, vsc, and red
+variables to false and then changes the gif to green. It then waits 2.5 seconds and turns off
+the green gif. */
+        if (recentMessage.Scope === 'Track') {
+            if (recentMessage.Flag === 'RED') {
                 changeGif('red', currentMode);
                 return;
             }
@@ -867,43 +975,25 @@ is not, it is setting sc, vsc, and red to false, changing the gif to "green", wa
             turnOff('green');
             return;
         }
-
-        /* Checking to see if the messageData.Category is equal to "Flag" */
-        if (messageData.Category === 'Flag') {
-            switch (messageData.Flag) {
-                /* A switch statement that is checking the value of the variable currentMode. If the value of
-                currentMode is "YELLOW", then the changeGif function is called with the parameters "yellow" and
-                currentMode. */
+        if (recentMessage.Category === 'Flag') {
+            switch (recentMessage.Flag) {
                 case 'YELLOW':
                     changeGif('yellow', currentMode);
                     break;
-                /* A switch statement that is checking the value of the variable currentMode. If the value of
-                    currentMode is "DOUBLE YELLOW", then the function changeGif is called with the parameters "dyellow"
-                    and currentMode. */
                 case 'DOUBLE YELLOW':
                     changeGif('dyellow', currentMode);
                     break;
-                /* A switch statement that is checking the currentMode variable. If the currentMode variable is equal
-                    to "CLEAR" then it will change the gif to green and then turn off the green light. */
                 case 'CLEAR':
                     changeGif('green', currentMode);
                     await timer(2500);
                     turnOff('green');
                     break;
-                /* A switch statement that is checking the currentMode variable. If the currentMode variable is equal
-                    to "RED" then it will set the red variable to true and call the changeGif function with the
-                    parameters "red" and currentMode. It will then wait for 90 seconds and then call the turnOff
-                    function with the parameter "red". */
                 case 'RED':
                     red = true;
                     changeGif('red', currentMode);
                     await timer(90000);
                     turnOff('red');
                     break;
-                /* A switch statement that is checking the currentMode variable. If the currentMode variable is equal
-                    to "BLUE" then it will set the red variable to true and call the changeGif function with the
-                    parameters "blue" and currentMode. It will then wait for 1 second and then call the turnOff
-                    function with the parameter "blue". */
                 case 'BLUE':
                     changeGif('blue', currentMode);
                     await timer(1000);
@@ -990,9 +1080,10 @@ async function checkRain() {
     /* Extract if it's raining or not from the Live Timing data */
     const Rain = LT_Data.WeatherData.Rainfall;
 
-    /* Checking if the value of the variable Rain is equal to 1. If it is, then the variable raining is set
-to true. */
-    raining = Rain === '1';
+    /* Checking if the variable Rain is equal to 1. If it is, it sets the variable raining to 1. */
+    if (Rain === '1') {
+        raining = 1;
+    }
 
     /* Checking if it is raining and if the light is on. If it is raining and the light is on, it will
 change the gif to rain. */
@@ -1008,7 +1099,7 @@ change the gif to rain. */
  */
 async function updateData() {
     if (started)
-        LT_Data = await LiveTimingAPIGraphQL(config, ['RaceControlMessages', 'TrackStatus', 'WeatherData'])
+        LT_Data = await window.api.LiveTimingAPIGraphQL(config, ['RaceControlMessages', 'TrackStatus', 'WeatherData']);
     return LT_Data;
 }
 
@@ -1030,7 +1121,6 @@ function toggleTransparency() {
         windowTransparency = false;
     } else {
         $('body').css('background-color', 'transparent');
-        $('#menuBox').removeAttr('style');
         windowTransparency = true;
     }
 }

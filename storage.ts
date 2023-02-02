@@ -35,15 +35,14 @@ export function getWindowSizeSettings() {
  * window position.
  * @returns An array of two numbers.
  */
-export function getWindowPositionSettings(){
-
-        /* Getting the width of the screen and multiplying it by 0.8. */
-    const defaultWindowPositon = [];
+export function getWindowPositionSettings() {
+    /* Getting the width of the screen and multiplying it by 0.8. */
+    const defaultWindowPositon = []
     const windowPos = storage.get('lastWindowPosition');
     if (windowPos) return windowPos;
     else {
         storage.set('lastWindowPosition', defaultWindowPositon);
-        return defaultWindowPositon
+        return defaultWindowPositon;
     }
 }
 /**
