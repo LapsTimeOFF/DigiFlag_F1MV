@@ -261,7 +261,7 @@ async function getCurrentSessionInfo(): Promise<string> {
         if (debugOn) console.log(`Current Race Name: ${raceName}`);
         return raceName;
     } catch (error) {
-        console.error('Unable to Get Data From F1MV GraphQL API:' + '\n' + error.message);
+        if (debugOn) console.error('Unable to Get Data From F1MV GraphQL API:' + '\n' + error.message);
     }
 }
 
@@ -391,7 +391,7 @@ function restoreSettings() {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     $('.toast').toast('show');
-    log('Reset Network Settings To Default');
+    if (debugOn) log('Reset Network Settings To Default');
     autoConnectF1MV();
 }
 
