@@ -19,9 +19,9 @@ export function getWindowSizeSettings() {
     /* Getting the height of the screen and multiplying it by 0.8. */
     const height = dimensions.height * 0.8;
     /* Creating an array with the width and height of the screen. */
-    const defaultWindowSize = [width, height];
+    const defaultWindowSize:number[] = [width, height];
     /* Getting the value of the key "lastWindowSize" from the storage object. */
-    const windowSize = storage.get('lastWindowSize');
+    const windowSize = storage.get('lastWindowSize') as number[];
 
     /* Checking if the windowSize is defined, if it is, it returns the windowSize, if it is not, it sets the size to the defaultWindowSize and returns the defaultWindowSize. */
     if (windowSize) return windowSize;
@@ -36,9 +36,8 @@ export function getWindowSizeSettings() {
  * @returns An array of two numbers.
  */
 export function getWindowPositionSettings() {
-    /* Getting the width of the screen and multiplying it by 0.8. */
-    const defaultWindowPositon = []
-    const windowPos = storage.get('lastWindowPosition');
+    const defaultWindowPositon:number[] = []
+    const windowPos = storage.get('lastWindowPosition') as number[];
     if (windowPos) return windowPos;
     else {
         storage.set('lastWindowPosition', defaultWindowPositon);

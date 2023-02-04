@@ -6,7 +6,6 @@
     "main": "dist/main.js",
     "scripts": {
         "start": "pnpm run build && electron-forge start",
-        "dev": "electron-forge start",
         "build": "tsc",
         "package": "electron-forge package",
         "make": "electron-forge make",

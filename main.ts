@@ -31,7 +31,7 @@ expressApp.get('/getGif/:gif/:themeID', (req, res) => {
     const {gif, themeID} = req.params;
     const theme = themes[parseInt(themeID)];
     const gifPath = theme.gifs[gif];
-    res.sendFile(`${__dirname}/${gifPath}`);
+    res.sendFile(`${gifPath}`, {root: '.'});
 });
 /* A route that is used to get a gif from the server. */
 expressApp.get('/getGifPixoo/:gif/:themeID', (req, res) => {
@@ -44,7 +44,7 @@ expressApp.get('/getGifPixoo/:gif/:themeID', (req, res) => {
         return;
     }
     const gifPath = theme.gifs.pixoo64[gif];
-    res.sendFile(`${__dirname}/${gifPath}`);
+    res.sendFile(`${gifPath}`, {root: '.'});
 });
 /* A route that is used to change the GIF on the Pixoo64. */
 expressApp.get('/pixoo/:gif/:themeID/:ip', (req, res) => {
