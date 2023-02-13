@@ -6,7 +6,6 @@ import request from 'request';
 import {getWindowSizeSettings, getWindowPositionSettings, saveWindowPos, saveWindowSize} from './storage';
 import {failedToLoadAPI} from './errorTable';
 import {themes} from './filesConfiguration.json';
-import {version} from './package.json';
 
 /* Simple auto-reloading for Electron apps during development
 When files used in the main process are changed, the app is restarted.
@@ -30,14 +29,14 @@ expressApp
 /* A route that is used to get a gif from the server. */
 expressApp.get('/getGif/:gif/:themeID', (req, res) => {
     const {gif, themeID} = req.params;
-    const theme = themes[themeID];
+    const theme = themes[parseInt(themeID)];
     const gifPath = theme.gifs[gif];
-    res.sendFile(`${__dirname}/${gifPath}`);
+    res.sendFile(`${gifPath}`, {root: '.'});
 });
 /* A route that is used to get a gif from the server. */
 expressApp.get('/getGifPixoo/:gif/:themeID', (req, res) => {
     const {gif, themeID} = req.params;
-    const theme = themes[themeID];
+    const theme = themes[parseInt(themeID)];
     /* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
     if (theme.compatibleWith.Pixoo64 !== true) {
         res.statusCode = 400;
@@ -45,12 +44,12 @@ expressApp.get('/getGifPixoo/:gif/:themeID', (req, res) => {
         return;
     }
     const gifPath = theme.gifs.pixoo64[gif];
-    res.sendFile(`${__dirname}/${gifPath}`);
+    res.sendFile(`${gifPath}`, {root: '.'});
 });
 /* A route that is used to change the GIF on the Pixoo64. */
 expressApp.get('/pixoo/:gif/:themeID/:ip', (req, res) => {
     const {gif, themeID, ip} = req.params;
-    const theme = themes[themeID];
+    const theme = themes[parseInt(themeID)];
     /* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
     if (theme.compatibleWith.Pixoo64 !== true) {
         res.statusCode = 400;
@@ -80,6 +79,8 @@ expressApp.get('/pixoo/:gif/:themeID/:ip', (req, res) => {
     );
 });
 
+/* Getting the version of the app from the package.json file. */
+const DigiFlagVersion= process.env.npm_package_version as string
 /**
  * `createWindow` is a function that takes three arguments: `width`, `height`, and `title`, and returns
  * a new `BrowserWindow` object
@@ -99,17 +100,20 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
         transparent: true,
         titleBarStyle: 'hidden',
         /* Setting the icon of the window. */
-        icon: path.join(__dirname, 'icon.ico'),
+        icon: path.join('./icon.ico'),
         alwaysOnTop: false,
         autoHideMenuBar: true,
         /* Hiding the window until it is ready to be shown. */
         show: false,
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: true,
+        },
     });
     // Event listeners on the window
     window.webContents.on('did-finish-load', () => {
         window.show();
-        window.focus();
-        if (version.includes('dev')) window.webContents.openDevTools();
+        if (DigiFlagVersion.includes('dev')) window.webContents.openDevTools();
     });
     window.on('moved', () => saveWindowPos(window.getPosition()));
     /* Saving the window size when the window is resized. */
@@ -117,30 +121,41 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
     /* Setting the minimum size of the window to 426x240. */
     window.setMinimumSize(256, 256);
     /* Loading the index.html file into the window. */
-    window.loadFile(path.join(__dirname, 'index.html'));
+    window.loadFile(path.join('index.html'));
     /* A function that is called when a new window is opened. It checks the URL of the window and sets
    the options of the window accordingly. */
-    window.webContents.setWindowOpenHandler(({url}) => {
-        if (url === 'https://github.com/LapsTimeOFF/DigiFlag_F1MV') {
-            return {
-                action: 'allow',
-                overrideBrowserWindowOptions: {
-                    frame: true,
-                    backgroundColor: '#131416',
-                },
-            };
-        } else {
-            url === './index.html';
-            return {
-                action: 'allow',
-                overrideBrowserWindowOptions: {
-                    frame: false,
-                    transparent: true,
-                    fullscreenable: false,
-                },
-            };
-        }
-    });
+   window.webContents.setWindowOpenHandler(({ url }) => {
+    if (url === 'https://github.com/LapsTimeOFF/DigiFlag_F1MV') {
+        return {
+            action: 'allow',
+            overrideBrowserWindowOptions: {
+                frame: true,
+                backgroundColor: '#131416',
+            },
+        };
+    }
+    else if (url.includes('index.html')) {
+        return {
+            action: 'allow',
+            overrideBrowserWindowOptions: {
+                frame: false,
+                transparent: true,
+                fullscreenable: false,
+                minWidth:256,
+                minHeight:256,
+                webPreferences:{
+                    nodeIntegration:true,
+                    preload: path.join(__dirname, 'preload.js')
+                }
+            },
+        };
+    }
+    else {
+        return {
+            action: 'deny'
+        };
+    }
+});
     return window;
 }
 
@@ -148,9 +163,9 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
 app.whenReady().then(() => {
     const windowSize = getWindowSizeSettings();
     const windowPosition = getWindowPositionSettings();
-    if (version.includes('dev')) console.log('WindowSize: ', windowSize);
-    if (version.includes('dev')) console.log('WindowPosition: ', windowPosition);
-    createWindow(windowSize[0], windowSize[1], windowPosition[0], windowPosition[1], 'F1MV - DigiFlag - ' + version);
+    if (DigiFlagVersion.includes('dev')) console.log('WindowSize: ', windowSize);
+    if (DigiFlagVersion.includes('dev')) console.log('WindowPosition: ', windowPosition);
+    createWindow(windowSize[0], windowSize[1], windowPosition[0], windowPosition[1], 'DigiFlag - ' + DigiFlagVersion);
     app.on('activate', () => {
         // On OS X it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
@@ -160,7 +175,7 @@ app.whenReady().then(() => {
                 windowSize[1],
                 windowPosition[0],
                 windowPosition[1],
-                'F1MV - DigiFlag - ' + version
+                'DigiFlag - ' + DigiFlagVersion
             );
         }
     });

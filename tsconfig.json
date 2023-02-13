@@ -1,14 +1,16 @@
 {
-  "compilerOptions": {
-    "skipLibCheck": true,
-    "target": "ES2022",
-    "module": "CommonJS",
-    "moduleResolution": "Node",
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "removeComments": true
-  },
-  "include": ["main.ts"],
-  "exclude": ["node_modules"]
+    "compilerOptions": {
+        "skipLibCheck": true,
+        "target": "ES2022",
+        "module": "CommonJS",
+        "moduleResolution": "Node",
+        "allowJs": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "removeComments": true,
+        "useUnknownInCatchVariables": false,
+        "outDir": "dist"
+    },
+    "include": ["**/*.ts"],
+    "exclude": ["node_modules"]
 }

@@ -156,7 +156,7 @@
       "name": "Street Map",
       "season": 2022,
       "trackMaps": {
-        "2022 Bahrain Grand Prix": "tracks/2022/",
+        "2022 Bahrain Grand Prix": "tracks/2022/Bahrain/Bahrain Grand Prix_16-9.png",
         "2022 Saudi Arabian Grand Prix": "tracks/2022/",
         "2022 Emilia Romagna Grand Prix": "tracks/2022/",
         "2022 Miami Grand Prix": "tracks/2022/",
@@ -184,7 +184,7 @@
       "name": "Satellite Map",
       "season": 2022,
       "trackMaps": {
-        "2022 Bahrain Grand Prix": "tracks/2022/",
+        "2022 Bahrain Grand Prix": "tracks/2022/Bahrain/Bahrain Grand Prix_16-9_sat.png",
         "2022 Saudi Arabian Grand Prix": "tracks/2022/",
         "2022 Emilia Romagna Grand Prix": "tracks/2022/",
         "2022 Miami Grand Prix": "tracks/2022/",

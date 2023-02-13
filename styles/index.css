@@ -26,6 +26,7 @@ body {
     min-height: 100vh;
     overflow: hidden;
     -webkit-app-region: drag;
+    transition: all 0.2s ease-in-out;
 }
 
 img {
@@ -86,8 +87,10 @@ svg {
     flex-direction: column;
     justify-content: center;
     align-self: center;
+    align-items: center;
     -webkit-app-region: drag;
     user-select: none;
+    transition: all 0.2s ease-in-out;
 }
 
 #version {
@@ -97,6 +100,7 @@ svg {
     align-self: center;
     margin-bottom: 10px !important;
     border-radius: 128px !important;
+    text-transform: capitalize;
 }
 
 button {
@@ -121,6 +125,7 @@ button:focus-within {
 .networkButtonsContainer {
     display: flex;
     flex-direction: column;
+    margin-top: 10px;
 }
 
 .networkButtonsContainer > button {
@@ -171,6 +176,7 @@ button:focus-within {
 
 #networkSettings > .form-control {
     display: flex;
+    width: fit-content;
     flex-direction: row;
     justify-content: center;
     align-self: center;
@@ -181,6 +187,12 @@ button:focus-within {
 #networkSettings > input:focus {
     border-color: #3ea6ff;
     box-shadow: 0 0 0 0.1rem #3ea6ff;
+    transition: all 0.6s ease-in-out;
+}
+#networkSettings > input:hover:not(:focus) {
+    border-color: #eee !important;
+    box-shadow: 0 0 0 1px #eee;
+    transition: all 0.3s ease-in-out;
 }
 
 #selectTheme {
@@ -190,18 +202,29 @@ button:focus-within {
     -webkit-app-region: none;
 }
 
-#themes {
-    display: inline-flex;
-    flex-direction: inherit;
-    flex-wrap: wrap;
-    align-items: center;
-}
-
 #selectDevice {
     display: flex;
     flex-direction: column;
     align-items: center;
     -webkit-app-region: none;
+}
+#selectMisc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    -webkit-app-region: none;
+}
+#mapSwitch:hover[disabled] {
+    background-color: #dc3545 !important;
+    transition: color 0.1s linear;
+    cursor: not-allowed;
+}
+
+#themes {
+    display: inline-flex;
+    flex-direction: inherit;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 #F1MVLinkContainer {
@@ -218,6 +241,7 @@ button:focus-within {
     align-self: center;
     margin-bottom: 10px !important;
     border-radius: 128px !important;
+    text-transform: capitalize;
 }
 
 #tagSession {
@@ -233,7 +257,7 @@ button:focus-within {
     margin-bottom: 5px;
 }
 
-.form-check-label.theme:hover {
+.form-check-label:hover {
     color: #31e994;
     transition: color 0.2s ease-in-out;
     cursor: pointer;
@@ -261,8 +285,12 @@ input[type='radio']:checked {
     cursor: pointer;
 }
 
+input:invalid {
+    border: 2px solid red;
+}
+
 #trackMapStyle {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -389,6 +417,14 @@ svg.globe {
     transition: all 0.2s ease-in-out;
     border: none !important;
 }
+.btn-close-white:hover {
+    filter: brightness(0) saturate(100%) invert(18%) sepia(93%) saturate(6931%) hue-rotate(347deg) brightness(97%)
+        contrast(112%);
+    border: none !important;
+}
+.toast {
+    box-shadow: none;
+}
 .toast .btn-close {
     transition: all 0.2s ease-in-out;
     border: none !important;
@@ -396,6 +432,7 @@ svg.globe {
 .toast-body > p {
     user-select: text !important;
     -webkit-user-select: text !important;
+    text-align: center;
 }
 
 #closeButtonContainer {
@@ -409,6 +446,10 @@ svg.globe {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-evenly;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .offcanvas-component {
