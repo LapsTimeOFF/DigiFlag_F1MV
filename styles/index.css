@@ -7,32 +7,28 @@ main,
 }
 
 * {
+    font-family: Inter, sans-serif;
+    font-size: calc(6px + 2vmin);
+    user-select: none;
+    transition: all 0.2s ease-in-out;
     color-scheme: dark;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeSpeed;
-    -webkit-user-select: none;
-    transition: all 0.2s ease-in-out;
-    font-size: calc(7px + 2vmin);
-    font-family: 'Inter', sans-serif;
+    text-rendering: optimizespeed;
     -webkit-user-drag: none;
-    user-select: none;
 }
 
 body {
-    background: #383838;
-    color: white;
     width: 100%;
     min-height: 100vh;
     overflow: hidden;
-    -webkit-app-region: drag;
+    color: white;
+    background: #383838;
     transition: all 0.2s ease-in-out;
+    -webkit-app-region: drag;
 }
 
 img {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
     -webkit-user-drag: none;
 }
@@ -50,69 +46,73 @@ svg {
 
 .bottom-screen {
     position: fixed;
-    box-sizing: border-box;
-    bottom: 0;
     right: 0;
+    bottom: 0;
+    box-sizing: border-box;
+    overflow: hidden;
     border: 2px solid transparent;
     opacity: 1;
     transition: all 0.2s ease-in;
-    overflow: hidden;
     -webkit-app-region: none;
 }
 
 .bottom-screen:not(:hover) {
     position: fixed;
     box-sizing: border-box;
+    overflow: hidden;
     opacity: 0;
     transition: all 0.2s ease-out;
-    overflow: hidden;
 }
 
-.menuBox {
+.menu-box{
     display: flex;
-    width: 100%;
-    min-height: 100vh;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
     color: white;
     transition: transform 0.3s;
     -webkit-app-region: drag;
 }
 
-#menuContent {
+#menuContent{
     display: flex;
-    background: #383838;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
     width: fit-content;
     padding: 10px;
-    flex-direction: column;
-    justify-content: center;
-    align-self: center;
-    align-items: center;
-    -webkit-app-region: drag;
-    user-select: none;
     transition: all 0.2s ease-in-out;
+    -webkit-app-region: drag;
 }
 
 #version {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-self: center;
+    justify-content: center;
     margin-bottom: 10px !important;
-    border-radius: 128px !important;
     text-transform: capitalize;
+    border-radius: 128px !important;
+}
+#mvVersion {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    justify-content: center;
+    margin-bottom: 10px !important;
+    text-transform: capitalize;
+    border-radius: 128px !important;
 }
 
 button {
-    border-radius: 128px !important;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-self: center;
-    width: -webkit-fit-content;
-    width: -moz-fit-content;
+    justify-content: center;
     width: fit-content;
     border: 2px solid transparent !important;
+    border-radius: 128px !important;
     -webkit-app-region: none;
 }
 
@@ -122,21 +122,24 @@ button:focus-within {
     box-shadow: none !important;
 }
 
-.networkButtonsContainer {
+.networkbuttons-container {
     display: flex;
     flex-direction: column;
     margin-top: 10px;
 }
 
-.networkButtonsContainer > button {
+.networkbuttons-container > button {
     margin-top: 10px;
 }
 
-#digiflagHeader {
+#digiflagHeader>h1 {
     display: flex;
+    font-size: xx-large;
     flex-direction: row;
-    justify-content: center;
     align-self: center;
+    justify-content: center;
+    margin-bottom: 5px;
+    width: fit-content;
 }
 
 #logoContainer {
@@ -144,9 +147,37 @@ button:focus-within {
     flex-direction: row;
     justify-content: center;
     margin-bottom: 1vh;
+    align-items: center;
 }
 
-#infotag {
+#digiflagLogo{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#digiflagLogo > img {
+    width: auto;
+    height:100%;
+    margin-inline-end: 5px;
+    max-height: 20vh;
+}
+#f1mvLogo{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#f1mvLogo > img {
+    width: auto;
+    height:100%;
+    margin-inline-start: 5px;
+    max-height: 20vh;
+}
+
+#infoTag {
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -158,30 +189,24 @@ button:focus-within {
     text-align: center;
 }
 
-#DigiFlag,
-#F1MV {
+#digiflag {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
 }
 
-#DigiFlag > img,
-#F1MV > img {
-    display: inline-flex;
-    width: auto;
-    height: 100%;
-    max-height: 20vh;
-    padding: 5px;
-}
-
 #networkSettings > .form-control {
     display: flex;
-    width: fit-content;
     flex-direction: row;
-    justify-content: center;
     align-self: center;
+    justify-content: center;
+    width: fit-content;
     text-align: center;
     border-radius: 50rem;
+}
+
+input:invalid {
+    border: 2px solid red;
 }
 
 #networkSettings > input:focus {
@@ -189,6 +214,7 @@ button:focus-within {
     box-shadow: 0 0 0 0.1rem #3ea6ff;
     transition: all 0.6s ease-in-out;
 }
+
 #networkSettings > input:hover:not(:focus) {
     border-color: #eee !important;
     box-shadow: 0 0 0 1px #eee;
@@ -208,16 +234,18 @@ button:focus-within {
     align-items: center;
     -webkit-app-region: none;
 }
+
 #selectMisc {
     display: flex;
     flex-direction: column;
     align-items: center;
     -webkit-app-region: none;
 }
+
 #mapSwitch:hover[disabled] {
+    cursor: not-allowed;
     background-color: #dc3545 !important;
     transition: color 0.1s linear;
-    cursor: not-allowed;
 }
 
 #themes {
@@ -227,120 +255,184 @@ button:focus-within {
     align-items: center;
 }
 
-#F1MVLinkContainer {
+#f1mvLinkContainer {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-self: center;
+    justify-content: center;
 }
 
 #tagLink {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-self: center;
+    justify-content: center;
     margin-bottom: 10px !important;
-    border-radius: 128px !important;
     text-transform: capitalize;
+    border-radius: 128px !important;
 }
 
 #tagSession {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-self: center;
+    justify-content: center;
     margin-bottom: 10px !important;
     border-radius: 128px !important;
 }
 
-#LinkF1MV {
+#linkF1MV {
     margin-bottom: 5px;
 }
 
 .form-check-label:hover {
     color: #31e994;
-    transition: color 0.2s ease-in-out;
     cursor: pointer;
+    transition: color 0.2s ease-in-out;
 }
 
 .form-check-input[disabled] ~ .form-check-label:hover {
-    color: #dc3545;
     font-weight: normal;
-    transition: color 0.1s linear;
+    color: #dc3545;
     cursor: not-allowed;
+    transition: color 0.1s linear;
 }
 
 input[type='radio']:hover {
+    cursor: pointer;
     background-color: #198754;
-    cursor: pointer;
-}
-input[type='radio']:checked:hover {
-    background-color: #0d6efd;
-    transition: background-color 0.2s ease-in-out;
-    cursor: pointer;
-}
-input[type='radio']:checked {
+    border: 2px solid white;
     box-shadow: none;
-    transition: background-color 0.2s ease-in-out;
-    cursor: pointer;
 }
 
-input:invalid {
-    border: 2px solid red;
+input[type='radio']:checked {
+    cursor: pointer;
+    box-shadow: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+input[type='radio']:checked:hover {
+    cursor: pointer;
+    background-color: #0d6efd;
+    transition: background-color 0.2s ease-in-out;
 }
 
 #trackMapStyle {
-    margin-bottom: 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 5px;
 }
+
 #trackMapStyleSelect {
     text-align: center;
     border: 2px solid;
 }
+
 #trackMapStyleSelect:focus {
     border: 2px solid #3ea6ff;
     box-shadow: none;
 }
+
 select#trackMapStyleSelect:hover {
     cursor: pointer;
-}
-
-.form-check-input[type='checkbox']:hover {
-    background-color: #198754;
-    cursor: pointer;
-}
-.form-check-input[type='checkbox']:checked {
-    transition: background-color 0.2s ease-in-out;
-    cursor: pointer;
+    border: 2px solid #3ea6ff;
     box-shadow: none;
 }
-.form-check-input[type='checkbox']:checked:hover {
+
+.form-check-input[type='checkbox']:not([role='switch'], :checked, :hover, :focus) {
+    cursor: pointer;
+    border: 2px solid transparent;
+    box-shadow: none;
+}
+
+.form-check-input[type='checkbox']:checked {
+    cursor: pointer;
+    box-shadow: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.form-check-input[type='checkbox']:not([role='switch']):hover {
+    cursor: pointer;
+    background-color: #198754;
+    border: 2px solid white;
+    box-shadow: none;
+}
+
+.form-check-input[type='checkbox']:not([role='switch'], :hover, :checked):focus {
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: none;
+}
+
+.form-check-input[role='switch']:not(:hover, :focus){
+    border: 2px solid transparent !important ;
+    box-shadow: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-check-input[type='checkbox']:not([role='switch']):checked:focus {
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: none;
+}
+
+.form-check-input[role='switch']:not(:checked):hover {
+    cursor: pointer;
+    border: 2px solid #3ea6ff ;
+    box-shadow: none;
+}
+
+.form-check-input[role='switch']:checked:hover {
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-check-input[role='switch']:checked:focus {
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: none;
+}
+
+.form-check-input[role='switch']:not(:hover, :checked):focus{
+    border: 2px white solid !important ;
+    box-shadow: none;
+
+    --bs-form-switch-bg:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%28255, 255, 255, 0.25%29'/%3e%3c/svg%3e");
+}
+
+.form-check-input[type='checkbox']:not([role='switch']):checked:hover {
+    cursor: pointer;
     background-color: #0d6efd;
     transition: background-color 0.2s ease-in-out;
-    cursor: pointer;
 }
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
     appearance: none;
     margin: 0;
 }
 
-#Pixoo64.form-check > .form-check-input[disabled]:hover {
+#pixoo64.form-check > .form-check-input[disabled]:hover {
+    cursor: not-allowed;
     background-color: #dc3545;
     transition: color 0.1s linear;
-    cursor: not-allowed;
 }
 
 #zoomControl {
-    background-color: transparent;
-    border: 2px solid transparent;
     display: flex;
     flex-direction: column;
     width: fit-content;
     height: fit-content;
+    background-color: transparent;
+    border: 2px solid transparent;
+}
+
+.offcanvas-component > button {
+    margin-bottom: 10px;
+    -webkit-app-region: none;
 }
 
 #zoomControl > button {
@@ -359,22 +451,22 @@ input::-webkit-inner-spin-button {
     stroke: none;
 }
 
+svg.settings {
+    width: 24px;
+    height: 24px;
+}
+
 #zoomControl > button > svg.settings {
     stroke: white;
 }
 
 #settingsButton {
-    background: none;
-    border: 2px solid transparent !important;
     display: flex;
     flex-direction: row;
-    justify-content: center;
     align-self: center;
-}
-
-svg.settings {
-    width: 24px;
-    height: 24px;
+    justify-content: center;
+    background: none;
+    border: 2px solid transparent !important;
 }
 
 svg.globe {
@@ -386,6 +478,7 @@ svg.globe {
     background: transparent;
     border: 2px solid transparent !important;
 }
+
 #settingsButton:not(:hover) {
     background: transparent;
     border: 2px solid transparent !important;
@@ -402,42 +495,46 @@ svg.globe {
 }
 
 .offcanvas {
-    width: fit-content;
     display: flex;
     flex-direction: column;
+    width: fit-content;
 }
 
 .offcanvas-header {
     flex-direction: column;
-    margin-top: 1vh;
     padding: 0;
+    margin-top: 1vh;
 }
 
 .offcanvas-header .btn-close {
-    transition: all 0.2s ease-in-out;
     border: none !important;
+    transition: all 0.2s ease-in-out;
 }
+
 .btn-close-white:hover {
     filter: brightness(0) saturate(100%) invert(18%) sepia(93%) saturate(6931%) hue-rotate(347deg) brightness(97%)
         contrast(112%);
     border: none !important;
 }
+
 .toast {
     box-shadow: none;
 }
+
 .toast .btn-close {
-    transition: all 0.2s ease-in-out;
     border: none !important;
+    transition: all 0.2s ease-in-out;
 }
+
 .toast-body > p {
-    user-select: text !important;
-    -webkit-user-select: text !important;
     text-align: center;
+    user-select: text !important;
 }
 
 #closeButtonContainer {
     align-self: flex-start;
 }
+
 .offcanvas-backdrop {
     -webkit-app-region: none;
 }
@@ -455,16 +552,18 @@ svg.globe {
 .offcanvas-component {
     display: flex;
     flex-direction: column;
-    width: 100%;
     align-items: center;
+    width: 100%;
 }
 
-.offcanvas-component > button {
-    margin-bottom: 10px;
-    -webkit-app-region: none;
-}
-@media (width <= 375px) {
+@media (max-width: 375px) {
     * {
-        font-size: calc(6px + 2vmin);
+        font-size: calc(4px + 2vmin);
+    }
+}
+
+@media (max-width: 256px) and (max-height: 256px) {
+    * {
+        font-size: calc(2px + 2vmin);
     }
 }

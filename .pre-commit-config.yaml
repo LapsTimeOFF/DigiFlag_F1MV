@@ -1,6 +1,0 @@
-repos:
-    - repo: https://github.com/gitguardian/ggshield
-      rev: main
-      hooks:
-          - id: ggshield-push
-            language_version: python3
