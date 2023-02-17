@@ -1,16 +1,8 @@
 {
-    "compilerOptions": {
-        "skipLibCheck": true,
-        "target": "ES2022",
-        "module": "CommonJS",
-        "moduleResolution": "Node",
-        "allowJs": true,
-        "resolveJsonModule": true,
-        "esModuleInterop": true,
-        "removeComments": true,
-        "useUnknownInCatchVariables": false,
-        "outDir": "dist"
-    },
-    "include": ["**/*.ts"],
-    "exclude": ["node_modules"]
+  "files": [],
+  "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tsconfig.web.json" }],
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES2022"
+  }
 }

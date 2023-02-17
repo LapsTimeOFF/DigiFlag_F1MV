@@ -1,0 +1,569 @@
+main,
+.center-screen {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+* {
+    font-family: Inter, sans-serif;
+    font-size: calc(6px + 2vmin);
+    user-select: none;
+    transition: all 0.2s ease-in-out;
+    color-scheme: dark;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizespeed;
+    -webkit-user-drag: none;
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    color: white;
+    background: #383838;
+    transition: all 0.2s ease-in-out;
+    -webkit-app-region: drag;
+}
+
+img {
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+img#digiflag {
+    width: auto;
+    height: 100%;
+    transition: all 0.2s ease-in-out;
+    -webkit-app-region: drag;
+}
+
+svg {
+    pointer-events: none;
+}
+
+.bottom-screen {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    border: 2px solid transparent;
+    opacity: 1;
+    transition: all 0.2s ease-in;
+    -webkit-app-region: none;
+}
+
+.bottom-screen:not(:hover) {
+    position: fixed;
+    box-sizing: border-box;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.2s ease-out;
+}
+
+.menu-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: transform 0.3s;
+    -webkit-app-region: drag;
+}
+
+#menuContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    width: fit-content;
+    padding: 10px;
+    transition: all 0.2s ease-in-out;
+    -webkit-app-region: drag;
+}
+
+#version {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    justify-content: center;
+    margin-bottom: 10px !important;
+    text-transform: capitalize;
+    border-radius: 128px !important;
+}
+#mvVersion {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    justify-content: center;
+    margin-bottom: 10px !important;
+    text-transform: capitalize;
+    border-radius: 128px !important;
+}
+
+button {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    justify-content: center;
+    width: fit-content;
+    border: 2px solid transparent !important;
+    border-radius: 128px !important;
+    -webkit-app-region: none;
+}
+
+button:hover,
+button:focus-within {
+    border: 2px solid white !important;
+    box-shadow: none !important;
+}
+
+.networkbuttons-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.networkbuttons-container > button {
+    margin-top: 10px;
+}
+
+#digiflagHeader > h1 {
+    display: flex;
+    font-size: xx-large;
+    flex-direction: row;
+    align-self: center;
+    justify-content: center;
+    margin-bottom: 5px;
+    width: fit-content;
+}
+
+#logoContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 1vh;
+    align-items: center;
+}
+
+#digiflagLogo {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#digiflagLogo > img {
+    width: auto;
+    height: 100%;
+    margin-inline-end: 5px;
+    max-height: 20vh;
+}
+#f1mvLogo {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#f1mvLogo > img {
+    width: auto;
+    height: 100%;
+    margin-inline-start: 5px;
+    max-height: 20vh;
+}
+
+#infoTag {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+#checkNetworkSettings {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+#digiflag {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+#networkSettings > .form-control {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    justify-content: center;
+    width: fit-content;
+    text-align: center;
+    border-radius: 50rem;
+}
+
+input:invalid {
+    border: 2px solid red;
+}
+
+#networkSettings > input:focus {
+    border-color: #3ea6ff;
+    box-shadow: 0 0 0 0.1rem #3ea6ff;
+    transition: all 0.6s ease-in-out;
+}
+
+#networkSettings > input:hover:not(:focus) {
+    border-color: #eee !important;
+    box-shadow: 0 0 0 1px #eee;
+    transition: all 0.3s ease-in-out;
+}
+
+#selectTheme {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    -webkit-app-region: none;
+}
+
+#selectDevice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    -webkit-app-region: none;
+}
+
+#selectMisc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    -webkit-app-region: none;
+}
+
+#mapSwitch:hover[disabled] {
+    cursor: not-allowed;
+    background-color: #dc3545 !important;
+    transition: color 0.1s linear;
+}
+
+#themes {
+    display: inline-flex;
+    flex-direction: inherit;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#f1mvLinkContainer {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    justify-content: center;
+}
+
+#tagLink {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    justify-content: center;
+    margin-bottom: 10px !important;
+    text-transform: capitalize;
+    border-radius: 128px !important;
+}
+
+#tagSession {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    justify-content: center;
+    margin-bottom: 10px !important;
+    border-radius: 128px !important;
+}
+
+#linkF1MV {
+    margin-bottom: 5px;
+}
+
+.form-check-label:hover {
+    color: #31e994;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+}
+
+.form-check-input[disabled] ~ .form-check-label:hover {
+    font-weight: normal;
+    color: #dc3545;
+    cursor: not-allowed;
+    transition: color 0.1s linear;
+}
+
+input[type='radio']:hover {
+    cursor: pointer;
+    background-color: #198754;
+    border: 2px solid white;
+    box-shadow: none;
+}
+
+input[type='radio']:checked {
+    cursor: pointer;
+    box-shadow: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+input[type='radio']:checked:hover {
+    cursor: pointer;
+    background-color: #0d6efd;
+    transition: background-color 0.2s ease-in-out;
+}
+
+#trackMapStyle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+#trackMapStyleSelect {
+    text-align: center;
+    border: 2px solid;
+}
+
+#trackMapStyleSelect:focus {
+    border: 2px solid #3ea6ff;
+    box-shadow: none;
+}
+
+select#trackMapStyleSelect:hover {
+    cursor: pointer;
+    border: 2px solid #3ea6ff;
+    box-shadow: none;
+}
+
+.form-check-input[type='checkbox']:not([role='switch'], :checked, :hover, :focus) {
+    cursor: pointer;
+    border: 2px solid transparent;
+    box-shadow: none;
+}
+
+.form-check-input[type='checkbox']:checked {
+    cursor: pointer;
+    box-shadow: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.form-check-input[type='checkbox']:not([role='switch']):hover {
+    cursor: pointer;
+    background-color: #198754;
+    border: 2px solid white;
+    box-shadow: none;
+}
+
+.form-check-input[type='checkbox']:not([role='switch'], :hover, :checked):focus {
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: none;
+}
+
+.form-check-input[role='switch']:not(:hover, :focus) {
+    border: 2px solid transparent !important ;
+    box-shadow: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-check-input[type='checkbox']:not([role='switch']):checked:focus {
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: none;
+}
+
+.form-check-input[role='switch']:not(:checked):hover {
+    cursor: pointer;
+    border: 2px solid #3ea6ff;
+    box-shadow: none;
+}
+
+.form-check-input[role='switch']:checked:hover {
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-check-input[role='switch']:checked:focus {
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: none;
+}
+
+.form-check-input[role='switch']:not(:hover, :checked):focus {
+    border: 2px white solid !important ;
+    box-shadow: none;
+
+    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%28255, 255, 255, 0.25%29'/%3e%3c/svg%3e");
+}
+
+.form-check-input[type='checkbox']:not([role='switch']):checked:hover {
+    cursor: pointer;
+    background-color: #0d6efd;
+    transition: background-color 0.2s ease-in-out;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+}
+
+#pixoo64.form-check > .form-check-input[disabled]:hover {
+    cursor: not-allowed;
+    background-color: #dc3545;
+    transition: color 0.1s linear;
+}
+
+#zoomControl {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    height: fit-content;
+    background-color: transparent;
+    border: 2px solid transparent;
+}
+
+.offcanvas-component > button {
+    margin-bottom: 10px;
+    -webkit-app-region: none;
+}
+
+#zoomControl > button {
+    background-color: transparent;
+    border: 2px solid transparent !important;
+}
+
+#zoomControl > button:hover {
+    background-color: #0d6efd;
+    border: 2px solid white !important;
+}
+
+#zoomControl > button:not(:hover) {
+    background-color: transparent;
+    border: 2px solid transparent !important;
+    stroke: none;
+}
+
+svg.settings {
+    width: 24px;
+    height: 24px;
+}
+
+#zoomControl > button > svg.settings {
+    stroke: white;
+}
+
+#settingsButton {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    justify-content: center;
+    background: none;
+    border: 2px solid transparent !important;
+}
+
+svg.globe {
+    width: 32px;
+    height: 32px;
+}
+
+#settingsButton:hover {
+    background: transparent;
+    border: 2px solid transparent !important;
+}
+
+#settingsButton:not(:hover) {
+    background: transparent;
+    border: 2px solid transparent !important;
+}
+
+#settingsButton:focus {
+    background: transparent;
+    border: 2px solid white !important;
+}
+
+#settingsButton:hover > svg.settings {
+    stroke: white;
+    transition: stroke 0.2s ease-in-out;
+}
+
+.offcanvas {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+}
+
+.offcanvas-header {
+    flex-direction: column;
+    padding: 0;
+    margin-top: 1vh;
+}
+
+.offcanvas-header .btn-close {
+    border: none !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-close-white:hover {
+    filter: brightness(0) saturate(100%) invert(18%) sepia(93%) saturate(6931%) hue-rotate(347deg) brightness(97%)
+        contrast(112%);
+    border: none !important;
+}
+
+.toast {
+    box-shadow: none;
+}
+
+.toast .btn-close {
+    border: none !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.toast-body > p {
+    text-align: center;
+    user-select: text !important;
+}
+
+#closeButtonContainer {
+    align-self: flex-start;
+}
+
+.offcanvas-backdrop {
+    -webkit-app-region: none;
+}
+
+.offcanvas-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.offcanvas-component {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+@media (max-width: 375px) {
+    * {
+        font-size: calc(4px + 2vmin);
+    }
+}
+
+@media (max-width: 256px) and (max-height: 256px) {
+    * {
+        font-size: calc(2px + 2vmin);
+    }
+}

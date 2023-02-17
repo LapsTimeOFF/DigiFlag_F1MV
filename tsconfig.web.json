@@ -1,0 +1,12 @@
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
+  "include": ["src/renderer/**/*.ts", "src/preload/*.d.ts","*.json"],
+  "compilerOptions": {
+    "composite": true,
+    "module": "CommonJS",
+    "target": "ES2022",
+    "moduleResolution": "Node",
+    "useUnknownInCatchVariables": false,
+    "strict": false
+  }
+}

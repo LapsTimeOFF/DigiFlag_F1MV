@@ -1,0 +1,57 @@
+appId: com.electron.DigiFlag-F1MV
+productName: DigiFlag-F1MV
+directories:
+  buildResources: build
+  output: out
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintignore,.eslintrc.js,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+asar: true
+asarUnpack:
+  - '**/*.{node,dll}'
+afterSign: build/notarize.js
+win:
+  executableName: DigiFlag-F1MV
+  compression: store
+  target:
+   - 'nsis'
+nsis:
+  artifactName: ${productName}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: true
+mac:
+  entitlementsInherit: build/entitlements.mac.plist
+  category: public.app-category.utilities
+  extendInfo:
+    - NSCameraUsageDescription: Application requests access to the device's camera.
+    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
+    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
+    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+dmg:
+  artifactName: ${productName}-${version}.${ext}
+  background: undefined
+  backgroundColor: "#383838"
+  window:
+    width: 400
+    height: 300
+  contents:
+  - x: 100
+    y: 100
+  - x: 300
+    y: 100
+    type: link
+    path: "/Applications"
+linux:
+  target:
+    - AppImage
+  category: Utility
+appImage:
+  artifactName: ${productName}-${version}.${ext}
+npmRebuild: false
