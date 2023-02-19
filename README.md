@@ -85,7 +85,7 @@ Feel free to check [issues page](https://github.com/LapsTimeOFF/DigiFlag_F1MV/is
 
 # 📜 License
 
-Copyright © 2022 - Present, DigiFlag Team ([@LapsTimeOFF](https://github.com/LapsTimeOFF), [@TheBaconCat](https://github.com/TheBaconCat), [@JJwatMyself](https://github.com/JJWatMyself), [@f1multiviewer](https://beta.f1mv.com/)).
+Copyright © 2023 - Present, DigiFlag Team ([@LapsTimeOFF](https://github.com/LapsTimeOFF), [@TheBaconCat](https://github.com/TheBaconCat), [@JJwatMyself](https://github.com/JJWatMyself), [@f1multiviewer](https://beta.f1mv.com/)).
 
 Distributed under the MIT License. See [LICENSE](./LICENSE). for more information.
 
