@@ -1,4 +1,4 @@
-![DigiFlagLogo](./assets/logos/DigiFlag.png)
+![DigiFlagLogo](https://github.com/LapsTimeOFF/DigiFlag_F1MV/raw/stable/assets/logos/DigiFlag.png)
 
 # DigiFlag for F1MV
 
