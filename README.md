@@ -1,4 +1,4 @@
-<img src="./assets/logos/DigiFlag.png" alt="DigiFlagLogo" width="128"/>
+![DigiFlagLogo](./assets/logos/DigiFlag.png)
 
 # DigiFlag for F1MV
 
