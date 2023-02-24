@@ -1,4 +1,4 @@
-<img src="./src/renderer/assets/logos/DigiFlag.png" alt="DigiFlagLogo" width="128"/> <img src="https://user-images.githubusercontent.com/11319293/218509478-f1cf9819-560e-4aa4-bdba-09eec2c8f264.png" alt="Vite" width="128"/>
+![DigiFlagLogo](https://github.com/LapsTimeOFF/DigiFlag_F1MV/raw/stable/assets/logos/DigiFlag.png) <img src="https://user-images.githubusercontent.com/11319293/218509478-f1cf9819-560e-4aa4-bdba-09eec2c8f264.png" alt="Vite" width="128"/>
 
 # DigiFlag + Vite
 
