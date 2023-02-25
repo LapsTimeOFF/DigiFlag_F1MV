@@ -1,6 +1,6 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
-  "include": ["src/renderer/**/*.ts", "src/preload/*.d.ts","*.json"],
+  "include": ["src/renderer/**/*.ts", "src/preload/*.d.ts","*.json", "src/renderer/**/translation.json", "src/renderer/i18n.ts"],
   "compilerOptions": {
     "composite": true,
     "module": "CommonJS",

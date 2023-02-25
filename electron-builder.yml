@@ -15,9 +15,10 @@ asarUnpack:
 afterSign: build/notarize.js
 win:
   executableName: DigiFlag-F1MV
+  # Remove Comment From Line Below For Faster Builds During Development. Add # During Production
   compression: store
   target:
-   - 'nsis'
+   - 'zip'
 nsis:
   artifactName: ${productName}-${version}-setup.${ext}
   shortcutName: ${productName}

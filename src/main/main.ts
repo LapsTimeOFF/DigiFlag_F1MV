@@ -6,7 +6,7 @@ import request from 'request';
 import {getWindowSizeSettings, getWindowPositionSettings, saveWindowPos, saveWindowSize} from './storage';
 import {failedToLoadAPI} from './errorTable';
 import {themes} from './filesConfiguration.json';
-import { autoUpdater } from "electron-updater"
+// import { autoUpdater } from "electron-updater"
 
 const version = app.getVersion();
 /* Creating an express app. */
@@ -73,7 +73,7 @@ expressApp.get('/pixoo/:gif/:themeID/:ip', (req, res) => {
 });
 
 
-
+let mainWindow:BrowserWindow
 /**
  * `createWindow` is a function that takes three arguments: `width`, `height`, and `title`, and returns
  * a new `BrowserWindow` object
@@ -83,7 +83,7 @@ expressApp.get('/pixoo/:gif/:themeID/:ip', (req, res) => {
  * @returns A BrowserWindow object.
  */
 function createWindow(width: number, height: number, windowPositionX: number, windowPositionY: number, title: string) {
-    const mainWindow = new BrowserWindow({
+     mainWindow = new BrowserWindow({
         width: width,
         height: height,
         title: title,
@@ -102,7 +102,6 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
             preload: path.join(__dirname, '../preload/preload.js'),
             nodeIntegration:true,
             sandbox:false,
-            nodeIntegrationInSubFrames:true
         },
     });
   // HMR for renderer base on electron-vite cli.
@@ -115,13 +114,18 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
     // Event listeners on the window
     mainWindow.webContents.on('did-finish-load', () => {
         mainWindow.show();
-        if (version.includes('dev')) mainWindow.webContents.openDevTools();
+        if (version.includes('dev')) mainWindow.webContents.openDevTools({mode: 'detach'});
     });
+
     mainWindow.on('moved', () => saveWindowPos(mainWindow.getPosition()));
     /* Saving the window size when the window is resized. */
     mainWindow.on('resized', () => saveWindowSize(mainWindow.getSize()));
     /* Setting the minimum size of the window to 426x240. */
     mainWindow.setMinimumSize(256, 256);
+
+    mainWindow.on('close', function () {
+        mainWindow = null // Clean up your window object.
+     })
 
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {
         if (url === 'https://github.com/LapsTimeOFF/DigiFlag_F1MV') {

@@ -1,4 +1,4 @@
-export {};
+import './i18n'
 /* Declaring a variable called host and assigning it the value of "localhost". */
 const host = 'localhost';
 /* Creating a variable called port and assigning it the value of 10101. */
@@ -130,14 +130,15 @@ async function autoConnectF1MV() {
                 } else {
                     countDownRunning = true;
                     if ($('#tagLink').hasClass('badge text-bg-danger')) {
+                        $('#tagLink').removeAttr('data-i18n');
                         $('#tagLink').text('Retrying to Connect to F1MV in : ' + timeleft + ' seconds');
-                        $('#raceName').text('Attempting to Get Current Session Info From F1MV...');
                     } else if ($('#tagLink').hasClass('badge text-bg-warning')) {
-                        $('#tagLink').text(
-                            'Attempting to Connect to Live / Replay Timing Window : ' + timeleft + ' seconds'
-                        );
-                        $('#raceName').text('Retrieving Current Session From F1MV...');
-                    } else {
+                        $('#tagLink').removeAttr('data-i18n');
+                        $('#tagLink').attr('data-i18n','[prepend]attemptingToConnectToLiveReplayTimingWindow;[append]seconds');
+                        $('#tagLink').text(' '+ timeleft + ' ' );
+                        $('#raceName').attr('data-i18n','retrievingCurrentSession');
+                        $(document).localize()
+                    } else  {
                         $('#tagLink').removeClass();
                         $('#tagSession').removeClass();
                         $('#raceName').removeClass();
@@ -145,12 +146,15 @@ async function autoConnectF1MV() {
                         $('#tagLink').addClass('badge text-bg-primary');
                         $('#tagSession').addClass('badge text-bg-primary');
                         $('#raceName').addClass('text-bg-primary');
-                        $('#raceName').text('Retrieving Current Session From F1MV...');
-                        $('#tagLink').text('Attempting to Connect to F1MV in : ' + timeleft + ' seconds');
+                        $('#tagLink').removeAttr('data-i18n');
+                        $('#tagLink').attr('data-i18n','[prepend]attemptingToConnectToF1MV;[append]seconds')
+                        $('#raceName').attr('data-i18n','retrievingCurrentSession');
+                        $('#tagLink').text(' '+ timeleft + ' ' );
+                        $(document).localize()
                     }
                 }
                 timeleft -= 1;
-            }, 1000);
+            },1000);
         }
     } catch (error) {
         console.error(error);
@@ -476,55 +480,64 @@ async function changeGif(flag: string, mode: number) {
  * It creates a menu that allows the user to select a theme, a device, and a track map style.
  */
 function linkSuccess() {
+    $('#selectTheme>*').remove()
     $('#tagLink').removeClass();
     $('#tagSession').removeClass();
     $('#raceName').removeClass();
 
     $('#tagLink').addClass('badge text-bg-success');
+    $('#tagLink').attr('data-i18n','successfullyConnectedToF1mvTimingWindow');
     $('#tagSession').addClass('badge text-bg-success');
     $('#raceName').addClass('text-bg-success');
+    $('#raceName').removeAttr('data-i18n');
 
-    $('#tagLink').text('Successfully Connected to F1MV Timing Window');
     $('#tagSession').show();
     $('#linkF1MV').remove();
     $('#infoTag').remove();
     $('#checkNetworkSettings').remove();
-    $('#networkSettings').remove();
+    $('#networkSettings').remove()
     $('#selectTheme').append(`
-    <p class="lead text-center fs-4 mb-1">Select a DigiFlag Theme</p>
+    <p class="lead text-center fs-4 mb-1" data-i18n="selectADigiflagTheme"></p>
         <div id="themes">
         </div>
-        <button type="button" id="nextTheme" class="btn btn-success" disabled>Next
+        <button type="button" id="nextTheme" class="btn btn-success" data-i18n="nextBtn" disabled>Next
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-arrow-right">
   <path d="M5 12h14M12 5l7 7-7 7"/>
 </svg></button>
     `);
+    $(document).localize()
     let theme: {id: number; name: string};
     for (let themeIndex = 0; themeIndex < themes.length; themeIndex++) {
         theme = themes[themeIndex];
         $('#themes').append(`
             <div class="form-check" id="window">
                 <input class="form-check-input theme" type="radio" name="theme" id="${theme.id}">
-                <label class="form-check-label theme" for="${theme.id}">
+                <label class="form-check-label theme ${theme.id}" for="${theme.id}">
                     ${theme.name}
                 </label>
             </div>
         `);
     }
+    $('.form-check-label.theme.0').attr('data-i18n','pixel')
+    $('.form-check-label.theme.1').attr('data-i18n','t1ElectronicFlagPanel_1_1')
+    $('.form-check-label.theme.2').attr('data-i18n','t1ElectronicFlagPanel_16_9')
+    $('.form-check-label.theme.3').attr('data-i18n','t2ElectronicFlagPanel_1_1')
+    $('.form-check-label.theme.4').attr('data-i18n','t2ElectronicFlagPanel_16_9')
+    $(document).localize()
     $('.theme').on('change', (e) => {
         selectTheme(parseInt(e.target.id));
     });
     $('#nextTheme').on('click', () => {
         $('#selectTheme').remove();
         $('#selectDevice').append(`
-        <div class="lead text-center fs-4">Select a Device</div>
+        <div class="lead text-center fs-4" data-i18n="selectADevice">Select a Device</div>
             <div class="form-check" id="window">
             <input class="form-check-input" type="radio" name="flexRadioDefault" id="windowRadio" checked>
             <label class="form-check-label" for="windowRadio">
                 Window DigiFlag
             </label>
             </div>
-            <span class="badge text-bg-danger" id="notAvailable" diabled>Pixoo 64 is Not Compatible with the Selected Theme</span>
+            <span class="badge text-bg-danger" data-i18n="pixoo64IsNotCompatible" id="notAvailable" disabled>Pixoo 64 is Not Compatible with the Selected Theme</span>
             <div class="form-check" id="pixoo64">
             <input class="form-check-input" type="radio" name="flexRadioDefault" id="pixoo64Radio" disabled>
             <label class="form-check-label" for="pixoo64Radio">
@@ -533,16 +546,16 @@ function linkSuccess() {
             </div>
         `);
         $('#selectMisc').append(`
-        <div class="lead text-center fs-4">Misc Options</div>
+        <div class="lead text-center fs-4" data-i18n="miscOptions">Misc Options</div>
         <div class="form-check" id="blueFlag">
         <input class="form-check-input" type="checkbox" value="" id="blueFlagCheckbox">
-        <label class="form-check-label theme" for="blueFlagCheckbox">
-            Remove Blue Flags?
+        <label class="form-check-label theme" data-i18n="removeBlueFlags" for="blueFlagCheckbox">
+            Remove Blue Flags ?
         </label>
         </div>
         <div class="form-check form-switch" id="trackMapSwitch">
         <input class="form-check-input" type="checkbox" role="switch" id="mapSwitch" data-bs-toggle="collapse" data-bs-target="#collapsetrackMapSelect" aria-expanded="false" aria-controls="collapsetrackMapSelect">
-        <label class="form-check-label theme" for="mapSwitch">Use TrackMap as Background?</label>
+        <label class="form-check-label theme" data-i18n="useF1TrackMapBackground" for="mapSwitch">Use F1 Track Map Background?</label>
         </div>
         <div class="collapse" id="collapsetrackMapSelect">
         <div id="trackMapStyle">
@@ -592,7 +605,7 @@ it. */
                 $('#trackMapStyleSelect>option').remove();
                 /* Creating a dropdown menu with the names of the map themes. */
                 $('#trackMapStyleSelect').append(
-                    `<option value="none" selected disabled hidden>Select a TrackMap Style</option>`
+                    `<option  data-i18n="selectAMapStyle"  value="none" selected disabled hidden>Select a Map Style</option>`
                 );
                 for (let mapIndex = 0; mapIndex < mapThemes.length; mapIndex++) {
                     const mapTheme = mapThemes[mapIndex];
@@ -600,6 +613,9 @@ it. */
                         `<option id=${mapTheme.id} value=${mapTheme.id}>${mapTheme.name}</option> `
                     );
                 }
+                $('#0').attr('data-i18n','mapTheme.streetMap')
+                $('#1').attr('data-i18n','mapTheme.satelliteMap')
+                $(document).localize()
                 /* Changing the map style when the user selects a different style from the dropdown menu. */
                 $('#trackMapStyleSelect').on('change', () => {
                     const mapID = $('#trackMapStyleSelect').val();
@@ -610,7 +626,7 @@ it. */
             }
         });
         $('#menuContent').append(
-            `<button type="button" id="launchDigiFlag" class="btn btn-success">Start DigiFlag</button>`
+            `<button type="button" id="launchDigiFlag" class="btn btn-success" data-i18n="startDigiflag">Start DigiFlag</button>`
         );
         $('#launchDigiFlag').on('click', () => {
             $('.menu-box').remove();
@@ -630,6 +646,7 @@ it. */
             $('#zoomControl').css('z-index', 1);
             started = true;
         });
+        $(document).localize()
     });
 }
 /**
@@ -655,11 +672,11 @@ async function linkF1MV(force?: boolean) {
             $('#raceName').addClass('text-bg-warning');
             $('#tagSession').addClass('badge text-bg-warning');
             $('#networkSettings').hide();
-            $('#tagLink').text(
-                'You are Connected to F1MV, but the Live/Replay Timing Window is not open.'
-            );
+            $('#tagLink').attr('data-i18n','youAreConnectedToF1mvButTheLiveReplayTimingWindowIsNotOpen');
             $('#checkNetworkSettings,#infoTag').hide();
-            $('#raceName').text('Unable to Retrieve Current Session from F1MV');
+            $('#raceName').attr('data-i18n','unableToRetrieveCurrentSessionFromF1mv')
+            $('#checkNetworkSettings,#infoTag').hide();
+            $(document).localize()
             setTimeout(() => {
                 autoConnectF1MV();
             }, 1000);
@@ -671,25 +688,25 @@ async function linkF1MV(force?: boolean) {
             linkSuccess();
             return;
         }
-
         /* Adding the class text-bg-danger to the element with the id tagLink. */
         $('#tagLink').addClass('badge text-bg-danger');
         $('#tagSession').addClass('badge text-bg-danger');
         $('#raceName').addClass('text-bg-danger');
         /* Changing the text of the tag with the id tagLink to Failed to connect to F1MV */
-        $('#tagLink').text('Failed to connect to F1MV');
-        $('#raceName').text('Failed to Retrieve Current Session');
+        $('#tagLink').removeAttr('data-i18n');
+        $('#raceName').removeAttr('data-i18n');
+        $('#raceName').attr('data-i18n','failedToRetrieveCurrentSession');
+        $('#tagLink').attr('data-i18n','failedToConnect');
         $('#networkSettings').show();
         $('#checkNetworkSettings,#infoTag').show();
+        $(document).localize()
         /* Changing the text of the element with the id "infoTag" to "Maybe you are trying to connect
         to another host? Maybe your port isn't the default one?" */
-        $('#infoTag').text("Maybe you are trying to connect to another host? Maybe your port isn't the default one?");
         /* The above code is changing the text of the element with the id of checkNetworkSettings to
        Click on the Settings Gear Above to check your Network Settings. */
-        $('#checkNetworkSettings').text(
-            'Move your Mouse to the Bottom Right Corner & Click on the Settings Gear to check your Network Settings.'
-        );
         setTimeout(() => {
+        $('#tagLink').removeAttr('data-i18n');
+        $('#raceName').removeAttr('data-i18n');
             autoConnectF1MV();
         }, 5000);
     }
@@ -720,21 +737,22 @@ $(function () {
         $('#networkSettings').append('<h5>Network</h5>');
         $('#networkSettings').append(
             `<label for="ip">Multiviewer API IP:</label>
-            <input type="text" class="form-control text-bg-dark" value="${config.host}" id="ip">`
+            <input type="text" class="form-control-sm text-bg-dark" value="${config.host}" id="ip">`
         );
 
         $('#networkSettings').append(
             `<label for="port">Multiviewer API Port:</label>
-            <input type="text" class="form-control text-bg-dark" maxlength="5" value="${config.port}" id="port">`
+            <input type="text" class="form-control-sm text-bg-dark" maxlength="5" value="${config.port}" id="port">`
         );
         $('#networkSettings').append(
             $('<div/>', {
                 class: 'networkbuttons-container',
             }).append(
-                '<button type="button" id="updateSettings" class="btn btn-primary">Save Network Settings</button>',
-                '<button type="button"  id="restoreSettings" class="btn btn-danger">Restore Default Settings </button>'
+                '<button type="button" id="updateSettings" class="btn-sm btn btn-primary" data-i18n="saveNetworkSettings">Save Network Settings</button>',
+                '<button type="button" id="restoreSettings" class="btn-sm btn btn-danger" data-i18n="restoreDefaultSettings">Restore Default Settings </button>'
             )
         );
+        $(document).localize()
         $('#updateSettings').on('click', () => {
             if (debugOn) log('Editing Settings...');
             /* Assigning the value of the input field with the id of "ip" to the variable "host". */

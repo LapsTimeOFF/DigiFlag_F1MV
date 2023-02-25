@@ -1,5 +1,6 @@
 import {defineConfig, externalizeDepsPlugin} from 'electron-vite';
 export default defineConfig({
+
     main: {
         plugins: [externalizeDepsPlugin()],
         build: {
@@ -15,7 +16,6 @@ export default defineConfig({
         },
     },
     renderer: {
-        plugins: [externalizeDepsPlugin()],
         build: {
             outDir: '../../dist/renderer',
             emptyOutDir:true

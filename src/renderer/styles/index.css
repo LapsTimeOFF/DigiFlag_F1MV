@@ -195,7 +195,7 @@ button:focus-within {
     justify-content: space-around;
 }
 
-#networkSettings > .form-control {
+#networkSettings > .form-control-sm {
     display: flex;
     flex-direction: row;
     align-self: center;
@@ -203,6 +203,7 @@ button:focus-within {
     width: fit-content;
     text-align: center;
     border-radius: 50rem;
+    border: 2px solid #495057;
 }
 
 input:invalid {
@@ -212,6 +213,10 @@ input:invalid {
 #networkSettings > input:focus {
     border-color: #3ea6ff;
     box-shadow: 0 0 0 0.1rem #3ea6ff;
+    transition: all 0.6s ease-in-out;
+}
+#networkSettings > input:focus-visible {
+    outline: none;
     transition: all 0.6s ease-in-out;
 }
 
@@ -242,6 +247,47 @@ input:invalid {
     -webkit-app-region: none;
 }
 
+#locale-switcher {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    justify-content: center;
+    text-align: center;
+    width: fit-content;
+    box-shadow: none;
+    border: 2px solid #495057;
+    transition: all 0.2s ease-in-out;
+}
+
+#locale-switcher:hover {
+    border: 2px solid #3ea6ff;
+    transition: all 0.2s ease-in-out;
+}
+
+#locale-switcher:hover {
+    cursor: pointer;
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #fff;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 #mapSwitch:hover[disabled] {
     cursor: not-allowed;
     background-color: #dc3545 !important;
@@ -268,7 +314,7 @@ input:invalid {
     align-self: center;
     justify-content: center;
     margin-bottom: 10px !important;
-    text-transform: capitalize;
+
     border-radius: 128px !important;
 }
 
@@ -543,7 +589,7 @@ svg.globe {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: space-around;
     padding: 0;
     overflow-x: hidden;
     overflow-y: auto;
