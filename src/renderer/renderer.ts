@@ -141,10 +141,12 @@ async function autoConnectF1MV() {
                     } else  {
                         $('#tagLink').removeClass();
                         $('#tagSession').removeClass();
+                        $('#currentSession').removeClass();
                         $('#raceName').removeClass();
                         $('#checkNetworkSettings,#infoTag').hide();
                         $('#tagLink').addClass('badge text-bg-primary');
                         $('#tagSession').addClass('badge text-bg-primary');
+                        $('#currentSession').addClass('text-bg-primary');
                         $('#raceName').addClass('text-bg-primary');
                         $('#tagLink').removeAttr('data-i18n');
                         $('#tagLink').attr('data-i18n','[prepend]attemptingToConnectToF1MV;[append]seconds')
@@ -484,10 +486,11 @@ function linkSuccess() {
     $('#tagLink').removeClass();
     $('#tagSession').removeClass();
     $('#raceName').removeClass();
-
+    $('#currentSession').removeClass();
     $('#tagLink').addClass('badge text-bg-success');
     $('#tagLink').attr('data-i18n','successfullyConnectedToF1mvTimingWindow');
     $('#tagSession').addClass('badge text-bg-success');
+    $('#currentSession').addClass('text-bg-success')
     $('#raceName').addClass('text-bg-success');
     $('#raceName').removeAttr('data-i18n');
 
@@ -667,9 +670,11 @@ async function linkF1MV(force?: boolean) {
             }
             $('#tagLink').removeClass();
             $('#tagSession').removeClass();
+            $('#currentSession').removeClass();
             $('#raceName').removeClass();
             $('#tagLink').addClass('badge text-bg-warning');
             $('#raceName').addClass('text-bg-warning');
+            $('#currentSession').addClass('text-bg-warning');
             $('#tagSession').addClass('badge text-bg-warning');
             $('#networkSettings').hide();
             $('#tagLink').attr('data-i18n','youAreConnectedToF1mvButTheLiveReplayTimingWindowIsNotOpen');
@@ -691,6 +696,7 @@ async function linkF1MV(force?: boolean) {
         /* Adding the class text-bg-danger to the element with the id tagLink. */
         $('#tagLink').addClass('badge text-bg-danger');
         $('#tagSession').addClass('badge text-bg-danger');
+        $('#currentSession').addClass('text-bg-danger');
         $('#raceName').addClass('text-bg-danger');
         /* Changing the text of the tag with the id tagLink to Failed to connect to F1MV */
         $('#tagLink').removeAttr('data-i18n');
