@@ -80,8 +80,6 @@ svg {
     align-items: center;
     align-self: center;
     justify-content: center;
-    width: fit-content;
-    padding: 10px;
     transition: all 0.2s ease-in-out;
     -webkit-app-region: drag;
 }
@@ -159,9 +157,8 @@ button:focus-within {
 
 #digiflagLogo > img {
     width: auto;
-    height: 100%;
     margin-inline-end: 5px;
-    max-height: 20vh;
+    max-height: 15vh;
 }
 #f1mvLogo {
     display: flex;
@@ -172,9 +169,8 @@ button:focus-within {
 
 #f1mvLogo > img {
     width: auto;
-    height: 100%;
     margin-inline-start: 5px;
-    max-height: 20vh;
+    max-height: 15vh;
 }
 
 #infoTag {
@@ -187,12 +183,6 @@ button:focus-within {
     display: flex;
     flex-direction: column;
     text-align: center;
-}
-
-#digiflag {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
 }
 
 #networkSettings > .form-control-sm {
@@ -289,9 +279,16 @@ input:invalid {
     }
 }
 
-#mapSwitch:hover[disabled] {
+#mapSwitch:hover[disabled] + label {
     cursor: not-allowed;
-    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #dc3545;
+    transition: color 0.1s linear;
+}
+#mvSwitch:hover[disabled] + label {
+    cursor: not-allowed;
+    border-color: #dc3545 !important;
+    color: #dc3545;
     transition: color 0.1s linear;
 }
 
@@ -357,6 +354,13 @@ input[type='radio']:checked {
     box-shadow: none;
     transition: background-color 0.2s ease-in-out;
 }
+input[type='radio']:checked + label {
+    color: #31e994;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: none;
+    transition: all 0.2s ease-in-out;
+}
 
 input[type='radio']:checked:hover {
     cursor: pointer;
@@ -393,25 +397,6 @@ select#trackMapStyleSelect:hover {
     box-shadow: none;
 }
 
-.form-check-input[type='checkbox']:checked {
-    cursor: pointer;
-    box-shadow: none;
-    transition: background-color 0.2s ease-in-out;
-}
-
-.form-check-input[type='checkbox']:not([role='switch']):hover {
-    cursor: pointer;
-    background-color: #198754;
-    border: 2px solid white;
-    box-shadow: none;
-}
-
-.form-check-input[type='checkbox']:not([role='switch'], :hover, :checked):focus {
-    cursor: pointer;
-    border: 2px solid white;
-    box-shadow: none;
-}
-
 .form-check-input[role='switch']:not(:hover, :focus) {
     border: 2px solid transparent !important ;
     box-shadow: none;
@@ -429,7 +414,33 @@ select#trackMapStyleSelect:hover {
     border: 2px solid #3ea6ff;
     box-shadow: none;
 }
+.form-check-input[role='switch']:not(:checked):hover {
+    cursor: pointer;
+    border: 2px solid #3ea6ff;
+    box-shadow: none;
+}
+.form-check-input[role='switch'][disabled]:hover {
+    cursor: pointer;
+    border: 2px solid transparent;
+    box-shadow: none;
+}
+.form-check-input[role='switch']:not(:checked):hover + label {
+    cursor: pointer;
+    color: #31e994;
+    box-shadow: none;
+}
 
+.form-check-input[role='switch']:checked + label {
+    color: #31e994;
+    font-weight: 900;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-check-input[role='switch']:checked + label:hover {
+    color: whitesmoke;
+    font-weight: normal;
+    transition: all 0.2s ease-in-out;
+}
 .form-check-input[role='switch']:checked:hover {
     cursor: pointer;
     border: 2px solid white;

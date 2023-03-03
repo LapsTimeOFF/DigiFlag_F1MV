@@ -1,4 +1,3 @@
-import './i18n'
 /* Declaring a variable called host and assigning it the value of "localhost". */
 const host = 'localhost';
 /* Creating a variable called port and assigning it the value of 10101. */
@@ -19,7 +18,7 @@ const timer = (ms: number) => new Promise((res) => setTimeout(res, ms));
 const {themes, mapThemes} = JSON.parse(httpGet('./filesConfiguration.json'));
 /* Declaring a variable called debugOn and assigning it a value of false. */
 let debugOn = true;
-let windowTransparency = false;
+// let windowTransparency = false;
 let scale = 1;
 let started = false;
 let yellow = false;
@@ -27,7 +26,13 @@ let sc = false;
 let vsc = false;
 let red = false;
 let raining = 0;
-const DigiFlag_Version = window.api.getVersion;
+let version
+let themeSelectRef: JQuery<HTMLElement>
+let miscOptionsRef: JQuery<HTMLElement>
+const getDigiFlagVersion = async () => {
+  version= await window.api.getVersion();
+}
+getDigiFlagVersion()
 let LT_Data = {
     RaceControlMessages: {
         Messages: [
@@ -65,7 +70,8 @@ let raceName = 'Unknown';
 let currentMode = 0; // 0 for window, 1 for pixoo64
 let disabledBlueFlag = false;
 let useTrackMap = false;
-const pixooIP = '';
+let useMVLogo= false;
+let pixooIP:string
 const instanceWindowWidth = 800;
 const instanceWindowHeight = 600;
 const instanceWindowOffsetX = 100;
@@ -170,9 +176,10 @@ async function getCurrentSessionInfo(): Promise<string> {
     try {
         const response = await window.api.LiveTimingAPIGraphQL(config, ['SessionInfo']);
         const sessionName = await response.SessionInfo.Meeting.Name;
+        const sessionType = await response.SessionInfo.Name;
         const sessionYear = parseInt(response.SessionInfo.StartDate);
         raceName = `${sessionYear + ' ' + sessionName}`;
-        $('#raceName').text(raceName);
+        $('#raceName').text(raceName+ ' ' + sessionType);
         if (debugOn) console.log(`Current Race Name: ${raceName}`);
         return raceName;
     } catch (error) {
@@ -180,6 +187,24 @@ async function getCurrentSessionInfo(): Promise<string> {
         return 'Unable to Get Data From F1MV GraphQL API';
     }
 }
+
+/**
+ * It fetches the IP address of a device from a server, and returns it as a string.
+ * @returns The IP address of the Pixoo device.
+ */
+
+// async function getPixooIP(){
+//     try {
+//         const req= await fetch('https://app.divoom-gz.com/Device/ReturnSameLANDevice')
+//      const pixooData= await req.json()
+//      pixooIP=pixooData.DeviceList[0].DevicePrivateIP
+//      $('#pixooIP').text(`${pixooIP}`)
+//      return pixooIP
+//  } catch (error) {
+//     console.error(error)
+//     return 'Failed to change GIF on Pixoo64'
+//  }
+// }
 
 /**
  * It takes the currentMapTheme as an argument and returns the trackMapPath for the current race.
@@ -348,6 +373,17 @@ function getGifPath(flag: string) {
     /* Checking if the flag is 'void' and if the useTrackMap is true and if the trackMapPath has a file extension. */
     if (
         flag === 'void' &&
+        useMVLogo === true)
+        {
+            for (let themeIndex = 0; themeIndex < themes.length; themeIndex++) {
+                const theme = themes[themeIndex];
+                if (theme.id === currentTheme) {
+                    flagPath = theme.gifs['mv'];
+                }
+            }
+        }
+    else if (
+        flag === 'void' &&
         useTrackMap === true &&
         trackMapPath.slice(((trackMapPath.lastIndexOf('.') - 1) >>> 0) + 2)
     ) {
@@ -503,11 +539,46 @@ function linkSuccess() {
     <p class="lead text-center fs-4 mb-1" data-i18n="selectADigiflagTheme"></p>
         <div id="themes">
         </div>
-        <button type="button" id="nextTheme" class="btn btn-success" data-i18n="nextBtn" disabled>Next
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-arrow-right">
-  <path d="M5 12h14M12 5l7 7-7 7"/>
-</svg></button>
+        <button type="button" id="nextTheme" class="btn btn-success" data-i18n="nextBtn;" disabled><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-arrow-right">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+</button>
     `);
+    $('#selectDevice').append(`
+    <div class="lead text-center fs-4" data-i18n="selectADevice">Select a Device</div>
+        <div class="form-check" id="window">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="windowRadio" checked>
+        <label class="form-check-label" for="windowRadio">
+            Window DigiFlag
+        </label>
+        </div>
+        <span class="badge text-bg-danger" data-i18n="pixoo64IsNotCompatible" id="notAvailable" disabled>Pixoo 64 is Not Compatible with the Selected Theme</span>
+        <div class="form-check" id="pixoo64">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="pixoo64Radio" disabled>
+        <label class="form-check-label" for="pixoo64Radio">
+            Pixoo 64 DigiFlag
+        </label>
+        </div>
+    `);
+    $('#selectMisc').append(`<div class="lead text-center fs-4" data-i18n="miscOptions">
+    Misc Options
+  </div>
+  <div class="form-check form-switch" id="trackMapSwitch">
+    <input class="form-check-input" type="checkbox" role="switch" id="mapSwitch" data-bs-toggle="collapse" data-bs-target="#collapsetrackMapSelect" aria-expanded="false" aria-controls="collapsetrackMapSelect"> <label class="form-check-label theme" data-i18n="useF1TrackMapBackground" for="mapSwitch">Use F1 Track Map Background?</label>
+  </div>
+  <div class="collapse" id="collapsetrackMapSelect">
+    <div id="trackMapStyle">
+      <select class="form-select form-select-sm text-bg-dark mapTheme" id="trackMapStyleSelect">
+      </select>
+    </div>
+  </div>
+  <div class="form-check form-switch" id="mvLogoSwitch">
+    <input class="form-check-input" type="checkbox" role="switch" id="mvSwitch"> <label class="form-check-label theme" data-i18n="useMultiviewerLogoWhenTrackIsClear" for="mvSwitch">Use MultiViewer Logo?</label>
+  </div>
+  <div class="form-check form-switch" id="blueFlag">
+    <input class="form-check-input" type="checkbox" role="switch" id="blueFlagCheckbox"> <label class="form-check-label theme" data-i18n="removeBlueFlags" for="blueFlagCheckbox">Remove Blue Flags?</label>
+  </div>`);
+  miscOptionsRef=$('#selectDevice,#selectMisc').detach()
     $(document).localize()
     let theme: {id: number; name: string};
     for (let themeIndex = 0; themeIndex < themes.length; themeIndex++) {
@@ -521,57 +592,26 @@ function linkSuccess() {
             </div>
         `);
     }
-    $('.form-check-label.theme.0').attr('data-i18n','pixel')
-    $('.form-check-label.theme.1').attr('data-i18n','t1ElectronicFlagPanel_1_1')
-    $('.form-check-label.theme.2').attr('data-i18n','t1ElectronicFlagPanel_16_9')
-    $('.form-check-label.theme.3').attr('data-i18n','t2ElectronicFlagPanel_1_1')
-    $('.form-check-label.theme.4').attr('data-i18n','t2ElectronicFlagPanel_16_9')
-    $(document).localize()
     $('.theme').on('change', (e) => {
         selectTheme(parseInt(e.target.id));
     });
     $('#nextTheme').on('click', () => {
-        $('#selectTheme').remove();
-        $('#selectDevice').append(`
-        <div class="lead text-center fs-4" data-i18n="selectADevice">Select a Device</div>
-            <div class="form-check" id="window">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="windowRadio" checked>
-            <label class="form-check-label" for="windowRadio">
-                Window DigiFlag
-            </label>
-            </div>
-            <span class="badge text-bg-danger" data-i18n="pixoo64IsNotCompatible" id="notAvailable" disabled>Pixoo 64 is Not Compatible with the Selected Theme</span>
-            <div class="form-check" id="pixoo64">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="pixoo64Radio" disabled>
-            <label class="form-check-label" for="pixoo64Radio">
-                Pixoo 64 DigiFlag
-            </label>
-            </div>
-        `);
-        $('#selectMisc').append(`
-        <div class="lead text-center fs-4" data-i18n="miscOptions">Misc Options</div>
-        <div class="form-check" id="blueFlag">
-        <input class="form-check-input" type="checkbox" value="" id="blueFlagCheckbox">
-        <label class="form-check-label theme" data-i18n="removeBlueFlags" for="blueFlagCheckbox">
-            Remove Blue Flags ?
-        </label>
-        </div>
-        <div class="form-check form-switch" id="trackMapSwitch">
-        <input class="form-check-input" type="checkbox" role="switch" id="mapSwitch" data-bs-toggle="collapse" data-bs-target="#collapsetrackMapSelect" aria-expanded="false" aria-controls="collapsetrackMapSelect">
-        <label class="form-check-label theme" data-i18n="useF1TrackMapBackground" for="mapSwitch">Use F1 Track Map Background?</label>
-        </div>
-        <div class="collapse" id="collapsetrackMapSelect">
-        <div id="trackMapStyle">
-        <select class="form-select form-select-sm text-bg-dark mapTheme" id="trackMapStyleSelect"></div>
-</div>`);
+        miscOptionsRef.appendTo('#menuContent')
+       themeSelectRef= $('#selectTheme').detach();
+
         if (themes[currentTheme].compatibleWith.Pixoo64) {
-            $('#notAvailable').remove();
+            $('#notAvailable').hide();
             $('#pixoo64Radio').prop('disabled', false);
+        }
+        else{
+            $('#notAvailable').show();
+            $('#pixoo64Radio').prop('disabled', true);
         }
         $('#selectDevice').on('change', (e) => {
             if (e.target.id === 'pixoo64Radio') {
                 if (debugOn) console.log('Pixoo64 was Selected');
                 currentMode = 1;
+                // getPixooIP()
                 if (debugOn) console.log('Current Mode: ' + currentMode);
                 $('#mapSwitch').prop('disabled', true);
             } else {
@@ -594,16 +634,31 @@ it. */
                 return disabledBlueFlag;
             }
         });
+        $('#mvLogoSwitch').on('change', () => {
+            if (useMVLogo) {
+                useMVLogo = false;
+                if (debugOn) log('MV Logo Enabled: ' + useMVLogo);
+                $('#mapSwitch').prop('disabled',false)
+                return useMVLogo;
+            } else {
+                useMVLogo = true;
+                if (debugOn) log('MV Logo Disabled: ' + useMVLogo);
+                $('#mapSwitch').prop('disabled',true)
+                return useMVLogo;
+            }
+        });
         /* Creating a switch that toggles the use of a track map as a background. */
         $('#trackMapSwitch').on('change', () => {
             if (useTrackMap) {
                 useTrackMap = false;
                 if (debugOn) log('use TrackMap as Background? : ' + useTrackMap);
+                $('#mvSwitch').prop('disabled', false);
                 $('#launchDigiFlag').prop('disabled', false);
                 return useTrackMap;
             } else {
                 useTrackMap = true;
                 if (debugOn) log('use TrackMap as Background? : ' + useTrackMap);
+                $('#mvSwitch').prop('disabled', true);
                 $('#launchDigiFlag').prop('disabled', true);
                 $('#trackMapStyleSelect>option').remove();
                 /* Creating a dropdown menu with the names of the map themes. */
@@ -629,8 +684,15 @@ it. */
             }
         });
         $('#menuContent').append(
-            `<button type="button" id="launchDigiFlag" class="btn btn-success" data-i18n="startDigiflag">Start DigiFlag</button>`
+            `<div id="menuButtonsContainer"><button type="button" id="backButton" class="btn btn-success" data-i18n="back">Back</button>
+            <button type="button" id="launchDigiFlag" class="btn btn-success" data-i18n="startDigiflag">Start DigiFlag</button></div>`
         );
+        $('#backButton').on('click', () => {
+            themeSelectRef.appendTo('#menuContent')
+            $(document).localize()
+            miscOptionsRef.remove()
+            $('#menuButtonsContainer').remove();
+        })
         $('#launchDigiFlag').on('click', () => {
             $('.menu-box').remove();
             $('body').append(`<img src="${getGifPath('void')}" id="digiflag" class="center-screen">`);
@@ -724,7 +786,7 @@ $(function () {
     if (countDownRunning === false) {
         autoConnectF1MV();
     }
-    $('#version').text(`DigiFlag Version: ${DigiFlag_Version}`);
+    $('#version').text(`DigiFlag Version: ${version}`);
     $('#raceName').text(raceName);
     $('.bottom-screen:not(:hover)').css('opacity', 1);
     $('#zoomIn,#zoomOut,#zoomReset').hide();
@@ -755,10 +817,10 @@ $(function () {
                 class: 'networkbuttons-container',
             }).append(
                 '<button type="button" id="updateSettings" class="btn-sm btn btn-primary" data-i18n="saveNetworkSettings">Save Network Settings</button>',
-                '<button type="button" id="restoreSettings" class="btn-sm btn btn-danger" data-i18n="restoreDefaultSettings">Restore Default Settings </button>'
+                '<button type="button" id="restoreSettings" class="btn-sm btn btn-danger" data-i18n="restoreDefaultSettings">Restore Default Network Settings </button>'
             )
         );
-        $(document).localize()
+        $('#networkSettings').localize()
         $('#updateSettings').on('click', () => {
             if (debugOn) log('Editing Settings...');
             /* Assigning the value of the input field with the id of "ip" to the variable "host". */
@@ -1041,18 +1103,21 @@ setInterval(checkStatus, 100);
 /**
  * If the background is transparent, make it opaque. If the background is opaque, make it transparent.
  */
-function toggleTransparency() {
-    if (windowTransparency) {
-        $('body').removeAttr('style');
-        windowTransparency = false;
-    } else {
-        $('body').css('background-color', 'transparent');
-        windowTransparency = true;
-    }
-}
-/* Listening for the escape key to be pressed and then calling the toggleBackground function. */
-document.addEventListener('keydown', (e) => {
-    if (e.key == 'Escape') {
-        toggleTransparency();
-    }
-});
+
+//Disabling Transparency For Now
+
+// function toggleTransparency() {
+//     if (windowTransparency) {
+//         $('body').removeAttr('style');
+//         windowTransparency = false;
+//     } else {
+//         $('body').css('background-color', 'transparent');
+//         windowTransparency = true;
+//     }
+// }
+// /* Listening for the escape key to be pressed and then calling the toggleBackground function. */
+// document.addEventListener('keydown', (e) => {
+//     if (e.key == 'Escape') {
+//         toggleTransparency();
+//     }
+// });

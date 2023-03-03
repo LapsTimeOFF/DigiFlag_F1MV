@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {contextBridge,ipcRenderer} from 'electron';
 import {LiveTimingAPIGraphQL} from 'npm_f1mv_api';
-import {version} from '../../package.json';
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
 export const api = {
     LiveTimingAPIGraphQL: LiveTimingAPIGraphQL,
-    getVersion:version,
+    getVersion:() => ipcRenderer.invoke('get-version'),
     electronAPI
 }
 
@@ -18,6 +17,6 @@ if (process.contextIsolated) {
     console.error(error)
   }
 } else {
-    // @ts-ignore (define in dts)
+
     window.api = api
 }

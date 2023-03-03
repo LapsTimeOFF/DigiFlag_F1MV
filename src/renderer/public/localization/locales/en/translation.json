@@ -1,7 +1,8 @@
 {
   "attemptingToConnectToF1MV": "Attempting to Connect to F1MV in:",
-  "attemptingToConnectToLiveReplayTimingWindow": "Attempting to Connect to Live or Replay Timing Window :",
+  "attemptingToConnectToLiveReplayTimingWindow": "Attempting to Connect to Live or Replay Timing Window:",
   "attemptingToGetCurrentSessionInfoFromF1mv": "Attempting to Get Current Session Info From F1MV...",
+  "back": "Back",
   "checkNetworkSettings": "Move your Mouse to the Bottom Right Corner & Click on the Settings Gear to check your Network Settings.",
   "currentSession": "Current Session:",
   "digiflagNotLinked": "DigiFlag is currently not linked to F1MV",
@@ -33,11 +34,8 @@
   "spanish": "Spanish",
   "startDigiflag": "Start DigiFlag",
   "successfullyConnectedToF1mvTimingWindow": "Successfully Connected to F1MV Timing Window",
-  "t1ElectronicFlagPanel_16_9": "DigiFlag T1 16:9",
-  "t1ElectronicFlagPanel_1_1": "DigiFlag T1 1:1",
-  "t2ElectronicFlagPanel_16_9": "DigiFlag T2 16:9",
-  "t2ElectronicFlagPanel_1_1": "DigiFlag T2 1:1",
   "unableToRetrieveCurrentSessionFromF1mv": "Unable to Retrieve Current Session from F1MV",
   "useF1TrackMapBackground": "Use F1 Track Map Background?",
+  "useMultiviewerLogo": "Use MultiViewer Logo?",
   "youAreConnectedToF1mvButTheLiveReplayTimingWindowIsNotOpen": "You are Connected to F1MV, but the Live or Replay Timing Window is not open"
 }

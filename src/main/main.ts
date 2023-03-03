@@ -1,12 +1,12 @@
-import {app, BrowserWindow} from 'electron';
+import {app, BrowserWindow, ipcMain} from 'electron';
 import express from 'express';
 import {address} from 'ip';
 import path from 'path';
 import request from 'request';
 import {getWindowSizeSettings, getWindowPositionSettings, saveWindowPos, saveWindowSize} from './storage';
 import {failedToLoadAPI} from './errorTable';
-import {themes} from './filesConfiguration.json';
-// import { autoUpdater } from "electron-updater"
+import {themes,mapThemes} from './filesConfiguration.json';
+import { autoUpdater } from "electron-updater"
 
 const version = app.getVersion();
 /* Creating an express app. */
@@ -24,7 +24,13 @@ expressApp.get('/getGif/:gif/:themeID', (req, res) => {
     const {gif, themeID} = req.params;
     const theme = themes[themeID];
     const gifPath = theme.gifs[gif];
-    res.sendFile(`${gifPath}`, {root: './src/renderer'});
+    res.sendFile(`${gifPath}`, { root : path.join(__dirname,'../renderer/')});
+});
+expressApp.get('/getTrack/:track/:themeID', (req, res) => {
+    const {track, themeID} = req.params;
+    const theme = mapThemes[themeID];
+    const trackPath = theme.trackMaps[track];
+    res.sendFile(`${trackPath}`, { root : path.join(__dirname,'../renderer/')});
 });
 /* A route that is used to get a gif from the server. */
 expressApp.get('/getGifPixoo/:gif/:themeID', (req, res) => {
@@ -37,7 +43,7 @@ expressApp.get('/getGifPixoo/:gif/:themeID', (req, res) => {
         return;
     }
     const gifPath = theme.gifs.pixoo64[gif];
-    res.sendFile(`${gifPath}`, {root: './src/renderer'});
+    res.sendFile(`${gifPath}`, { root : path.join(__dirname,'../renderer/')});
 });
 /* A route that is used to change the GIF on the Pixoo64. */
 expressApp.get('/pixoo/:gif/:themeID/:ip', (req, res) => {
@@ -51,23 +57,33 @@ expressApp.get('/pixoo/:gif/:themeID/:ip', (req, res) => {
     }
     /* Sending a POST request to the Pixoo64. */
     request.post(
-        `http://${ip}:80/post`,
+        `https://${ip}:80/post`,
         {
             json: {
                 Command: 'Device/PlayTFGif',
                 FileType: 2,
-                FileName: `http://${address()}:9093/getGifPixoo/${gif}/${themeID}`,
+                FileName: `https://${address()}:9093/getGifPixoo/${gif}/${themeID}`,
             },
         },
         /* A callback function that is called when the request is completed. */
-        (err, res, body) => {
-            const response = JSON.parse(body);
-            if (err || response.error_code !== 0) {
+        (err, response, body) => {
+            if (err) {
                 res.statusCode = 500;
-                response.post('Failed to change GIF on Pixoo64');
+                res.send('Failed to change GIF on Pixoo64');
                 return;
             }
-            response.send('OK');
+            if (response.headers['content-type'] !== 'application/json') {
+                res.statusCode = 500;
+                res.send('Unexpected content type in response');
+                return;
+            }
+            const responseBody = JSON.parse(body);
+            if (responseBody.error_code !== 0) {
+                res.statusCode = 500;
+                res.send('Failed to change GIF on Pixoo64');
+                return;
+            }
+            res.send('OK');
         }
     );
 });
@@ -89,8 +105,8 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
         title: title,
         x: windowPositionX,
         y: windowPositionY,
-        frame: false,
-        transparent: true,
+        frame: true,
+        transparent: false,
         titleBarStyle: 'hidden',
         /* Setting the icon of the window. */
         icon: path.join('build/icon.ico'),
@@ -100,8 +116,7 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
         show: false,
         webPreferences: {
             preload: path.join(__dirname, '../preload/preload.js'),
-            nodeIntegration:true,
-            sandbox:false,
+            nodeIntegration:true
         },
     });
   // HMR for renderer base on electron-vite cli.
@@ -165,6 +180,7 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.whenReady().then(() => {
+    autoUpdater.checkForUpdatesAndNotify()
     const windowSize = getWindowSizeSettings();
     const windowPosition = getWindowPositionSettings();
 
@@ -188,3 +204,7 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 });
+
+ipcMain.handle('get-version',async()=>{
+    return app.getVersion()
+})

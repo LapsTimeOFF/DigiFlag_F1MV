@@ -1,7 +1,7 @@
 {
   "name": "digiflag-f1mv",
-  "productName": "DigiFlag-F1MV",
-  "version": "2.4.0-dev",
+  "productName": "DigiFlag",
+  "version": "2.5.0",
   "description": "Adding a DigiFlag functionality to MultiViewer For F1",
   "main": "./dist/main/main.js",
   "license": "MIT",
@@ -28,7 +28,7 @@
     "url": "https://github.com/LapsTimeOFF/DigiFlag_F1MV/issues"
   },
   "scripts": {
-    "dev": "electron-vite build && electron-vite dev -w",
+    "dev": "electron-vite build && electron-vite dev -w ",
     "preview": "electron-vite build && electron-vite preview",
     "build": "npm run typecheck && electron-vite build",
     "build:win": "electron-vite build && electron-builder --win --config",
