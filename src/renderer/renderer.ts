@@ -573,7 +573,7 @@ function linkSuccess() {
     </div>
   </div>
   <div class="form-check form-switch" id="mvLogoSwitch">
-    <input class="form-check-input" type="checkbox" role="switch" id="mvSwitch"> <label class="form-check-label theme" data-i18n="useMultiviewerLogoWhenTrackIsClear" for="mvSwitch">Use MultiViewer Logo?</label>
+    <input class="form-check-input" type="checkbox" role="switch" id="mvSwitch"> <label class="form-check-label theme" data-i18n="useMultiviewerLogo" for="mvSwitch">Use MultiViewer Logo?</label>
   </div>
   <div class="form-check form-switch" id="blueFlag">
     <input class="form-check-input" type="checkbox" role="switch" id="blueFlagCheckbox"> <label class="form-check-label theme" data-i18n="removeBlueFlags" for="blueFlagCheckbox">Remove Blue Flags?</label>

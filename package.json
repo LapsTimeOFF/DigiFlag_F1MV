@@ -1,6 +1,6 @@
 {
   "name": "digiflag-f1mv",
-  "productName": "DigiFlag",
+  "productName": "DigiFlag-F1MV",
   "version": "2.5.0",
   "description": "Adding a DigiFlag functionality to MultiViewer For F1",
   "main": "./dist/main/main.js",

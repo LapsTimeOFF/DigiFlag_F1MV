@@ -1,5 +1,10 @@
-appId: com.electron.DigiFlag-F1MV
+appId: com.DigiFlagTeam.DigiFlag-F1MV
 productName: DigiFlag-F1MV
+copyright: Copyright © 2023 DigiFlag Team
+generateUpdatesFilesForAllChannels: true
+npmRebuild: false
+nodeGypRebuild: false
+buildDependenciesFromSource: false
 directories:
   buildResources: build
   output: out
@@ -12,13 +17,16 @@ files:
 asar: true
 asarUnpack:
   - '**/*.{node,dll}'
-afterSign: build/notarize.js
 win:
   executableName: DigiFlag-F1MV
   # Remove Comment From Line Below For Faster Builds During Development. Add # During Production
-  compression: store
+  # compression: store
   target:
-   - 'zip'
+  - zip
+  - target: nsis
+    arch:
+    - x64
+    - ia32
 nsis:
   artifactName: ${productName}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -26,18 +34,10 @@ nsis:
   createDesktopShortcut: always
   oneClick: false
   allowToChangeInstallationDirectory: true
-  perMachine: true
 mac:
-  entitlementsInherit: build/entitlements.mac.plist
   category: public.app-category.utilities
-  extendInfo:
-    - NSCameraUsageDescription: Application requests access to the device's camera.
-    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
-    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
-    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
 dmg:
   artifactName: ${productName}-${version}.${ext}
-  background: undefined
   backgroundColor: "#383838"
   window:
     width: 400
@@ -55,4 +55,3 @@ linux:
   category: Utility
 appImage:
   artifactName: ${productName}-${version}.${ext}
-npmRebuild: false

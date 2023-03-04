@@ -352,14 +352,14 @@ input[type='radio']:hover {
 input[type='radio']:checked {
     cursor: pointer;
     box-shadow: none;
-    transition: background-color 0.2s ease-in-out;
+    transition: all 0.2s linear;
 }
 input[type='radio']:checked + label {
     color: #31e994;
-    font-weight: 900;
+    font-weight: 700;
     cursor: pointer;
     box-shadow: none;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.1s ease-out;
 }
 
 input[type='radio']:checked:hover {
@@ -432,14 +432,14 @@ select#trackMapStyleSelect:hover {
 
 .form-check-input[role='switch']:checked + label {
     color: #31e994;
-    font-weight: 900;
-    transition: all 0.2s ease-in-out;
+    font-weight: 700;
+    transition: all 0.1s ease-in-out;
 }
 
 .form-check-input[role='switch']:checked + label:hover {
     color: whitesmoke;
     font-weight: normal;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.1s ease-in-out;
 }
 .form-check-input[role='switch']:checked:hover {
     cursor: pointer;
