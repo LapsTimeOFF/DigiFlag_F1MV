@@ -33,7 +33,7 @@
     "build": "npm run typecheck && electron-vite build",
     "build:win": "electron-vite build && electron-builder --win --config",
     "build:mac": "electron-vite build && electron-builder --mac --config",
-    "build:linux": "npm run build && electron-builder --linux --config",
+    "build:linux": "electron-vite build && electron-builder --linux --config",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
