@@ -1,0 +1,62 @@
+appId: com.DigiFlagTeam.DigiFlag-F1MV
+productName: DigiFlag-F1MV
+copyright: Copyright © 2023 DigiFlag Team
+generateUpdatesFilesForAllChannels: true
+npmRebuild: false
+publish:
+    provider: "github"
+nodeGypRebuild: false
+buildDependenciesFromSource: false
+directories:
+  buildResources: build
+  output: out
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintignore,.eslintrc.js,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+asar: true
+asarUnpack:
+  - '**/*.{node,dll}'
+win:
+  executableName: DigiFlag-F1MV
+  # Remove Comment From Line Below For Faster Builds During Development. Add # During Production
+  # compression: store
+  target:
+  - zip
+  - target: nsis
+    arch:
+    - x64
+    - ia32
+nsis:
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+  oneClick: true
+  perMachine: true
+mac:
+  category: public.app-category.utilities
+  minimumSystemVersion: "10.12.0"
+  target:
+      - target: dmg
+        arch:
+            - x64
+            - arm64
+dmg:
+  backgroundColor: "#383838"
+  window:
+    width: 400
+    height: 300
+  contents:
+  - x: 100
+    y: 100
+  - x: 300
+    y: 100
+    type: link
+    path: "/Applications"
+linux:
+  target:
+    - AppImage
+appImage:
+  category: Utility

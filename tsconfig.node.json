@@ -1,0 +1,11 @@
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
+  "include": ["electron.vite.config.*", "src/main/*.ts", "src/main/*.json","src/preload/*","package.json", "src/renderer/i18n.ts"],
+  "compilerOptions": {
+    "composite": true,
+    "module": "CommonJS",
+    "target": "ES2022",
+    "moduleResolution": "Node",
+    "strict": false
+  }
+}

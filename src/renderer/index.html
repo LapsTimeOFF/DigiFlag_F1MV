@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- A security feature that prevents the execution of scripts from other sources than the ones listed. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <!-- Import Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha256-BRqBN7dYgABqtY9Hd4ynE+1slnEw+roEPFzQ7TRRfcg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <!-- Import JQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js"
+  integrity="sha384-Ft/vb48LwsAEtgltj7o+6vtS2esTU9PCpDqcXs4OCVQFZu5BqprHtUCZ4kjK+bpE"
+  crossorigin="anonymous"></script>
+  <!-- JS -->
+  <script src="renderer.ts" defer type="module"></script>
+  <script src="./i18n.ts" defer type="module"></script>
+  <!-- CSS -->
+  <link rel="stylesheet" href="./styles/index.css">
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+</head>
+
+<body>
+  <main class="menu-box">
+    <span class="loader"></span>
+    <div id="menuContent" style="display: none;">
+      <header id="digiflagHeader">
+        <h3 id="digiflagHeaderText">DigiFlag X MultiViewer</h3>
+      </header>
+      <div id="logoContainer">
+        <div id="digiflagLogo">
+          <img src="./assets/logos/DigiFlag.png" alt="DigiFlag Logo">
+        </div>
+        <div id="f1mvLogo">
+          <img src="./assets/logos/F1MV.png" alt="MultiViewer Logo">
+        </div>
+      </div>
+      <span id="version" class="badge text-bg-dark"></span>
+      <span id="tagLink" class="badge text-bg-secondary"></span>
+      <div id="tagSession" class="badge text-bg-secondary">
+        <span id="currentSession" data-i18n="currentSession">Current Session:</span>
+        <span id="raceName"></span>
+      </div>
+      <p id="infoTag" data-i18n="infoTag"></p>
+      <p id="checkNetworkSettings" data-i18n="checkNetworkSettings"></p>
+      <div id="selectTheme"></div>
+      <div id="selectDevice"></div>
+      <div id="selectMisc"></div>
+    </div>
+  </main>
+  <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasSettings"
+    aria-labelledby="offcanvasResponsiveLabel">
+    <div class="offcanvas-header">
+      <div id="closeButtonContainer">
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+          data-bs-target="#offcanvasSettings" aria-label="Close"></button>
+      </div>
+    </div>
+    <div class="offcanvas-body">
+      <div class="offcanvas-component" id="language">
+        <h5 data-i18n="language">Language</h5>
+        <select data-i18n-switcher id="locale-switcher" class="form-select text-bg-dark">
+          <option data-i18n="english" value="en-US">English</option>
+          <option data-i18n="spanish" value="es">Spanish</option>
+          <option data-i18n="french" value="fr">French</option>
+        </select>
+      </div>
+      <div class="offcanvas-component" id="layout">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="#fff" stroke-linecap="round"
+          stroke-linejoin="round" stroke-width="2" class="layout" viewBox="0 0 24 24">
+          <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+          <path d="M3 9h18M9 21V9" />
+        </svg>
+        <h5 data-i18n="layout">Layout</h5>
+        <button type="button" class="btn-sm btn btn-primary" id="newInstance" data-i18n="newDigiflagInstance">New DigiFlag
+          Instance</button>
+      </div>
+      <div class="offcanvas-component" id="github">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="github">
+          <path
+            d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+          </path>
+        </svg>
+        <h5>Github</h5>
+        <button class="btn-sm btn btn-primary" id="openGithub" data-i18n="openDigiflagGithub">Open DigiFlag Github</button>
+      </div>
+      <div class="offcanvas-component" id="networkSettings">
+      </div>
+    </div>
+  </div>
+  <div class="bottom-screen" id="zoomControl">
+    <button type="button" class="btn btn-primary" id="zoomIn" title="Zoom In">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#fff" stroke-linecap="round"
+        stroke-linejoin="round" stroke-width="2" class="zoomIn">
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.35-4.35M11 8v6M8 11h6" />
+      </svg>
+    </button>
+    <button type="button" class="btn btn-primary" id="zoomOut" title="Zoom Out">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#fff" stroke-linecap="round"
+        stroke-linejoin="round" stroke-width="2" class="zoomOut">
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.35-4.35M8 11h6" />
+      </svg>
+    </button>
+    <button type="button" class="btn btn-primary" id="zoomReset" title="Reset Zoom">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="zoomReset" viewBox="0 0 32 32" fill="#fff"
+        stroke="#fff" stroke-linecap="round">
+        <path
+          d="M22.448 21A10.855 10.855 0 0 0 25 14 10.99 10.99 0 0 0 6 6.466V2H4v8h8V8H7.332a8.977 8.977 0 1 1-2.1 8h-2.04A11.012 11.012 0 0 0 14 25a10.855 10.855 0 0 0 7-2.552L28.586 30 30 28.586Z" />
+      </svg>
+    </button>
+    <button type="button" class="btn btn-primary" id="settingsButton" data-bs-toggle="offcanvas"
+      data-bs-target="#offcanvasSettings" title="Settings Menu" aria-controls="offcanvasSettings">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#0d6efd" stroke-linecap="round"
+        stroke-linejoin="round" stroke-width="2" class="settings" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3" />
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      </svg>
+    </button>
+  </div>
+</body>
+
+</html>

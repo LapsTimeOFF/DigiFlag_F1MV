@@ -1,10 +1,10 @@
 {
     "env": {
         "browser": true,
-        "commonjs": true,
         "es2022": true,
         "jquery": true,
-        "node": true
+        "node": true,
+        "commonjs": true
     },
     "extends": [
         "eslint:recommended",

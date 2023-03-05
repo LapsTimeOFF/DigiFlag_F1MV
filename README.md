@@ -1,6 +1,6 @@
-![DigiFlagLogo](https://github.com/LapsTimeOFF/DigiFlag_F1MV/raw/stable/assets/logos/DigiFlag.png)
+![DigiFlagLogo](https://github.com/LapsTimeOFF/DigiFlag_F1MV/raw/stable/assets/logos/DigiFlag.png) <img src="https://user-images.githubusercontent.com/11319293/218509478-f1cf9819-560e-4aa4-bdba-09eec2c8f264.png" alt="Vite" width="128"/>
 
-# DigiFlag for F1MV
+# DigiFlag + Vite
 
 [![GitHub](https://img.shields.io/github/license/LapsTimeOFF/DigiFlag_F1MV?color=blue&style=for-the-badge)](LICENSE)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/LapsTimeOFF/DigiFlag_F1MV?color=%235FAD56&include_prereleases&style=for-the-badge)](https://github.com/LapsTimeOFF/DigiFlag_F1MV/releases/latest)
@@ -10,6 +10,15 @@
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 
 > Adding a DigiFlag functionality to MultiViewer For F1
+
+### Built With
+
+-   ![F1MV](https://img.shields.io/badge/MultiViewer%20For%20F1-fb1e07.svg?style=for-the-badge&logo=f1&logoColor=white)
+-   ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+-   ![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
+-   ![Electron](https://img.shields.io/badge/Electron-191970?style=for-the-badge&logo=Electron&logoColor=white&color=1b1c26)
+-   ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=yellow)
+-   💚 Love
 
 # 🚩 Requirements
 
@@ -32,7 +41,7 @@
 2. Select a Practice/Qualifying/Race Session.
 3. Open the Live/Replay Live Timing Window.
 4. Open DigiFlag for F1.
-5. Click on the Connect to F1MV Button.
+5. DigiFlag Will Attempt to Automatically Connect to Multiviewer for F1.
 6. Select Your Theme.
 7. Select Any Other Preferences.
 8. Click on the Start DigiFlag Button.
@@ -41,7 +50,7 @@ Feel Free to Zoom-In & Zoom-Out and Resize Window to your personal preferences.
 
 # 🧰 Troubleshooting
 
-If you receive an error stating that you have failed to connect to F1MV. 
+If you receive an error stating that you have failed to connect to F1MV.
 
 Follow the steps below
 
@@ -66,8 +75,6 @@ If there are no other issues you should see that you have succesfully connected 
 
 ![image](https://user-images.githubusercontent.com/11319293/198863694-978293e2-bb52-443d-a9a9-b1a753f27b09.png)
 
-
-
 <!-- TODO -->
 
 # 🤝 Contributing
@@ -78,7 +85,7 @@ Feel free to check [issues page](https://github.com/LapsTimeOFF/DigiFlag_F1MV/is
 
 # 📜 License
 
-Copyright © 2022 - Present, DigiFlag Team ([@LapsTimeOFF](https://github.com/LapsTimeOFF), [@TheBaconCat](https://github.com/TheBaconCat), [@JJwatMyself](https://github.com/JJWatMyself), [@f1multiviewer](https://beta.f1mv.com/)).
+Copyright © 2023 - Present, DigiFlag Team ([@LapsTimeOFF](https://github.com/LapsTimeOFF), [@TheBaconCat](https://github.com/TheBaconCat), [@JJwatMyself](https://github.com/JJWatMyself), [@f1multiviewer](https://beta.f1mv.com/)).
 
 Distributed under the MIT License. See [LICENSE](./LICENSE). for more information.
 
