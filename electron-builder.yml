@@ -3,6 +3,8 @@ productName: DigiFlag-F1MV
 copyright: Copyright © 2023 DigiFlag Team
 generateUpdatesFilesForAllChannels: true
 npmRebuild: false
+publish:
+    provider: "github"
 nodeGypRebuild: false
 buildDependenciesFromSource: false
 directories:
@@ -28,16 +30,20 @@ win:
     - x64
     - ia32
 nsis:
-  artifactName: ${productName}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
-  oneClick: false
-  allowToChangeInstallationDirectory: true
+  oneClick: true
+  perMachine: true
 mac:
   category: public.app-category.utilities
+  minimumSystemVersion: "10.12.0"
+  target:
+      - target: dmg
+        arch:
+            - x64
+            - arm64
 dmg:
-  artifactName: ${productName}-${version}.${ext}
   backgroundColor: "#383838"
   window:
     width: 400
@@ -52,6 +58,5 @@ dmg:
 linux:
   target:
     - AppImage
-  category: Utility
 appImage:
-  artifactName: ${productName}-${version}.${ext}
+  category: Utility

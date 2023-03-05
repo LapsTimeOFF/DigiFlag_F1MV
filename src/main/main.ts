@@ -109,7 +109,7 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
         transparent: false,
         titleBarStyle: 'hidden',
         /* Setting the icon of the window. */
-        icon: path.join('build/icon.ico'),
+        icon: path.join(__dirname,'../../build/icon.png'),
         alwaysOnTop: false,
         autoHideMenuBar: true,
         /* Hiding the window until it is ready to be shown. */
