@@ -40,6 +40,7 @@ let LT_Data = {
                 Message: '',
                 Category: '',
                 SubCategory: '',
+                RacingNumber:'',
                 Flag: '',
                 Scope: '',
                 Sector: '',
@@ -193,18 +194,34 @@ async function getCurrentSessionInfo(): Promise<string> {
  * @returns The IP address of the Pixoo device.
  */
 
-// async function getPixooIP(){
-//     try {
-//         const req= await fetch('https://app.divoom-gz.com/Device/ReturnSameLANDevice')
-//      const pixooData= await req.json()
-//      pixooIP=pixooData.DeviceList[0].DevicePrivateIP
-//      $('#pixooIP').text(`${pixooIP}`)
-//      return pixooIP
-//  } catch (error) {
-//     console.error(error)
-//     return 'Failed to change GIF on Pixoo64'
-//  }
-// }
+async function getPixooIP(): Promise<string> {
+    try {
+        const response: Response = await fetch('https://app.divoom-gz.com/Device/ReturnSameLANDevice', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const data: {ReturnCode: number; DeviceList: {DevicePrivateIP: string}[]} = await response.json();
+
+        if (data.ReturnCode === 0 && data.DeviceList.length > 0) {
+            const device: {DevicePrivateIP: string} = data.DeviceList[0];
+            pixooIP = device.DevicePrivateIP;
+            console.log('Pixoo64 IP Address:', pixooIP);
+            // You can do something with the pixooIP variable here
+            return pixooIP;
+        } else {
+            console.log('Failed to retrieve Pixoo64 IP Address');
+            return 'Failed to retrieve Pixoo64 IP Address';
+        }
+    } catch (error) {
+        if (error instanceof Error) {
+            console.log(error.message);
+        }
+        return 'Failed to retrieve Pixoo64 IP Address';
+    }
+}
 
 /**
  * It takes the currentMapTheme as an argument and returns the trackMapPath for the current race.
@@ -405,7 +422,7 @@ function getGifPath(flag: string) {
  * @param {number}id - the id of the theme
  */
 function selectTheme(id: number) {
-    if (debugOn) log('Mode selected : ' + id);
+    if (debugOn) log('Theme Selected: ' + id);
     currentTheme = id;
     $('#nextTheme').prop('disabled', false);
 }
@@ -554,10 +571,13 @@ function linkSuccess() {
         </div>
         <span class="badge text-bg-danger" data-i18n="pixoo64IsNotCompatible" id="notAvailable" disabled>Pixoo 64 is Not Compatible with the Selected Theme</span>
         <div class="form-check" id="pixoo64">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="pixoo64Radio" disabled>
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="pixoo64Radio" data-bs-toggle="collapse" data-bs-target="#pixooIPContainer" aria-expanded="false" aria-controls="pixooIPContainer" disabled>
         <label class="form-check-label" for="pixoo64Radio">
             Pixoo 64 DigiFlag
         </label>
+        <div class="collapse" id="pixooIPContainer">
+        <span id="pixooIP">Pixoo IP: ${pixooIP}</span>
+        </div>
         </div>
     `);
     $('#selectMisc').append(`<div class="lead text-center fs-4" data-i18n="miscOptions">
@@ -604,19 +624,31 @@ function linkSuccess() {
             $('#pixoo64Radio').prop('disabled', false);
         }
         else{
+            currentMode = 0;
             $('#notAvailable').show();
+            $('#pixoo64Radio').prop('checked', false);
+            $('#pixooIPContainer').removeClass()
+            $('#pixooIPContainer').addClass('collapse');
+            $('#windowRadio').prop('checked', true);
             $('#pixoo64Radio').prop('disabled', true);
+            $('#mapSwitch').prop('disabled',false)
+            $('#mvSwitch').prop('disabled', false);
         }
         $('#selectDevice').on('change', (e) => {
             if (e.target.id === 'pixoo64Radio') {
                 if (debugOn) console.log('Pixoo64 was Selected');
                 currentMode = 1;
-                // getPixooIP()
+                getPixooIP()
                 if (debugOn) console.log('Current Mode: ' + currentMode);
+                $('#collapsetrackMapSelect').removeClass();
+                $('#collapsetrackMapSelect').addClass('collapse');
                 $('#mapSwitch').prop('disabled', true);
+                $("#mapSwitch").prop("checked",false)
             } else {
                 if (debugOn) console.log('Window was Selected');
                 currentMode = 0;
+                $('#pixooIPContainer').removeClass()
+                $('#pixooIPContainer').addClass('collapse');
                 if (debugOn) console.log('Current Mode: ' + currentMode);
                 $('#mapSwitch').prop('disabled', false);
             }
@@ -695,7 +727,7 @@ it. */
         })
         $('#launchDigiFlag').on('click', () => {
             $('.menu-box').remove();
-            $('body').append(`<img src="${getGifPath('void')}" id="digiflag" class="center-screen">`);
+            $('body').append(`<img src="${getGifPath('void')}" id="digiflag" class="img-fluid center-screen">`);
             $('#digiflag').insertBefore('.bottom-screen');
             $('.bottom-screen:not(:hover)').animate(
                 {
@@ -789,7 +821,6 @@ $(function () {
     $('#version').text(`DigiFlag Version: ${version}`);
     $('#raceName').text(raceName);
     $('.bottom-screen:not(:hover)').css('opacity', 1);
-    $('#zoomIn,#zoomOut,#zoomReset').hide();
     $('#linkF1MV').remove();
 
     /* The code below is appending a SVG globe icon, a h5 tag with the text "Network", a
@@ -802,7 +833,7 @@ $(function () {
         <circle cx="12" cy="12" r="10"/>
         <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
       </svg>`);
-        $('#networkSettings').append('<h5>Network</h5>');
+        $('#networkSettings').append('<h5 data-i18n="network">Network</h5>');
         $('#networkSettings').append(
             `<label for="ip">Multiviewer API IP:</label>
             <input type="text" class="form-control-sm text-bg-dark" value="${config.host}" id="ip">`
@@ -856,21 +887,23 @@ $(function () {
     /* Increasing the zoom of the image by 20px when the button is clicked. */
     $('#zoomIn').on('click', () => {
         const zoomScaleAdd = (scale = scale + 0.25);
-        if (zoomScaleAdd >= 1.75) scale = 0.75;
-        $('.center-screen').css({
-            transform: 'translate(-50%,-50%) scale(' + zoomScaleAdd + ')',
+        if (zoomScaleAdd >= 1.75)
+            scale = 0.75;
+        $('main,.center-screen').css({
+            transform: 'scale(' + zoomScaleAdd + ')',
         });
     });
     /* Decreasing the zoom of the image by 20px when the button is clicked. */
     $('#zoomOut').on('click', () => {
         const zoomScaleSubtract = (scale = scale - 0.25);
-        if (zoomScaleSubtract <= 0.25) scale = 1.25;
-        $('.center-screen').css({
-            transform: 'translate(-50%,-50%) scale(' + zoomScaleSubtract + ')',
+        if (zoomScaleSubtract <= 0.25)
+            scale = 1.25;
+        $('main,.center-screen').css({
+            transform: 'scale(' + zoomScaleSubtract + ')',
         });
     });
     $('#zoomReset').on('click', () => {
-        $('.center-screen').removeAttr('style');
+        $('main,.center-screen').removeAttr('style');
         scale = 1;
     });
 });
@@ -888,8 +921,9 @@ const checkRCM = async () => {
         const filteredMessages = result.Messages.filter(
             (message) =>
                 message.Category === 'Flag' ||
+                message.Category === 'Other' ||
                 message.Category === 'SafetyCar' ||
-                message.Category === 'TrackSurfaceSlippery' ||
+                message.Category === 'Drs' ||
                 message.Message.match(/ROLLING START/i) ||
                 message.Message.match(/STANDING START/i)
         );
@@ -904,6 +938,20 @@ const checkRCM = async () => {
         if (recentMessage.Message.match(/BLACK AND ORANGE/i)) {
             recentMessage.Category = 'Flag';
             recentMessage.Flag = 'BLACK AND ORANGE';
+        }
+        if (recentMessage.Message.match(/BLACK AND WHITE/i)) {
+            changeGif('blackandwhite', currentMode);
+            await timer(2000);
+            turnOff('blackandwhite');
+            const recentRacingNumber = recentMessage.RacingNumber;
+            if (recentRacingNumber in themes[currentTheme].gifs) {
+                changeGif(recentRacingNumber, currentMode);
+                await timer(3500);
+                turnOff(recentRacingNumber);
+            } else {
+                console.log(`No racing number GIF found for ${recentRacingNumber}`);
+            }
+            return;
         }
         /* Checking if the message contains the word "ROLLING START" and if it does, it will change the gif to "rs" and then turn it off after 20 seconds. */
         if (
@@ -922,10 +970,27 @@ const checkRCM = async () => {
             turnOff('ss');
             return;
         }
+        if (recentMessage.Message.match(/DRS ENABLED/i)) {
+            changeGif('DRSenabled', currentMode);
+            await timer(3500);
+            turnOff('drs');
+            return;
+        }
+        if (recentMessage.Message.match(/DRS DISABLED/i)) {
+            changeGif('DRSdisabled', currentMode);
+            await timer(3500);
+            turnOff('drs');
+            return;
+        }
 
-        if (recentMessage.Category === 'TrackSurfaceSlippery') changeGif('slippery', currentMode);
+        if (recentMessage.SubCategory === 'TrackSurfaceSlippery') {
+            changeGif('slippery', currentMode)
+            await timer(20000);
+            turnOff('slippery');
+            return;
+        }
 
-        if (recentMessage.Category === 'SafetyCar') {
+        if (recentMessage.Category === 'SafetyCar' && recentMessage.Mode !== 'VIRTUAL SAFETY CAR') {
             sc = true;
             changeGif('sc', currentMode);
         }
@@ -935,7 +1000,7 @@ const checkRCM = async () => {
         }
         if (recentMessage.Flag === 'CHEQUERED') {
             changeGif('chequered', currentMode);
-            await timer(60000);
+            await timer(90000);
             turnOff('chequered');
             return;
         }

@@ -44,7 +44,7 @@ mac:
             - x64
             - arm64
 dmg:
-  backgroundColor: "#383838"
+  backgroundColor: "#121212"
   window:
     width: 400
     height: 300

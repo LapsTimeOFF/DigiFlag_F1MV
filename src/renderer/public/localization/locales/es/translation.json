@@ -6,6 +6,7 @@
   "checkNetworkSettings": "Mueva el ratón a la esquina inferior derecha y haga clic en el engranaje de configuración para comprobar la configuración de red.",
   "currentSession": "Sesión en Curso:",
   "digiflagNotLinked": "DigiFlag no está vinculado actualmente a F1MV",
+  "dutch": "Holandés",
   "english": "Inglés",
   "failedToConnect": "Fallo de conexión con F1MV",
   "failedToRetrieveCurrentSession": "Fallo al recuperar la sesión actual",

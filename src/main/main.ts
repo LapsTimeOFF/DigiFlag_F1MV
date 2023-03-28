@@ -7,7 +7,6 @@ import {getWindowSizeSettings, getWindowPositionSettings, saveWindowPos, saveWin
 import {failedToLoadAPI} from './errorTable';
 import {themes,mapThemes} from './filesConfiguration.json';
 import { autoUpdater } from "electron-updater"
-
 const version = app.getVersion();
 /* Creating an express app. */
 const expressApp = express();
@@ -32,8 +31,8 @@ expressApp.get('/getTrack/:track/:themeID', (req, res) => {
     const trackPath = theme.trackMaps[track];
     res.sendFile(`${trackPath}`, { root : path.join(__dirname,'../renderer/')});
 });
-/* A route that is used to get a gif from the server. */
-expressApp.get('/getGifPixoo/:gif/:themeID', (req, res) => {
+/* A route that is used to change the GIF on the Pixoo64. */
+expressApp.get('/getGifPixoo/:themeID/:gif.gif/', (req, res) => {
     const {gif, themeID} = req.params;
     const theme = themes[themeID];
     /* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
@@ -46,7 +45,7 @@ expressApp.get('/getGifPixoo/:gif/:themeID', (req, res) => {
     res.sendFile(`${gifPath}`, { root : path.join(__dirname,'../renderer/')});
 });
 /* A route that is used to change the GIF on the Pixoo64. */
-expressApp.get('/pixoo/:gif/:themeID/:ip', (req, res) => {
+expressApp.get('/pixoo/:themeID/:ip/:gif.gif', (req, res) => {
     const {gif, themeID, ip} = req.params;
     const theme = themes[themeID];
     /* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
@@ -57,12 +56,12 @@ expressApp.get('/pixoo/:gif/:themeID/:ip', (req, res) => {
     }
     /* Sending a POST request to the Pixoo64. */
     request.post(
-        `https://${ip}:80/post`,
+        `http://${ip}:80/post`,
         {
             json: {
                 Command: 'Device/PlayTFGif',
                 FileType: 2,
-                FileName: `https://${address()}:9093/getGifPixoo/${gif}/${themeID}`,
+                FileName: `http://${address()}:9093/getGifPixoo/${themeID}/${gif}.gif`,
             },
         },
         /* A callback function that is called when the request is completed. */

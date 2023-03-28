@@ -1,14 +1,6 @@
-main,
-.center-screen {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
 * {
     font-family: Inter, sans-serif;
-    font-size: calc(6px + 2vmin);
+    font-size: 2.5vh;
     user-select: none;
     transition: all 0.2s ease-in-out;
     color-scheme: dark;
@@ -19,11 +11,13 @@ main,
 }
 
 body {
-    width: 100%;
-    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
     overflow: hidden;
     color: white;
-    background: #383838;
+    background: #121212;
     transition: all 0.2s ease-in-out;
     -webkit-app-region: drag;
 }
@@ -34,8 +28,9 @@ img {
 }
 
 img#digiflag {
-    width: auto;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
     transition: all 0.2s ease-in-out;
     -webkit-app-region: drag;
 }
@@ -69,7 +64,7 @@ svg {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: white;
+
     transition: transform 0.3s;
     -webkit-app-region: drag;
 }
@@ -554,6 +549,7 @@ svg.globe {
 
 .offcanvas {
     display: flex;
+    background: #121212;
     flex-direction: column;
     width: fit-content;
 }
@@ -632,16 +628,4 @@ svg.globe {
 
 *::-webkit-scrollbar-thumb:hover {
     background-color: #888;
-}
-
-@media (max-width: 375px) {
-    * {
-        font-size: calc(4px + 2vmin);
-    }
-}
-
-@media (max-width: 256px) and (max-height: 256px) {
-    * {
-        font-size: calc(2px + 2vmin);
-    }
 }
