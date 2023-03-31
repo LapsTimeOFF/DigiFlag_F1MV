@@ -25,7 +25,7 @@ let yellow = false;
 let sc = false;
 let vsc = false;
 let red = false;
-let raining = 0;
+let raining = false;
 let version
 let themeSelectRef: JQuery<HTMLElement>
 let miscOptionsRef: JQuery<HTMLElement>
@@ -40,7 +40,7 @@ let LT_Data = {
                 Message: '',
                 Category: '',
                 SubCategory: '',
-                RacingNumber:'',
+                RacingNumber: '',
                 Flag: '',
                 Scope: '',
                 Sector: '',
@@ -484,10 +484,6 @@ async function turnOff(flag: string) {
                 }
                 return;
             }
-            if (raining) {
-                changeGif('rain', 0);
-                return;
-            }
             $('#digiflag').prop('src', getGifPath('void'));
             lightOn = false;
         }
@@ -528,7 +524,10 @@ async function changeGif(flag: string, mode: number) {
         lightOn = true;
         lightOnRain = false;
     }
-    if (flag === 'rain') lightOnRain = true;
+    if (flag === 'rain') {
+        lightOn = false;
+        lightOnRain = true;
+    }
 }
 
 /**
@@ -1018,7 +1017,7 @@ off after a certain amount of time. */
 
         if (recentMessage.SubCategory === 'TrackSurfaceSlippery') {
             changeGif('slippery', currentMode)
-            await timer(20000);
+            await timer(5000);
             turnOff('slippery');
             return;
         }
@@ -1158,16 +1157,24 @@ async function checkRain() {
 
     /* Extract if it's raining or not from the Live Timing data */
     const Rain = LT_Data.WeatherData.Rainfall;
-
-    /* Checking if the variable Rain is equal to 1. If it is, it sets the variable raining to 1. */
-    if (Rain === '1') {
-        raining = 1;
-    }
-
-    /* Checking if it is raining and if the light is on. If it is raining and the light is on, it will
-change the gif to rain. */
-    if (raining && !lightOnRain) {
-        changeGif('rain', currentMode);
+    if (debugOn) console.log(Rain)
+    switch (Rain) {
+        case '1':
+            raining = true;
+            if (debugOn) console.log(`Rain Status ${raining}`);
+            if (!lightOnRain) {
+                changeGif('rain', currentMode);
+                lightOnRain = true;
+            }
+            break;
+        case '0':
+            raining = false;
+            if (debugOn) console.log(`Rain Status ${raining}`);
+            if (lightOnRain) {
+                lightOnRain = false;
+                changeGif('void', currentMode);
+            }
+            break;
     }
 }
 
