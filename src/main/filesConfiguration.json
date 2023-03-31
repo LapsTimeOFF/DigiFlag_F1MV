@@ -171,6 +171,8 @@
         "sc": "gifs/T2_169/sc.gif",
         "slippery": "gifs/T2_169/slippery.gif",
         "ss": "gifs/T2_169/ss.gif",
+        "timepenalty5sec":"gifs/T2_169/timepenalty5sec.gif",
+        "timepenalty10sec":"gifs/T2_169/timepenalty10sec.gif",
         "void": "gifs/T2_169/void.gif",
         "vsc": "gifs/T2_169/vsc.gif",
         "white": "gifs/T2_169/white.gif",

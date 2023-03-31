@@ -1,4 +1,5 @@
 {
+  "alwaysOnTop": "Always on Top?",
   "attemptingToConnectToF1MV": "Poging on verbinding te maken met F1MV in:",
   "attemptingToConnectToLiveReplayTimingWindow": "Poging om verbinding te maken met het live of herhaal tijdvenster:",
   "attemptingToGetCurrentSessionInfoFromF1mv": "Poging tot het ophalen van de huidige sessie informatie...",
@@ -11,6 +12,7 @@
   "failedToConnect": "Connectie naar F1MV mislukt",
   "failedToRetrieveCurrentSession": "Ophalen van de huidige sessie mislukt",
   "french": "Frans",
+  "general": "Algemeen",
   "infoTag": "Misschien probeer je verbinding te maken met een andere host? Misschien is je port niet de stardaard port?",
   "language": "Language",
   "layout": "Indeling",

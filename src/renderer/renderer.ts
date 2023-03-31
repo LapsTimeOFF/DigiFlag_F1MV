@@ -931,28 +931,61 @@ const checkRCM = async () => {
         const recentMessage = filteredMessages.slice(-1)[0];
 
         if (debugOn) console.log('Most Recent Filtered Message: ');
-        console.table(recentMessage);
+        if (debugOn) console.table(recentMessage);
         if (debugOn) console.log('Most Recent RCM Message: ');
-        console.table(result.Messages.slice(-1)[0]);
+        if (debugOn) console.table(result.Messages.slice(-1)[0]);
         /* Checking if the message contains the word "BLACK AND ORANGE" and if it does, it sets the category to "Flag" and the flag to "BLACK AND ORANGE". */
         if (recentMessage.Message.match(/BLACK AND ORANGE/i)) {
             recentMessage.Category = 'Flag';
             recentMessage.Flag = 'BLACK AND ORANGE';
         }
+/* Checking if the message contains the word "BLACK AND WHITE" and if it does, it will change the gif
+to black and white, wait 2.5 seconds, then change the gif to the racing number, wait 2.5 seconds,
+then turn off the racing number gif, then turn off the black and white gif. */
         if (recentMessage.Message.match(/BLACK AND WHITE/i)) {
             changeGif('blackandwhite', currentMode);
-            await timer(2000);
-            turnOff('blackandwhite');
+            await timer(3500);
             const recentRacingNumber = recentMessage.RacingNumber;
             if (recentRacingNumber in themes[currentTheme].gifs) {
                 changeGif(recentRacingNumber, currentMode);
                 await timer(3500);
                 turnOff(recentRacingNumber);
             } else {
-                console.log(`No racing number GIF found for ${recentRacingNumber}`);
+                if (debugOn) console.log(`No racing number GIF found for ${recentRacingNumber}`);
             }
+            turnOff('blackandwhite');
             return;
         }
+/* Checking the recentMessage.SubCategory to see if it is a TimePenalty. If it is, it is checking the
+recentMessage.Message to see if it contains the text "CAR #" where # is a number. If it does, it is
+checking the recentMessage.Message to see if it contains the text "5 SECOND TIME PENALTY" or "10
+SECOND TIME PENALTY". If it does, it is changing the gif to the appropriate gif and then turning it
+off after a certain amount of time. */
+        if (recentMessage.SubCategory === 'TimePenalty') {
+           /* Using a regular expression to match the message to a pattern. */
+            const carNumberMatch = recentMessage.Message.match(/CAR (\d+)/i);
+            if (carNumberMatch) {
+            /* Using a regular expression to extract the car number from the string. */
+              const carNumber = carNumberMatch[1];
+              if (debugOn) console.log(`Car Number: ${carNumber}`)
+              if (recentMessage.Message.match(/5 SECOND TIME PENALTY/i)) {
+                changeGif('timepenalty5sec', currentMode);
+                await timer(3500);
+                turnOff('timepenalty5sec');
+                changeGif(carNumber, currentMode);
+                await timer(3500);
+                turnOff(carNumber);
+              }
+              if (recentMessage.Message.match(/10 SECOND TIME PENALTY/i)) {
+                changeGif('timepenalty10sec', currentMode);
+                await timer(3500);
+                turnOff('timepenalty10sec');
+                changeGif(carNumber, currentMode);
+                await timer(3500);
+                turnOff(carNumber);
+              }
+            }
+          }
         /* Checking if the message contains the word "ROLLING START" and if it does, it will change the gif to "rs" and then turn it off after 20 seconds. */
         if (
             recentMessage.Message.match(/ROLLING START/i) &&
@@ -973,13 +1006,13 @@ const checkRCM = async () => {
         if (recentMessage.Message.match(/DRS ENABLED/i)) {
             changeGif('DRSenabled', currentMode);
             await timer(3500);
-            turnOff('drs');
+            turnOff('DRSenabled');
             return;
         }
         if (recentMessage.Message.match(/DRS DISABLED/i)) {
             changeGif('DRSdisabled', currentMode);
             await timer(3500);
-            turnOff('drs');
+            turnOff('DRSdisabled');
             return;
         }
 
@@ -1186,3 +1219,24 @@ setInterval(checkStatus, 100);
 //         toggleTransparency();
 //     }
 // });
+
+/**
+ * The function returns a promise that resolves to the value returned by the
+ * window.api.getAlwaysOnTop() function.
+ * @returns A promise.
+ */
+async function getAlwaysOnTopSetting() {
+    return await window.api.getAlwaysOnTop();
+}
+
+/* Getting the value of the alwaysOnTop setting from the storage and setting the checkbox to the
+value. */
+jQuery(async () => {
+    const alwaysOnTop = await getAlwaysOnTopSetting();
+    $('#alwaysOnTopSwitch').prop('checked', alwaysOnTop);
+});
+
+/* When the alwaysOnTop switch is changed it window to always on top. */
+$('#alwaysOnTopSwitch').on('change', async () => {
+    await window.api.setAlwaysOnTop();
+});

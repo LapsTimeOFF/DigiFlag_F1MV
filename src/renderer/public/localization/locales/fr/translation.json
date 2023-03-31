@@ -1,4 +1,5 @@
 {
+  "alwaysOnTop": "Always on Top?",
   "attemptingToConnectToF1MV": "Tentative de connexion à F1MV dans:",
   "attemptingToConnectToLiveReplayTimingWindow": "Tentative de connexion à la fenêtre de télémétrie en direct ou de rediffusion:",
   "attemptingToGetCurrentSessionInfoFromF1mv": "Récupération des informations de la session actuelle de F1MV...",
@@ -11,6 +12,7 @@
   "failedToConnect": "Impossible de se connecter à F1MV",
   "failedToRetrieveCurrentSession": "Impossible de récupérer la session actuelle",
   "french": "Français",
+  "general": "Général",
   "infoTag": "Peut-être essayez-vous de vous connecter à une autre hôte ? Peut-être que votre port n'est pas celui par défaut ?",
   "language": "Langue",
   "layout": "Mise en page",
