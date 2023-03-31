@@ -57,6 +57,10 @@ dmg:
     path: "/Applications"
 linux:
   target:
-    - AppImage
+  - AppImage
+  - target: zip
+    arch:
+    - x64
+    - ia32
 appImage:
   category: Utility
