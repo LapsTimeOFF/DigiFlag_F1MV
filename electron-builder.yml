@@ -1,4 +1,5 @@
 appId: com.DigiFlagTeam.DigiFlag-F1MV
+artifactName: ${productName}-${version}-${os}-${arch}.${ext}
 productName: DigiFlag-F1MV
 copyright: Copyright © 2023 DigiFlag Team
 generateUpdatesFilesForAllChannels: true
