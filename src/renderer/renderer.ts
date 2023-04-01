@@ -17,7 +17,7 @@ const timer = (ms: number) => new Promise((res) => setTimeout(res, ms));
 /* Getting the themes and the tracks from the filesConfiguration.json file. */
 const {themes, mapThemes} = JSON.parse(httpGet('./filesConfiguration.json'));
 /* Declaring a variable called debugOn and assigning it a value of false. */
-let debugOn = true;
+let debugOn = false;
 // let windowTransparency = false;
 let scale = 1;
 let started = false;
