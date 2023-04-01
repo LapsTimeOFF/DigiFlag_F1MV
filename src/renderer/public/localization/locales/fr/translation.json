@@ -13,7 +13,7 @@
   "failedToRetrieveCurrentSession": "Impossible de récupérer la session actuelle",
   "french": "Français",
   "general": "Général",
-  "infoTag": "Peut-être essayez-vous de vous connecter à une autre hôte ? Peut-être que votre port n'est pas celui par défaut ?",
+  "infoTag": "Peut-être essayez-vous de vous connecter à un autre ordinateur ? Peut-être que votre port n'est pas celui par défaut ?",
   "language": "Langue",
   "layout": "Mise en page",
   "mapTheme.satelliteMap": "Carte satellite",
