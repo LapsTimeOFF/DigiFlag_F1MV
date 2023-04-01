@@ -2,6 +2,7 @@ import {app, BrowserWindow, ipcMain} from 'electron';
 import express from 'express';
 import {address} from 'ip';
 import path from 'path';
+import { rateLimit } from 'express-rate-limit';
 import request from 'request';
 import {getWindowSizeSettings, getWindowPositionSettings, saveWindowPos, saveWindowSize, getAlwaysOnTopState, saveAlwaysOnTopState,} from './storage';
 import {failedToLoadAPI} from './errorTable';
@@ -10,6 +11,13 @@ import { autoUpdater } from "electron-updater"
 const version = app.getVersion();
 /* Creating an express app. */
 const expressApp = express();
+/* Limiting the rate at which the API can be called. */
+const limiter = rateLimit({
+    windowMs: 1*60*1000, // 1 minute
+    max: 5
+  });
+  // Apply Rate Limit to all requests
+  expressApp.use(limiter);
 /* Creating a server that listens on port 9093. */
 expressApp
     .listen(9093, () => {
