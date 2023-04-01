@@ -1,7 +1,7 @@
 {
   "alwaysOnTop": "Toujours au dessus?",
   "attemptingToConnectToF1MV": "Tentative de connexion à F1MV dans:",
-  "attemptingToConnectToLiveReplayTimingWindow": "Tentative de connexion à la fenêtre de télémétrie en direct ou de rediffusion:",
+  "attemptingToConnectToLiveReplayTimingWindow": "Tentative de connexion au Live Timing :",
   "attemptingToGetCurrentSessionInfoFromF1mv": "Récupération des informations de la session actuelle de F1MV...",
   "back": "Retourner",
   "checkNetworkSettings": "Déplacez votre souris dans le coin inférieur droit et cliquez sur la roue des paramètres pour vérifier vos paramètres réseau.",
