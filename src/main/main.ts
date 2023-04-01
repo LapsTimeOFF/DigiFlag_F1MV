@@ -2,15 +2,22 @@ import {app, BrowserWindow, ipcMain} from 'electron';
 import express from 'express';
 import {address} from 'ip';
 import path from 'path';
+import { rateLimit } from 'express-rate-limit';
 import request from 'request';
-import {getWindowSizeSettings, getWindowPositionSettings, saveWindowPos, saveWindowSize} from './storage';
+import {getWindowSizeSettings, getWindowPositionSettings, saveWindowPos, saveWindowSize, getAlwaysOnTopState, saveAlwaysOnTopState,} from './storage';
 import {failedToLoadAPI} from './errorTable';
 import {themes,mapThemes} from './filesConfiguration.json';
 import { autoUpdater } from "electron-updater"
-
 const version = app.getVersion();
 /* Creating an express app. */
 const expressApp = express();
+/* Limiting the rate at which the API can be called. */
+const limiter = rateLimit({
+    windowMs: 1*60*1000, // 1 minute
+    max: 5
+  });
+  // Apply Rate Limit to all requests
+  expressApp.use(limiter);
 /* Creating a server that listens on port 9093. */
 expressApp
     .listen(9093, () => {
@@ -32,8 +39,8 @@ expressApp.get('/getTrack/:track/:themeID', (req, res) => {
     const trackPath = theme.trackMaps[track];
     res.sendFile(`${trackPath}`, { root : path.join(__dirname,'../renderer/')});
 });
-/* A route that is used to get a gif from the server. */
-expressApp.get('/getGifPixoo/:gif/:themeID', (req, res) => {
+/* A route that is used to change the GIF on the Pixoo64. */
+expressApp.get('/getGifPixoo/:themeID/:gif.gif/', (req, res) => {
     const {gif, themeID} = req.params;
     const theme = themes[themeID];
     /* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
@@ -46,7 +53,7 @@ expressApp.get('/getGifPixoo/:gif/:themeID', (req, res) => {
     res.sendFile(`${gifPath}`, { root : path.join(__dirname,'../renderer/')});
 });
 /* A route that is used to change the GIF on the Pixoo64. */
-expressApp.get('/pixoo/:gif/:themeID/:ip', (req, res) => {
+expressApp.get('/pixoo/:themeID/:ip/:gif.gif', (req, res) => {
     const {gif, themeID, ip} = req.params;
     const theme = themes[themeID];
     /* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
@@ -57,12 +64,12 @@ expressApp.get('/pixoo/:gif/:themeID/:ip', (req, res) => {
     }
     /* Sending a POST request to the Pixoo64. */
     request.post(
-        `https://${ip}:80/post`,
+        `http://${ip}:80/post`,
         {
             json: {
                 Command: 'Device/PlayTFGif',
                 FileType: 2,
-                FileName: `https://${address()}:9093/getGifPixoo/${gif}/${themeID}`,
+                FileName: `http://${address()}:9093/getGifPixoo/${themeID}/${gif}.gif`,
             },
         },
         /* A callback function that is called when the request is completed. */
@@ -98,8 +105,8 @@ let mainWindow:BrowserWindow
  * @param {string} title - The title of the window.
  * @returns A BrowserWindow object.
  */
-function createWindow(width: number, height: number, windowPositionX: number, windowPositionY: number, title: string) {
-     mainWindow = new BrowserWindow({
+function createWindow(width: number, height: number, windowPositionX: number, windowPositionY: number, title: string, alwaysOnTop:boolean) {
+    mainWindow = new BrowserWindow({
         width: width,
         height: height,
         title: title,
@@ -110,7 +117,7 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
         titleBarStyle: 'hidden',
         /* Setting the icon of the window. */
         icon: path.join(__dirname,'../../build/icon.png'),
-        alwaysOnTop: false,
+        alwaysOnTop: alwaysOnTop,
         autoHideMenuBar: true,
         /* Hiding the window until it is ready to be shown. */
         show: false,
@@ -119,8 +126,8 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
             nodeIntegration:true
         },
     });
-  // HMR for renderer base on electron-vite cli.
-  // Load the remote URL for development or the local html file for production.
+    // HMR for renderer base on electron-vite cli.
+    // Load the remote URL for development or the local html file for production.
     if (!app.isPackaged && process.env['ELECTRON_RENDERER_URL']) {
         mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
     } else {
@@ -132,10 +139,43 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
         if (version.includes('dev')) mainWindow.webContents.openDevTools({mode: 'detach'});
     });
 
-    mainWindow.on('moved', () => saveWindowPos(mainWindow.getPosition()));
-    /* Saving the window size when the window is resized. */
-    mainWindow.on('resized', () => saveWindowSize(mainWindow.getSize()));
-    /* Setting the minimum size of the window to 426x240. */
+    /* A type alias for a function that takes an array of unknowns and returns a value of type R. */
+    type Func<T extends unknown[], R> = (...args: T) => R;
+
+    /**
+     * It returns a function that calls the given function after a delay, but if the returned function is
+     * called again before the delay, the delay is reset
+     * @param func - The function to debounce.
+     * @param {number} delay - The amount of time to wait before calling the function.
+     * @returns A function that takes a function and a number and returns a function.
+     */
+    function debounce<T extends unknown[], R>(func: Func<T, R>, delay: number): Func<T, void> {
+        let timeoutId: ReturnType<typeof setTimeout> | null;
+
+        return function (this: unknown, ...args: T) {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+            timeoutId = setTimeout(() => {
+                func.apply(this, args);
+                timeoutId = null;
+            }, delay);
+        };
+    }
+    // The debounce functuion is being used to limit the rate at which the `saveWindowPos` and `saveWindowSize` functions are called when the window is moved or resized.
+    /* A function that is called when the window is moved. It calls the `saveWindowPos` function with the
+position of the window as an argument. */
+    mainWindow.on(
+        'move',
+        debounce(() => saveWindowPos(mainWindow.getPosition()), 500)
+    );
+    /* A function that is called when the window is resized. It calls the `saveWindowSize` function with
+the size of the window as an argument. */
+    mainWindow.on(
+        'resize',
+        debounce(() => saveWindowSize(mainWindow.getSize()), 500)
+    );
+    /* Setting the minimum size of the window to 256x256. */
     mainWindow.setMinimumSize(256, 256);
 
     mainWindow.on('close', function () {
@@ -151,8 +191,7 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
                     backgroundColor: '#131416',
                 },
             };
-        }
-        else if (url.includes('index.html')) {
+        } else if (url.includes('index.html')) {
             return {
                 action: 'allow',
                 overrideBrowserWindowOptions: {
@@ -164,11 +203,10 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
                     webPreferences:{
                         nodeIntegration:true,
                         preload: path.join(__dirname, '../preload/preload.js'),
-                    }
+                    },
                 },
             };
-        }
-        else {
+        } else {
             return {
                 action: 'deny'
             };
@@ -180,19 +218,21 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.whenReady().then(() => {
-    autoUpdater.checkForUpdatesAndNotify()
+    autoUpdater.checkForUpdatesAndNotify();
     const windowSize = getWindowSizeSettings();
     const windowPosition = getWindowPositionSettings();
+    const alwaysOnTopState = getAlwaysOnTopState();
 
     if (version.includes('dev')) console.log('WindowSize: ', windowSize);
     if (version.includes('dev')) console.log('WindowPosition: ', windowPosition);
+    if (version.includes('dev')) console.log('alwaysOnTopState: ', alwaysOnTopState);
 
-    createWindow(windowSize[0], windowSize[1], windowPosition[0], windowPosition[1], 'DigiFlag - ' + version);
+    createWindow(windowSize[0], windowSize[1], windowPosition[0], windowPosition[1], 'DigiFlag - ' + version, alwaysOnTopState);
     app.on('activate', () => {
         // On OS X it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
         if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow(windowSize['0'], windowSize[1], windowPosition[0], windowPosition[1], 'DigiFlag - ' + version);
+            createWindow(windowSize[0], windowSize[1], windowPosition[0], windowPosition[1], 'DigiFlag - ' + version, alwaysOnTopState);
         }
     });
 });
@@ -208,3 +248,20 @@ app.on('window-all-closed', () => {
 ipcMain.handle('get-version',async()=>{
     return app.getVersion()
 })
+
+ipcMain.handle('get-always-on-top', () => {
+    // Get the current state from storage
+    return mainWindow.isAlwaysOnTop();
+});
+
+ipcMain.handle('set-always-on-top', () => {
+    // Get the current state from storage
+    const currentState = getAlwaysOnTopState();
+    // Toggle the alwaysOnTop state
+    const newState = !currentState;
+    // Set the new state for the mainWindow
+    mainWindow.setAlwaysOnTop(newState);
+    // Save the new state to storage
+    saveAlwaysOnTopState(newState);
+    console.log(mainWindow.isAlwaysOnTop());
+});

@@ -1,4 +1,5 @@
 {
+  "alwaysOnTop": "Always on Top?",
   "attemptingToConnectToF1MV": "Attempting to Connect to F1MV in:",
   "attemptingToConnectToLiveReplayTimingWindow": "Attempting to Connect to Live or Replay Timing Window:",
   "attemptingToGetCurrentSessionInfoFromF1mv": "Attempting to Get Current Session Info From F1MV...",
@@ -6,10 +7,12 @@
   "checkNetworkSettings": "Move your Mouse to the Bottom Right Corner & Click on the Settings Gear to check your Network Settings.",
   "currentSession": "Current Session:",
   "digiflagNotLinked": "DigiFlag is currently not linked to F1MV",
+  "dutch": "Dutch",
   "english": "English",
   "failedToConnect": "Failed to connect to F1MV",
   "failedToRetrieveCurrentSession": "Failed to Retrieve Current Session",
   "french": "French",
+  "general": "General",
   "infoTag": "Maybe you are trying to connect to another host? Maybe your port isn't the default one?",
   "language": "Language",
   "layout": "Layout",

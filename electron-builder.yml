@@ -1,4 +1,5 @@
 appId: com.DigiFlagTeam.DigiFlag-F1MV
+artifactName: ${productName}-${version}-${os}-${arch}.${ext}
 productName: DigiFlag-F1MV
 copyright: Copyright © 2023 DigiFlag Team
 generateUpdatesFilesForAllChannels: true
@@ -44,7 +45,7 @@ mac:
             - x64
             - arm64
 dmg:
-  backgroundColor: "#383838"
+  backgroundColor: "#121212"
   window:
     width: 400
     height: 300
@@ -57,6 +58,10 @@ dmg:
     path: "/Applications"
 linux:
   target:
-    - AppImage
+  - AppImage
+  - target: zip
+    arch:
+    - x64
+    - ia32
 appImage:
   category: Utility

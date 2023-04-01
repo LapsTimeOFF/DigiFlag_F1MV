@@ -44,6 +44,7 @@ export function getWindowPositionSettings() {
         return defaultWindowPositon;
     }
 }
+
 /**
  * This function saves the window size to the config.json.
  * @param {number[]} windowSize - The window size to save.
@@ -59,4 +60,19 @@ export function saveWindowSize(windowSize: number[]): void {
 export function saveWindowPos(windowPos: number[]): void {
     storage.set('lastWindowPosition', windowPos);
     console.log('Window Position Saved: ', windowPos);
+}
+
+export function getAlwaysOnTopState() {
+    const defaultAlwaysOnTopState=false
+    const alwaysOnTopState = storage.get('alwaysOnTop') as boolean;
+    if (alwaysOnTopState) return alwaysOnTopState;
+    else {
+        storage.set('alwaysOnTop', defaultAlwaysOnTopState);
+        return defaultAlwaysOnTopState;
+    }
+  }
+
+export function saveAlwaysOnTopState(alwaysOnTop: boolean): void {
+    storage.set('alwaysOnTop', alwaysOnTop);
+    console.log(`Always on Top State (${alwaysOnTop}) Saved: `, alwaysOnTop);
 }

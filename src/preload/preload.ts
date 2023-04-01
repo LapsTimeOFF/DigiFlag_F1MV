@@ -7,6 +7,8 @@ import { electronAPI } from '@electron-toolkit/preload'
 export const api = {
     LiveTimingAPIGraphQL: LiveTimingAPIGraphQL,
     getVersion:() => ipcRenderer.invoke('get-version'),
+    getAlwaysOnTop:() =>  ipcRenderer.invoke('get-always-on-top'),
+    setAlwaysOnTop:() =>  ipcRenderer.invoke('set-always-on-top'),
     electronAPI
 }
 

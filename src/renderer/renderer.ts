@@ -17,7 +17,7 @@ const timer = (ms: number) => new Promise((res) => setTimeout(res, ms));
 /* Getting the themes and the tracks from the filesConfiguration.json file. */
 const {themes, mapThemes} = JSON.parse(httpGet('./filesConfiguration.json'));
 /* Declaring a variable called debugOn and assigning it a value of false. */
-let debugOn = true;
+let debugOn = false;
 // let windowTransparency = false;
 let scale = 1;
 let started = false;
@@ -25,7 +25,7 @@ let yellow = false;
 let sc = false;
 let vsc = false;
 let red = false;
-let raining = 0;
+let raining = false;
 let version
 let themeSelectRef: JQuery<HTMLElement>
 let miscOptionsRef: JQuery<HTMLElement>
@@ -40,6 +40,7 @@ let LT_Data = {
                 Message: '',
                 Category: '',
                 SubCategory: '',
+                RacingNumber: '',
                 Flag: '',
                 Scope: '',
                 Sector: '',
@@ -193,18 +194,34 @@ async function getCurrentSessionInfo(): Promise<string> {
  * @returns The IP address of the Pixoo device.
  */
 
-// async function getPixooIP(){
-//     try {
-//         const req= await fetch('https://app.divoom-gz.com/Device/ReturnSameLANDevice')
-//      const pixooData= await req.json()
-//      pixooIP=pixooData.DeviceList[0].DevicePrivateIP
-//      $('#pixooIP').text(`${pixooIP}`)
-//      return pixooIP
-//  } catch (error) {
-//     console.error(error)
-//     return 'Failed to change GIF on Pixoo64'
-//  }
-// }
+async function getPixooIP(): Promise<string> {
+    try {
+        const response: Response = await fetch('https://app.divoom-gz.com/Device/ReturnSameLANDevice', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const data: {ReturnCode: number; DeviceList: {DevicePrivateIP: string}[]} = await response.json();
+
+        if (data.ReturnCode === 0 && data.DeviceList.length > 0) {
+            const device: {DevicePrivateIP: string} = data.DeviceList[0];
+            pixooIP = device.DevicePrivateIP;
+            console.log('Pixoo64 IP Address:', pixooIP);
+            // You can do something with the pixooIP variable here
+            return pixooIP;
+        } else {
+            console.log('Failed to retrieve Pixoo64 IP Address');
+            return 'Failed to retrieve Pixoo64 IP Address';
+        }
+    } catch (error) {
+        if (error instanceof Error) {
+            console.log(error.message);
+        }
+        return 'Failed to retrieve Pixoo64 IP Address';
+    }
+}
 
 /**
  * It takes the currentMapTheme as an argument and returns the trackMapPath for the current race.
@@ -405,7 +422,7 @@ function getGifPath(flag: string) {
  * @param {number}id - the id of the theme
  */
 function selectTheme(id: number) {
-    if (debugOn) log('Mode selected : ' + id);
+    if (debugOn) log('Theme Selected: ' + id);
     currentTheme = id;
     $('#nextTheme').prop('disabled', false);
 }
@@ -467,10 +484,6 @@ async function turnOff(flag: string) {
                 }
                 return;
             }
-            if (raining) {
-                changeGif('rain', 0);
-                return;
-            }
             $('#digiflag').prop('src', getGifPath('void'));
             lightOn = false;
         }
@@ -511,7 +524,10 @@ async function changeGif(flag: string, mode: number) {
         lightOn = true;
         lightOnRain = false;
     }
-    if (flag === 'rain') lightOnRain = true;
+    if (flag === 'rain') {
+        lightOn = false;
+        lightOnRain = true;
+    }
 }
 
 /**
@@ -554,10 +570,13 @@ function linkSuccess() {
         </div>
         <span class="badge text-bg-danger" data-i18n="pixoo64IsNotCompatible" id="notAvailable" disabled>Pixoo 64 is Not Compatible with the Selected Theme</span>
         <div class="form-check" id="pixoo64">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="pixoo64Radio" disabled>
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="pixoo64Radio" data-bs-toggle="collapse" data-bs-target="#pixooIPContainer" aria-expanded="false" aria-controls="pixooIPContainer" disabled>
         <label class="form-check-label" for="pixoo64Radio">
             Pixoo 64 DigiFlag
         </label>
+        <div class="collapse" id="pixooIPContainer">
+        <span id="pixooIP">Pixoo IP: ${pixooIP}</span>
+        </div>
         </div>
     `);
     $('#selectMisc').append(`<div class="lead text-center fs-4" data-i18n="miscOptions">
@@ -604,19 +623,31 @@ function linkSuccess() {
             $('#pixoo64Radio').prop('disabled', false);
         }
         else{
+            currentMode = 0;
             $('#notAvailable').show();
+            $('#pixoo64Radio').prop('checked', false);
+            $('#pixooIPContainer').removeClass()
+            $('#pixooIPContainer').addClass('collapse');
+            $('#windowRadio').prop('checked', true);
             $('#pixoo64Radio').prop('disabled', true);
+            $('#mapSwitch').prop('disabled',false)
+            $('#mvSwitch').prop('disabled', false);
         }
         $('#selectDevice').on('change', (e) => {
             if (e.target.id === 'pixoo64Radio') {
                 if (debugOn) console.log('Pixoo64 was Selected');
                 currentMode = 1;
-                // getPixooIP()
+                getPixooIP()
                 if (debugOn) console.log('Current Mode: ' + currentMode);
+                $('#collapsetrackMapSelect').removeClass();
+                $('#collapsetrackMapSelect').addClass('collapse');
                 $('#mapSwitch').prop('disabled', true);
+                $("#mapSwitch").prop("checked",false)
             } else {
                 if (debugOn) console.log('Window was Selected');
                 currentMode = 0;
+                $('#pixooIPContainer').removeClass()
+                $('#pixooIPContainer').addClass('collapse');
                 if (debugOn) console.log('Current Mode: ' + currentMode);
                 $('#mapSwitch').prop('disabled', false);
             }
@@ -695,7 +726,7 @@ it. */
         })
         $('#launchDigiFlag').on('click', () => {
             $('.menu-box').remove();
-            $('body').append(`<img src="${getGifPath('void')}" id="digiflag" class="center-screen">`);
+            $('body').append(`<img src="${getGifPath('void')}" id="digiflag" class="img-fluid center-screen">`);
             $('#digiflag').insertBefore('.bottom-screen');
             $('.bottom-screen:not(:hover)').animate(
                 {
@@ -789,7 +820,6 @@ $(function () {
     $('#version').text(`DigiFlag Version: ${version}`);
     $('#raceName').text(raceName);
     $('.bottom-screen:not(:hover)').css('opacity', 1);
-    $('#zoomIn,#zoomOut,#zoomReset').hide();
     $('#linkF1MV').remove();
 
     /* The code below is appending a SVG globe icon, a h5 tag with the text "Network", a
@@ -802,7 +832,7 @@ $(function () {
         <circle cx="12" cy="12" r="10"/>
         <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
       </svg>`);
-        $('#networkSettings').append('<h5>Network</h5>');
+        $('#networkSettings').append('<h5 data-i18n="network">Network</h5>');
         $('#networkSettings').append(
             `<label for="ip">Multiviewer API IP:</label>
             <input type="text" class="form-control-sm text-bg-dark" value="${config.host}" id="ip">`
@@ -856,21 +886,23 @@ $(function () {
     /* Increasing the zoom of the image by 20px when the button is clicked. */
     $('#zoomIn').on('click', () => {
         const zoomScaleAdd = (scale = scale + 0.25);
-        if (zoomScaleAdd >= 1.75) scale = 0.75;
-        $('.center-screen').css({
-            transform: 'translate(-50%,-50%) scale(' + zoomScaleAdd + ')',
+        if (zoomScaleAdd >= 1.75)
+            scale = 0.75;
+        $('main,.center-screen').css({
+            transform: 'scale(' + zoomScaleAdd + ')',
         });
     });
     /* Decreasing the zoom of the image by 20px when the button is clicked. */
     $('#zoomOut').on('click', () => {
         const zoomScaleSubtract = (scale = scale - 0.25);
-        if (zoomScaleSubtract <= 0.25) scale = 1.25;
-        $('.center-screen').css({
-            transform: 'translate(-50%,-50%) scale(' + zoomScaleSubtract + ')',
+        if (zoomScaleSubtract <= 0.25)
+            scale = 1.25;
+        $('main,.center-screen').css({
+            transform: 'scale(' + zoomScaleSubtract + ')',
         });
     });
     $('#zoomReset').on('click', () => {
-        $('.center-screen').removeAttr('style');
+        $('main,.center-screen').removeAttr('style');
         scale = 1;
     });
 });
@@ -888,8 +920,9 @@ const checkRCM = async () => {
         const filteredMessages = result.Messages.filter(
             (message) =>
                 message.Category === 'Flag' ||
+                message.Category === 'Other' ||
                 message.Category === 'SafetyCar' ||
-                message.Category === 'TrackSurfaceSlippery' ||
+                message.Category === 'Drs' ||
                 message.Message.match(/ROLLING START/i) ||
                 message.Message.match(/STANDING START/i)
         );
@@ -897,14 +930,61 @@ const checkRCM = async () => {
         const recentMessage = filteredMessages.slice(-1)[0];
 
         if (debugOn) console.log('Most Recent Filtered Message: ');
-        console.table(recentMessage);
+        if (debugOn) console.table(recentMessage);
         if (debugOn) console.log('Most Recent RCM Message: ');
-        console.table(result.Messages.slice(-1)[0]);
+        if (debugOn) console.table(result.Messages.slice(-1)[0]);
         /* Checking if the message contains the word "BLACK AND ORANGE" and if it does, it sets the category to "Flag" and the flag to "BLACK AND ORANGE". */
         if (recentMessage.Message.match(/BLACK AND ORANGE/i)) {
             recentMessage.Category = 'Flag';
             recentMessage.Flag = 'BLACK AND ORANGE';
         }
+/* Checking if the message contains the word "BLACK AND WHITE" and if it does, it will change the gif
+to black and white, wait 2.5 seconds, then change the gif to the racing number, wait 2.5 seconds,
+then turn off the racing number gif, then turn off the black and white gif. */
+        if (recentMessage.Message.match(/BLACK AND WHITE/i)) {
+            changeGif('blackandwhite', currentMode);
+            await timer(3500);
+            const recentRacingNumber = recentMessage.RacingNumber;
+            if (recentRacingNumber in themes[currentTheme].gifs) {
+                changeGif(recentRacingNumber, currentMode);
+                await timer(3500);
+                turnOff(recentRacingNumber);
+            } else {
+                if (debugOn) console.log(`No racing number GIF found for ${recentRacingNumber}`);
+            }
+            turnOff('blackandwhite');
+            return;
+        }
+/* Checking the recentMessage.SubCategory to see if it is a TimePenalty. If it is, it is checking the
+recentMessage.Message to see if it contains the text "CAR #" where # is a number. If it does, it is
+checking the recentMessage.Message to see if it contains the text "5 SECOND TIME PENALTY" or "10
+SECOND TIME PENALTY". If it does, it is changing the gif to the appropriate gif and then turning it
+off after a certain amount of time. */
+        if (recentMessage.SubCategory === 'TimePenalty') {
+           /* Using a regular expression to match the message to a pattern. */
+            const carNumberMatch = recentMessage.Message.match(/CAR (\d+)/i);
+            if (carNumberMatch) {
+            /* Using a regular expression to extract the car number from the string. */
+              const carNumber = carNumberMatch[1];
+              if (debugOn) console.log(`Car Number: ${carNumber}`)
+              if (recentMessage.Message.match(/5 SECOND TIME PENALTY/i)) {
+                changeGif('timepenalty5sec', currentMode);
+                await timer(3500);
+                turnOff('timepenalty5sec');
+                changeGif(carNumber, currentMode);
+                await timer(3500);
+                turnOff(carNumber);
+              }
+              if (recentMessage.Message.match(/10 SECOND TIME PENALTY/i)) {
+                changeGif('timepenalty10sec', currentMode);
+                await timer(3500);
+                turnOff('timepenalty10sec');
+                changeGif(carNumber, currentMode);
+                await timer(3500);
+                turnOff(carNumber);
+              }
+            }
+          }
         /* Checking if the message contains the word "ROLLING START" and if it does, it will change the gif to "rs" and then turn it off after 20 seconds. */
         if (
             recentMessage.Message.match(/ROLLING START/i) &&
@@ -922,10 +1002,27 @@ const checkRCM = async () => {
             turnOff('ss');
             return;
         }
+        if (recentMessage.Message.match(/DRS ENABLED/i)) {
+            changeGif('DRSenabled', currentMode);
+            await timer(3500);
+            turnOff('DRSenabled');
+            return;
+        }
+        if (recentMessage.Message.match(/DRS DISABLED/i)) {
+            changeGif('DRSdisabled', currentMode);
+            await timer(3500);
+            turnOff('DRSdisabled');
+            return;
+        }
 
-        if (recentMessage.Category === 'TrackSurfaceSlippery') changeGif('slippery', currentMode);
+        if (recentMessage.SubCategory === 'TrackSurfaceSlippery') {
+            changeGif('slippery', currentMode)
+            await timer(5000);
+            turnOff('slippery');
+            return;
+        }
 
-        if (recentMessage.Category === 'SafetyCar') {
+        if (recentMessage.Category === 'SafetyCar' && recentMessage.Mode !== 'VIRTUAL SAFETY CAR') {
             sc = true;
             changeGif('sc', currentMode);
         }
@@ -935,7 +1032,7 @@ const checkRCM = async () => {
         }
         if (recentMessage.Flag === 'CHEQUERED') {
             changeGif('chequered', currentMode);
-            await timer(60000);
+            await timer(90000);
             turnOff('chequered');
             return;
         }
@@ -1060,16 +1157,24 @@ async function checkRain() {
 
     /* Extract if it's raining or not from the Live Timing data */
     const Rain = LT_Data.WeatherData.Rainfall;
-
-    /* Checking if the variable Rain is equal to 1. If it is, it sets the variable raining to 1. */
-    if (Rain === '1') {
-        raining = 1;
-    }
-
-    /* Checking if it is raining and if the light is on. If it is raining and the light is on, it will
-change the gif to rain. */
-    if (raining && !lightOnRain) {
-        changeGif('rain', currentMode);
+    if (debugOn) console.log(Rain)
+    switch (Rain) {
+        case '1':
+            raining = true;
+            if (debugOn) console.log(`Rain Status ${raining}`);
+            if (!lightOnRain) {
+                changeGif('rain', currentMode);
+                lightOnRain = true;
+            }
+            break;
+        case '0':
+            raining = false;
+            if (debugOn) console.log(`Rain Status ${raining}`);
+            if (lightOnRain) {
+                lightOnRain = false;
+                changeGif('void', currentMode);
+            }
+            break;
     }
 }
 
@@ -1121,3 +1226,24 @@ setInterval(checkStatus, 100);
 //         toggleTransparency();
 //     }
 // });
+
+/**
+ * The function returns a promise that resolves to the value returned by the
+ * window.api.getAlwaysOnTop() function.
+ * @returns A promise.
+ */
+async function getAlwaysOnTopSetting() {
+    return await window.api.getAlwaysOnTop();
+}
+
+/* Getting the value of the alwaysOnTop setting from the storage and setting the checkbox to the
+value. */
+jQuery(async () => {
+    const alwaysOnTop = await getAlwaysOnTopSetting();
+    $('#alwaysOnTopSwitch').prop('checked', alwaysOnTop);
+});
+
+/* When the alwaysOnTop switch is changed it window to always on top. */
+$('#alwaysOnTopSwitch').on('change', async () => {
+    await window.api.setAlwaysOnTop();
+});
