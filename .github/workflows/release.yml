@@ -1,13 +1,15 @@
 name: Build & Release DigiFlag
 #Build will only happen on branch Stable & If Commit Contains a Release Tag
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
-      - stable
+      - 'stable/**'
 
 jobs:
     release:
-        if: startsWith(github.ref, 'refs/tags/')
+        # if: startsWith(github.ref, 'refs/tags/')
         runs-on: ${{ matrix.os }}
 
         strategy:
@@ -32,4 +34,4 @@ jobs:
 
                   # If the commit is tagged with a version (e.g. "v1.0.0"),
                   # release the app after building
-                  release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+                  release: ${{ startsWith(v, 'v') }}
