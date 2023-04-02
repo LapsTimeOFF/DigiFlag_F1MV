@@ -1,4 +1,4 @@
-# Code of Conduct - DigiFlag for F1MV
+# Code of Conduct - DigiFlag for F1MV 
 
 ## Our Pledge
 
