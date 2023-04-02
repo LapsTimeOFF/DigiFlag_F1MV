@@ -9,7 +9,7 @@
 ![MacOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=apple&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 
-> Adding a DigiFlag functionality to MultiViewer For F1
+> DigiFlag is a companion app for F1 MultiViewer that adds an immersive digital flag display for an enhanced viewing experience
 
 ### Built With
 
