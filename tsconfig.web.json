@@ -8,6 +8,7 @@
     "moduleResolution": "Node",
     "useUnknownInCatchVariables": false,
     "strict": false,
-    "isolatedModules": false
+    "isolatedModules": false,
+    "types": ["jquery"]
   }
 }

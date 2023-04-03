@@ -1,8 +1,8 @@
 {
   "name": "digiflag-f1mv",
   "productName": "DigiFlag-F1MV",
-  "version": "2.5.0",
-  "description": "Adding a DigiFlag functionality to MultiViewer For F1",
+  "version": "2.5.1",
+  "description": "DigiFlag is a companion app for F1 MultiViewer that adds an immersive digital flag display for an enhanced viewing experience",
   "main": "./dist/main/main.js",
   "license": "MIT",
   "author": "DigiFlag Team",
@@ -30,7 +30,7 @@
   "scripts": {
     "dev": "electron-vite build && electron-vite dev -w ",
     "preview": "electron-vite build && electron-vite preview",
-    "build": "npm run typecheck && electron-vite build",
+    "build": "electron-vite build",
     "build:win": "electron-vite build && electron-builder --win --config",
     "build:mac": "electron-vite build && electron-builder --mac --config",
     "build:linux": "electron-vite build && electron-builder --linux --config",
@@ -38,8 +38,7 @@
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "postinstall": "electron-builder install-app-deps",
-    "prepare": "husky install",
-    "install-electron": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://proxy-dmz.intel.com:912/ pnpm install electron@latest --save-dev"
+    "prepare": "husky install"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^1.0.3",
