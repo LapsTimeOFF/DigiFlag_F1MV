@@ -49,7 +49,7 @@ expressApp.get('/getGifPixoo/:themeID/:gif.gif/', (req, res) => {
         res.send("Theme requested doesn't support Pixoo64");
         return;
     }
-    const gifPath = theme.gifs.pixoo64[gif];
+    const gifPath = theme.gifs[gif];
     res.sendFile(`${gifPath}`, { root : path.join(__dirname,'../renderer/')});
 });
 /* A route that is used to change the GIF on the Pixoo64. */

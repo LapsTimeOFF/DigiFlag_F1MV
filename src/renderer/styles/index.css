@@ -28,8 +28,8 @@ img {
 }
 
 img#digiflag {
-    width: 100vw;
-    height: 100vh;
+    width: auto;
+    height: 100%;
     object-fit: cover;
     transition: all 0.2s ease-in-out;
     -webkit-app-region: drag;

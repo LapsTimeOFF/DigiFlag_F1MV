@@ -7,6 +7,7 @@ const config = {
     host: host,
     port: port,
 };
+const headers = {'Content-Type': 'application/json'};
 
 /**
  * It takes a number of milliseconds as an argument, and returns a promise that resolves after that
@@ -17,22 +18,19 @@ const timer = (ms: number) => new Promise((res) => setTimeout(res, ms));
 /* Getting the themes and the tracks from the filesConfiguration.json file. */
 const {themes, mapThemes} = JSON.parse(httpGet('./filesConfiguration.json'));
 /* Declaring a variable called debugOn and assigning it a value of false. */
-let debugOn = false;
+let debugOn = true;
 // let windowTransparency = false;
 let scale = 1;
 let started = false;
+let currentTrackStatus = null;
+let currentRainStatus:null | string = null;
 let yellow = false;
 let sc = false;
 let vsc = false;
 let red = false;
-let raining = false;
-let version
+let version = '';
 let themeSelectRef: JQuery<HTMLElement>
 let miscOptionsRef: JQuery<HTMLElement>
-const getDigiFlagVersion = async () => {
-  version= await window.api.getVersion();
-}
-getDigiFlagVersion()
 let LT_Data = {
     RaceControlMessages: {
         Messages: [
@@ -62,7 +60,6 @@ let LT_Data = {
         WindSpeed: '',
     },
 };
-let lightOn = false;
 let lightOnRain = false;
 /* Declaring a variable called currentTheme and assigning it a value of 1. */
 let currentTheme = 1;
@@ -118,6 +115,16 @@ function log(text: string) {
     if (logs[logs.length - 1] === text) return;
     logs.push(text);
 }
+
+/**
+ * This function asynchronously retrieves the version of DigiFlag and returns it as a string.
+ * @returns  a Promise that resolves to a string, which is the version obtained from calling the `getVersion() function of the `window.api` object.
+ */
+async function getDigiFlagVersion(): Promise<string> {
+    version = await window.api.getVersion();
+    return version;
+}
+getDigiFlagVersion()
 
 let countDownRunning = false;
 /**
@@ -196,30 +203,14 @@ async function getCurrentSessionInfo(): Promise<string> {
 
 async function getPixooIP(): Promise<string> {
     try {
-        const response: Response = await fetch('https://app.divoom-gz.com/Device/ReturnSameLANDevice', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        const data: {ReturnCode: number; DeviceList: {DevicePrivateIP: string}[]} = await response.json();
-
-        if (data.ReturnCode === 0 && data.DeviceList.length > 0) {
-            const device: {DevicePrivateIP: string} = data.DeviceList[0];
-            pixooIP = device.DevicePrivateIP;
-            console.log('Pixoo64 IP Address:', pixooIP);
-            // You can do something with the pixooIP variable here
-            return pixooIP;
-        } else {
-            console.log('Failed to retrieve Pixoo64 IP Address');
-            return 'Failed to retrieve Pixoo64 IP Address';
-        }
+        const response = await fetch('https://app.divoom-gz.com/Device/ReturnSameLANDevice');
+        const pixooData = await response.json();
+        pixooIP = pixooData.DeviceList[0].DevicePrivateIP;
+        $('#pixooIP').text(`Pixoo IP: ${pixooIP}`);
+        return pixooIP;
     } catch (error) {
-        if (error instanceof Error) {
-            console.log(error.message);
-        }
-        return 'Failed to retrieve Pixoo64 IP Address';
+        console.error(error);
+        return 'Failed to get IP Address of Pixoo Device!';
     }
 }
 
@@ -484,8 +475,11 @@ async function turnOff(flag: string) {
                 }
                 return;
             }
-            $('#digiflag').prop('src', getGifPath('void'));
-            lightOn = false;
+            if (currentRainStatus === '1') {
+                $('#digiflag').prop('src', getGifPath('rain'));
+            } else {
+                $('#digiflag').prop('src', getGifPath('void'));
+            }
         }
     } else {
         if (currentMode.valueOf() === 1) {
@@ -495,8 +489,11 @@ async function turnOff(flag: string) {
             }
             return;
         }
-        $('#digiflag').prop('src', getGifPath('void'));
-        lightOn = false;
+        if (currentRainStatus === '1') {
+            $('#digiflag').prop('src', getGifPath('rain'));
+        } else {
+            $('#digiflag').prop('src', getGifPath('void'));
+        }
     }
 }
 /**
@@ -512,20 +509,23 @@ async function turnOff(flag: string) {
 async function changeGif(flag: string, mode: number) {
     if (flag === 'blue' && disabledBlueFlag) return;
     if (mode === 1 && currentMode.valueOf() === 1) {
-        const res = httpGet(`http://localhost:9093/pixoo/${flag}/${currentTheme}/${pixooIP}`);
-        if (res !== 'OK') {
-            log('Failed to change GIF on Pixoo64');
-        }
-        return;
+        const pixooData = {
+            "Command": "Device/PlayTFGif",
+            "FileType": 0,
+            "FileName": `gifs/pixoo64/${flag}.gif`
+          };
+        fetch(`${pixooIP}:80/post`, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(pixooData)
+        })
     }
     const flagPath = getGifPath(flag);
     $('#digiflag').prop('src', flagPath);
     if (flag !== 'rain') {
-        lightOn = true;
         lightOnRain = false;
     }
-    if (flag === 'rain') {
-        lightOn = false;
+    if (flag==='rain') {
         lightOnRain = true;
     }
 }
@@ -637,6 +637,12 @@ function linkSuccess() {
             if (e.target.id === 'pixoo64Radio') {
                 if (debugOn) console.log('Pixoo64 was Selected');
                 currentMode = 1;
+                $('#launchDigiFlag').text('Send to Pixoo')
+                $('#launchDigiFlag').on('click',(e)=>{
+                    e.preventDefault()
+                    console.log('Clicked Pixoo')
+                })
+                $('#launchDigiFlag').removeAttr('data-i18n')
                 getPixooIP()
                 if (debugOn) console.log('Current Mode: ' + currentMode);
                 $('#collapsetrackMapSelect').removeClass();
@@ -645,6 +651,7 @@ function linkSuccess() {
                 $("#mapSwitch").prop("checked",false)
             } else {
                 if (debugOn) console.log('Window was Selected');
+                $('#launchDigiFlag').text('Launch DigiFlag')
                 currentMode = 0;
                 $('#pixooIPContainer').removeClass()
                 $('#pixooIPContainer').addClass('collapse');
@@ -911,7 +918,7 @@ const checkRCM = async () => {
     if (started === false) return;
     const result = LT_Data.RaceControlMessages;
     if (result.Messages.length === oldMessages.Messages.length) {
-        if (debugOn) log('No new messages.');
+        return;
     } else {
         if (debugOn) log('New message');
         oldMessages = result;
@@ -922,9 +929,7 @@ const checkRCM = async () => {
                 message.Category === 'Flag' ||
                 message.Category === 'Other' ||
                 message.Category === 'SafetyCar' ||
-                message.Category === 'Drs' ||
-                message.Message.match(/ROLLING START/i) ||
-                message.Message.match(/STANDING START/i)
+                message.Category === 'Drs'
         );
         /* Taking the last element of the array and returning it. */
         const recentMessage = filteredMessages.slice(-1)[0];
@@ -935,9 +940,22 @@ const checkRCM = async () => {
         if (debugOn) console.table(result.Messages.slice(-1)[0]);
         /* Checking if the message contains the word "BLACK AND ORANGE" and if it does, it sets the category to "Flag" and the flag to "BLACK AND ORANGE". */
         if (recentMessage.Message.match(/BLACK AND ORANGE/i)) {
-            recentMessage.Category = 'Flag';
-            recentMessage.Flag = 'BLACK AND ORANGE';
+            const carNumberMatch = recentMessage.Message.match(/CAR (\d+)/i);
+            if (carNumberMatch) {
+            const carNumber = carNumberMatch[1];
+            changeGif('mec', currentMode);
+            await timer(3500);
+            if (carNumber in themes[currentTheme].gifs) {
+                changeGif(carNumber, currentMode);
+                await timer(3500);
+                turnOff(carNumber);
+            } else {
+                if (debugOn) console.log(`No racing number GIF found for ${carNumber}`);
+            }
+            turnOff('mec');
+            return;
         }
+    }
 /* Checking if the message contains the word "BLACK AND WHITE" and if it does, it will change the gif
 to black and white, wait 2.5 seconds, then change the gif to the racing number, wait 2.5 seconds,
 then turn off the racing number gif, then turn off the black and white gif. */
@@ -989,14 +1007,13 @@ off after a certain amount of time. */
         if (
             recentMessage.Message.match(/ROLLING START/i) &&
             //Fixes an issue When the Rolling Start Flag Would Display when a ROLLING START PROCEDURE INFRINGEMENT Occurs
-            recentMessage.SubCategory !== 'IncidentInvestigationAfterSession'
-        ) {
+            recentMessage.SubCategory !== 'IncidentInvestigationAfterSession' && recentMessage.SubCategory!=='SessionResume') {
             changeGif('rs', currentMode);
             await timer(20000);
             turnOff('rs');
             return;
         }
-        if (recentMessage.Message.match(/STANDING START/i)) {
+        if (recentMessage.Message.match(/STANDING START PROCEDURE/i) && recentMessage.SubCategory!=='SessionResume') {
             changeGif('ss', currentMode);
             await timer(20000);
             turnOff('ss');
@@ -1012,6 +1029,12 @@ off after a certain amount of time. */
             changeGif('DRSdisabled', currentMode);
             await timer(3500);
             turnOff('DRSdisabled');
+            return;
+        }
+        if (recentMessage.Message.match(/PIT ENTRY CLOSED/i)) {
+            changeGif('pitclosed', currentMode);
+            await timer(3500);
+            turnOff('pitclosed');
             return;
         }
 
@@ -1084,15 +1107,10 @@ the green gif. */
     }
 };
 /**
- *
- * If the track status is green, then give All Clear Message.
- * If the track status is yellow, turn on the yellow lights.
- * If the track status is SC, turn on the SC lights.
- * If the track status is red, turn on the red lights.
- * If the track status is VSC, turn on the VSC lights.
- * @returns the status of the track
+ * This function checks the current status of a race track and updates the display accordingly.
+ * @returns the current track status.
  */
-async function checkStatus() {
+async function checkTrackStatus() {
     if (!started) return;
     /* Getting the track status from the Live Timing Data. */
     const trackStatus = LT_Data.TrackStatus.Status;
@@ -1102,46 +1120,58 @@ async function checkStatus() {
     // {"Status":"5","Message":"Red"}
     // {"Status":"6","Message":"VSCDeployed"}
     // {"Status":"7","Message":"VSCEnding"}
-    if (trackStatus === '1') {
-        if (sc || vsc || red || yellow) {
-            if (debugOn) log('New track status : Green');
-            sc = false;
-            yellow = false;
-            vsc = false;
-            red = false;
-            changeGif('green', currentMode);
-            await timer(2500);
-            turnOff('green');
-        }
-    }
-    if (trackStatus === '2') {
-        if (debugOn) log('New track status : Yellow');
-        sc = false;
-        yellow = true;
-        vsc = false;
-        red = false;
-    }
-    if (trackStatus === '4') {
-        if (debugOn) log('New track status : SC');
-        sc = true;
-        yellow = false;
-        vsc = false;
-        red = false;
-    }
-    if (trackStatus === '5') {
-        if (debugOn) log('New track status : Red');
-        sc = false;
-        yellow = false;
-        vsc = false;
-        red = true;
-    }
-    if (trackStatus === '6') {
-        if (debugOn) log('New track status : VSC');
-        sc = false;
-        yellow = false;
-        vsc = true;
-        red = false;
-    }
+    const recentTrackStatus = trackStatus.slice(-1)[0];
+    if (recentTrackStatus !== currentTrackStatus) {
+        // check if the status has changed
+        switch (recentTrackStatus) {
+        case '1':
+            if (sc || vsc || red || yellow) {
+                if (debugOn) console.log(`New track status : 🟩 %cGreen`,'color:#05e376');
+                sc = false;
+                yellow = false;
+                vsc = false;
+                red = false;
+                changeGif('green', currentMode);
+                await timer(2500);
+                turnOff('green');
+            }
+                break;
+            case '2': // Yellow
+            if (debugOn) console.log(`New track status : 🟨 %cYellow`,'color:#e8f00a')
+                sc = false;
+                yellow = true;
+                vsc = false;
+                red = false;
+                changeGif('yellow',currentMode)
+                break;
+            case '4': // SCDeployed
+                sc = true;
+                yellow = false;
+                vsc = false;
+                red = false;
+                changeGif('sc',currentMode)
+                break;
+            case '5': // Red
+            if (debugOn) console.log(`New track status : 🟥 %cRed`,'color:#f0250a')
+                sc = false;
+                yellow = false;
+                vsc = false;
+                red = true;
+                changeGif('red',currentMode)
+                break;
+            case '6': // VSCDeployed
+                sc = false;
+                yellow = false;
+                vsc = true;
+                red = false;
+                changeGif('vsc',currentMode)
+                break;
+            default:
+                break
+            }
+            currentTrackStatus = recentTrackStatus; // update the current status
+            if (debugOn) console.log(`Current Track Status: ${currentTrackStatus}`)
+          }
 }
 
 /**
@@ -1152,29 +1182,27 @@ async function checkStatus() {
 
 async function checkRain() {
     if (!started) return;
-    /* Checking to see if the light is on. If it is, it will return. */
-    if (lightOn) return;
-
     /* Extract if it's raining or not from the Live Timing data */
     const Rain = LT_Data.WeatherData.Rainfall;
-    if (debugOn) console.log(Rain)
-    switch (Rain) {
-        case '1':
-            raining = true;
-            if (debugOn) console.log(`Rain Status ${raining}`);
-            if (!lightOnRain) {
-                changeGif('rain', currentMode);
-                lightOnRain = true;
-            }
-            break;
-        case '0':
-            raining = false;
-            if (debugOn) console.log(`Rain Status ${raining}`);
-            if (lightOnRain) {
-                lightOnRain = false;
-                changeGif('void', currentMode);
-            }
-            break;
+    if (Rain !== currentRainStatus) {
+        switch (Rain) {
+            case '0': // Not raining
+                if (lightOnRain) {
+                    if (debugOn) console.log(`%cIt Stopped Raining!`, 'color:orange');
+                    changeGif('void',currentMode);
+                    lightOnRain = false;
+                }
+                break;
+            case '1': // Raining
+                if (!lightOnRain) {
+                    if (debugOn) console.log(`%cIt's Raining!` , 'color:aqua');
+                    changeGif('rain',currentMode);
+                    lightOnRain = true;
+                }
+                break;
+        }
+        currentRainStatus = Rain;
+        if (debugOn) console.log(`%cCurrent Rain Status: ${currentRainStatus}`, 'color:aqua');
     }
 }
 
@@ -1185,16 +1213,17 @@ async function checkRain() {
  */
 async function updateData() {
     try {
-        if (started)
-            LT_Data = await window.api.LiveTimingAPIGraphQL(config, ['RaceControlMessages', 'TrackStatus', 'WeatherData']);
-        return LT_Data;
-} catch (error) {
-        console.error(error)
-        console.log('Reloaded Window Due to Disconnect')
-        window.location.reload()
-        return null
+      if (started) {
+        LT_Data = await window.api.LiveTimingAPIGraphQL(config, ['RaceControlMessages', 'TrackStatus', 'WeatherData']);
+      }
+      return LT_Data;
+    } catch (error) {
+      console.error(error);
+      console.log('Reloaded Window Due to Disconnect');
+      window.location.reload();
+      return null;
     }
-}
+  }
 
 /* Update the Live Timing data every 100 milliseconds */
 setInterval(updateData, 100);
@@ -1203,7 +1232,7 @@ setInterval(checkRCM, 100);
 /* Checking the Rain every 100 milliseconds */
 setInterval(checkRain, 100);
 /* Checking the status of the track every 100 milliseconds. */
-setInterval(checkStatus, 100);
+setInterval(checkTrackStatus, 500);
 
 /**
  * If the background is transparent, make it opaque. If the background is opaque, make it transparent.
