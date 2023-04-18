@@ -479,7 +479,7 @@ async function turnOff(flag: string) {
     if (currentMode.valueOf() === 1) {
         const url = `http://res.cloudinary.com/dmxpakpwy/image/upload/v1681163765/${flag}.gif`;
         try {
-            const response = await fetch('http://107wash_isp2.hamster.walshaw.me:8080/post', {
+            const response = await fetch(`http://${pixooIP}:80/post`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -523,7 +523,7 @@ async function changeGif(flag: string, mode: number) {
     if (mode === 1 && currentMode.valueOf() === 1) {
         const url = `http://res.cloudinary.com/dmxpakpwy/image/upload/v1681163765/${flag}.gif`;
         try {
-            const response = await fetch('http://107wash_isp2.hamster.walshaw.me:8080/post', {
+            const response = await fetch(`http://${pixooIP}:80/post`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
