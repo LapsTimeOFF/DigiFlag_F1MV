@@ -203,6 +203,7 @@
         "dyellow": "gifs/pixoo64/dyellow.gif",
         "green": "gifs/pixoo64/green.gif",
         "mec": "gifs/pixoo64/mec.gif",
+        "mv": "gifs/pixoo64/mvlogo.gif",
         "pitclosed": "gifs/pixoo64/pitclosed.gif",
         "pitentry": "gifs/pixoo64/pitentry.gif",
         "rain": "gifs/pixoo64/rain.gif",
@@ -213,7 +214,7 @@
         "ss": "gifs/pixoo64/ss.gif",
         "timepenalty5sec": "gifs/pixoo64/timepenalty5sec.gif",
         "timepenalty10sec": "gifs/pixoo64/timepenalty10sec.gif",
-        "void": "gifs/pixoo64/mvlogo.gif",
+        "void": "gifs/pixoo64/void.gif",
         "vsc": "gifs/pixoo64/vsc.gif",
         "white": "gifs/pixoo64/white.gif",
         "yellow": "gifs/pixoo64/yellow.gif"

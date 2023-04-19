@@ -11,6 +11,7 @@ export const api = {
     setAlwaysOnTop: () => ipcRenderer.invoke('set-always-on-top'),
     getPixooIP: (pixooIP: string) => ipcRenderer.invoke('get-pixooIP', pixooIP),
     electronAPI,
+    getComputerIP: (): Promise<string> => ipcRenderer.invoke('get-ComputerIP'),
 };
 
 if (process.contextIsolated) {
