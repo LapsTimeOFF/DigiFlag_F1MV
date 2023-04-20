@@ -18,7 +18,7 @@ const timer = (ms: number) => new Promise((res) => setTimeout(res, ms));
 const {themes, mapThemes} = JSON.parse(httpGet('./filesConfiguration.json'));
 /* Declaring a variable called debugOn and assigning it a value of false. */
 let debugOn = true;
-let computerIP = '';
+let expressIP = '';
 // let windowTransparency = false;
 let scale = 1;
 let started = false;
@@ -127,14 +127,13 @@ async function getDigiFlagVersion(): Promise<string> {
 getDigiFlagVersion();
 
 /**
- * This function asynchronously retrieves the computer's IP address.
- * @returns A Promise that resolves to a string representing the computer's IP address.
+ * This function asynchronously retrieves the IP address of the Express server.
+ * @returns A Promise that resolves to a string representing the IP address of the Express server.
  */
-async function getComputerIP(): Promise<string> {
-    computerIP = await window.api.getComputerIP();
-    return computerIP;
+async function getExpressIP(): Promise<string> {
+    expressIP = await window.api.getExpressIP();
+    return expressIP;
 }
-getComputerIP();
 
 let countDownRunning = false;
 /**
@@ -463,7 +462,7 @@ function selectMapTheme(id: string) {
  * @returns The return value of the last statement in the function.
  */
 async function turnOff(flag: string) {
-    let url = `http://${computerIP}:9093/getGifPixoo/5/${flag}.gif`;
+    let url = `http://${expressIP}:9093/getGifPixoo/5/${flag}.gif`;
 
     if (flag === 'yellow' || flag === 'dyellow' || flag === 'red') {
         return;
@@ -471,34 +470,34 @@ async function turnOff(flag: string) {
 
     if (sc === true) {
         $('#digiflag').prop('src', getGifPath('sc'));
-        url = `http://${computerIP}:9093/getGifPixoo/5/sc.gif`;
+        url = `http://${expressIP}:9093/getGifPixoo/5/sc.gif`;
         return;
     }
 
     if (vsc === true) {
         $('#digiflag').prop('src', getGifPath('vsc'));
-        url = `http://${computerIP}:9093/getGifPixoo/5/vsc.gif`;
+        url = `http://${expressIP}:9093/getGifPixoo/5/vsc.gif`;
         return;
     }
 
     if (red === true) {
         $('#digiflag').prop('src', getGifPath('red'));
-        url = `http://${computerIP}:9093/getGifPixoo/5/red.gif`;
+        url = `http://${expressIP}:9093/getGifPixoo/5/red.gif`;
         return;
     }
 
     if (yellow === true) {
         $('#digiflag').prop('src', getGifPath('yellow'));
-        url = `http://${computerIP}:9093/getGifPixoo/5/yellow.gif`;
+        url = `http://${expressIP}:9093/getGifPixoo/5/yellow.gif`;
         return;
     }
 
     if (currentRainStatus === '1') {
         $('#digiflag').prop('src', getGifPath('rain'));
-        url = `http://${computerIP}:9093/getGifPixoo/5/rain.gif`;
+        url = `http://${expressIP}:9093/getGifPixoo/5/rain.gif`;
     } else {
         $('#digiflag').prop('src', getGifPath('void'));
-        url = `http://${computerIP}:9093/getGifPixoo/5/void.gif`;
+        url = `http://${expressIP}:9093/getGifPixoo/5/void.gif`;
     }
 
     if (currentMode.valueOf() === 1) {
@@ -539,7 +538,7 @@ async function turnOff(flag: string) {
 async function changeGif(flag: string, mode: number) {
     if (flag === 'blue' && disabledBlueFlag) return;
     if (mode === 1 && currentMode.valueOf() === 1) {
-        const url = `http://${computerIP}:9093/getGifPixoo/5/${flag}.gif`;
+        const url = `http://${expressIP}:9093/getGifPixoo/5/${flag}.gif`;
         try {
             const response = await fetch(`http://${pixooIP}:80/post`, {
                 method: 'POST',
@@ -679,6 +678,7 @@ function linkSuccess() {
                 currentMode = 1;
                 $('#launchDigiFlag').hide();
                 $('#launchPixoo').show();
+                getExpressIP();
                 getPixooIP();
                 if (debugOn) console.log('Current Mode: ' + currentMode);
                 $('#collapsetrackMapSelect').removeClass();
@@ -1175,7 +1175,7 @@ the green gif. */
                 case 'DOUBLE YELLOW':
                     changeGif('dyellow', currentMode);
                     break;
-                case 'CLEAR':
+                case 'TRACK CLEAR':
                     changeGif('green', currentMode);
                     await timer(2500);
                     turnOff('green');

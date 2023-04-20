@@ -298,7 +298,7 @@ ipcMain.handle('set-always-on-top', () => {
     console.log(mainWindow.isAlwaysOnTop());
 });
 
-ipcMain.handleOnce('get-ComputerIP', async () => {
-    const computerIP = address();
-    return computerIP;
+ipcMain.handle('get-expressIP', async () => {
+    const expressIP = address();
+    return expressIP;
 });
