@@ -273,6 +273,10 @@ app.on('window-all-closed', () => {
     }
 });
 
+if (process.platform === 'linux') {
+    app.commandLine.appendSwitch('no-sandbox');
+}
+
 ipcMain.handle('get-version', async () => {
     return app.getVersion();
 });
