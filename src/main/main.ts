@@ -3,7 +3,6 @@ import express from 'express';
 import {address} from 'ip';
 import path from 'path';
 // import { rateLimit } from 'express-rate-limit';
-import request from 'request';
 import {
     getWindowSizeSettings,
     getWindowPositionSettings,
@@ -138,7 +137,8 @@ function createWindow(
         show: false,
         webPreferences: {
             preload: path.join(__dirname, '../preload/preload.js'),
-            nodeIntegration: true,
+            contextIsolation: true,
+            sandbox: false,
         },
     });
     // HMR for renderer base on electron-vite cli.
@@ -216,8 +216,9 @@ the size of the window as an argument. */
                     minWidth: 256,
                     minHeight: 256,
                     webPreferences: {
-                        nodeIntegration: true,
                         preload: path.join(__dirname, '../preload/preload.js'),
+                        contextIsolation: true,
+                        sandbox: false,
                     },
                 },
             };
@@ -272,10 +273,6 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 });
-
-if (process.platform === 'linux') {
-    app.commandLine.appendSwitch('no-sandbox');
-}
 
 ipcMain.handle('get-version', async () => {
     return app.getVersion();

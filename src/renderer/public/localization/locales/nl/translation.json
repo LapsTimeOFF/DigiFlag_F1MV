@@ -9,6 +9,7 @@
   "digiflagNotLinked": "DigiFlag is op het moment niet gekoppelt aan F1MV",
   "dutch": "Nederlands",
   "english": "Engels",
+  "extraFlags": "Extra vlaggen inschakelen?",
   "failedToConnect": "Connectie naar F1MV mislukt",
   "failedToRetrieveCurrentSession": "Ophalen van de huidige sessie mislukt",
   "french": "Frans",

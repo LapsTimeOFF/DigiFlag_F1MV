@@ -2,7 +2,7 @@
   "themes": [
     {
       "id": 0,
-      "name": "Pixel",
+      "name": "DigiFlag Pixel",
       "compatibleWith": {
         "Window": true,
         "Pixoo64": true
@@ -168,7 +168,7 @@
     },
     {
       "id": 5,
-      "name": "DigiFlag Pixoo",
+      "name": "Divoom Pixoo64 Wi-Fi",
       "compatibleWith": {
         "Window": false,
         "Pixoo64": true
@@ -203,7 +203,7 @@
         "dyellow": "gifs/pixoo64/dyellow.gif",
         "green": "gifs/pixoo64/green.gif",
         "mec": "gifs/pixoo64/mec.gif",
-        "mv": "gifs/pixoo64/mvlogo.gif",
+        "mv": "gifs/pixoo64/mv.gif",
         "pitclosed": "gifs/pixoo64/pitclosed.gif",
         "pitentry": "gifs/pixoo64/pitentry.gif",
         "rain": "gifs/pixoo64/rain.gif",
@@ -234,7 +234,7 @@
         "2022 Miami Grand Prix": "tracks/2022/",
         "2022 Spanish Grand Prix": "tracks/2022/",
         "2022 Monaco Grand Prix": "tracks/2022/",
-        "2022 Azerbaijan Grand Prix": "tracks/2022/",
+        "2022 Azerbaijan Grand Prix": "tracks/2022/Azerbaijan/Azerbaijan Grand Prix_16-9.png",
         "2022 Canadian Grand Prix": "tracks/2022/",
         "2022 British Grand Prix": "tracks/2022/",
         "2022 Austrian Grand Prix": "tracks/2022/",
@@ -257,7 +257,7 @@
         "2023 Miami Grand Prix": "tracks/2023/",
         "2023 Spanish Grand Prix": "tracks/2023/",
         "2023 Monaco Grand Prix": "tracks/2023/",
-        "2023 Azerbaijan Grand Prix": "tracks/2023/",
+        "2023 Azerbaijan Grand Prix": "tracks/2023/Azerbaijan/Azerbaijan Grand Prix_16-9.png",
         "2023 Canadian Grand Prix": "tracks/2023/",
         "2023 British Grand Prix": "tracks/2023/",
         "2023 Austrian Grand Prix": "tracks/2023/",
@@ -287,7 +287,7 @@
         "2022 Miami Grand Prix": "tracks/2022/",
         "2022 Spanish Grand Prix": "tracks/2022/",
         "2022 Monaco Grand Prix": "tracks/2022/",
-        "2022 Azerbaijan Grand Prix": "tracks/2022/",
+        "2022 Azerbaijan Grand Prix": "tracks/2022/Azerbaijan/Azerbaijan Grand Prix_16-9_sat.png",
         "2022 Canadian Grand Prix": "tracks/2022/",
         "2022 British Grand Prix": "tracks/2022/",
         "2022 Austrian Grand Prix": "tracks/2022/",
@@ -310,7 +310,7 @@
         "2023 Miami Grand Prix": "tracks/2023/",
         "2023 Spanish Grand Prix": "tracks/2023/",
         "2023 Monaco Grand Prix": "tracks/2023/",
-        "2023 Azerbaijan Grand Prix": "tracks/2023/",
+        "2023 Azerbaijan Grand Prix": "tracks/2023/Azerbaijan/Azerbaijan Grand Prix_16-9_sat.png",
         "2023 Canadian Grand Prix": "tracks/2023/",
         "2023 British Grand Prix": "tracks/2023/",
         "2023 Austrian Grand Prix": "tracks/2023/",

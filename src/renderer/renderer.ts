@@ -1,3 +1,4 @@
+import {Theme, MapTheme, FilesConfig} from './types/filesConfig';
 /* Declaring a variable called host and assigning it the value of "127.0.0.1". */
 const host = '127.0.0.1';
 /* Creating a variable called port and assigning it the value of 10101. */
@@ -8,14 +9,14 @@ const config = {
     port: port,
 };
 
+let themes: Theme[];
+let mapThemes: MapTheme[];
 /**
  * It takes a number of milliseconds as an argument, and returns a promise that resolves after that
  * number of milliseconds.
  * @param ms - The amount of time to wait before resolving the promise.
  */
 const timer = (ms: number) => new Promise((res) => setTimeout(res, ms));
-/* Getting the themes and the tracks from the filesConfiguration.json file. */
-const {themes, mapThemes} = JSON.parse(httpGet('./filesConfiguration.json'));
 /* Declaring a variable called debugOn and assigning it a value of false. */
 let debugOn = true;
 let expressIP = '';
@@ -69,6 +70,7 @@ let currentMode = 0; // 0 for window, 1 for pixoo64
 let disabledBlueFlag = false;
 let useTrackMap = false;
 let useMVLogo = false;
+let enableExtraFlags = false;
 let pixooIP: string;
 const instanceWindowWidth = 800;
 const instanceWindowHeight = 600;
@@ -89,18 +91,25 @@ let oldMessages = {
     ],
 };
 
-/**
- * It makes a GET request to the URL passed in as a parameter.
- * @param theUrl - The URL to send the request to.
- * @returns The responseText property returns the response as a string, or null if the request was
- * unsuccessful or has not yet been sent.
- */
-function httpGet(theUrl: string | URL) {
-    const xmlHttpReq = new XMLHttpRequest();
-    xmlHttpReq.open('GET', theUrl, false);
-    xmlHttpReq.send(null);
-    return xmlHttpReq.responseText;
-}
+/* The code below is an immediately invoked async function that loads a JSON file called
+"filesConfiguration.json" using the fetch API. If the response is successful, it extracts the
+"themes" and "mapThemes" properties from the JSON data and assigns them to global variables. If the
+response is not successful, it throws an error with the HTTP status code. If there is an error
+during the fetch or JSON parsing, it logs the error to the console. */
+(async function loadFileConfiguration() {
+    try {
+        const response = await fetch('./filesConfiguration.json');
+        if (response.ok) {
+            const data: FilesConfig = await response.json();
+            themes = data.themes;
+            mapThemes = data.mapThemes;
+        } else {
+            throw new Error(`Failed to load file configuration: ${response.status}`);
+        }
+    } catch (error) {
+        console.error(error);
+    }
+})();
 
 const logs: string[] = [];
 
@@ -233,17 +242,21 @@ async function getPixooIP(): Promise<string> {
  * @returns The trackMapPath variable is being returned.
  */
 function getCurrentTrackPath(currentMapTheme: number): string {
-    let trackMapPath: string;
-    /* Creating a variable called trackMaps and assigning it the value of the trackMaps property of the mapThemes JSON in filesConfiguration.json. */
-    const trackMaps = mapThemes[currentMapTheme].trackMaps;
-    /* Checking to see if the raceName is in the trackMaps object. If it is, it returns the mapPath for the current race. */
-    if (raceName in trackMaps) {
-        trackMapPath = trackMaps[raceName];
-        if (debugOn) console.log(`Track Map Path: ${trackMapPath}`);
-        return trackMapPath;
+    if (useTrackMap === true) {
+        let trackMapPath: string;
+        /* Creating a variable called trackMaps and assigning it the value of the trackMaps property of the mapThemes JSON in filesConfiguration.json. */
+        const trackMaps = mapThemes[currentMapTheme].trackMaps;
+        /* Checking to see if the raceName is in the trackMaps object. If it is, it returns the mapPath for the current race. */
+        if (raceName in trackMaps) {
+            trackMapPath = trackMaps[raceName];
+            if (debugOn) console.log(`Track Map Path: ${trackMapPath}`);
+            return trackMapPath;
+        } else {
+            if (debugOn) console.log('Map Not Found');
+            return 'Map Not Found';
+        }
     } else {
-        if (debugOn) console.log('Map Not Found');
-        return 'Map Not Found';
+        return 'TrackMap Not Enabled';
     }
 }
 
@@ -536,7 +549,6 @@ async function turnOff(flag: string) {
  * @returns a Promise.
  */
 async function changeGif(flag: string, mode: number) {
-    if (flag === 'blue' && disabledBlueFlag) return;
     if (mode === 1 && currentMode.valueOf() === 1) {
         const url = `http://${expressIP}:9093/getGifPixoo/5/${flag}.gif`;
         try {
@@ -612,7 +624,7 @@ function linkSuccess() {
         <div class="form-check" id="pixoo64">
         <input class="form-check-input" type="radio" name="flexRadioDefault" id="pixoo64Radio" data-bs-toggle="collapse" data-bs-target="#pixooIPContainer" aria-expanded="false" aria-controls="pixooIPContainer" disabled>
         <label class="form-check-label" for="pixoo64Radio">
-            Pixoo 64 DigiFlag
+            Divoom Pixoo64 Wi-Fi
         </label>
         <div class="collapse" id="pixooIPContainer">
         <span id="pixooIP">Pixoo IP: ${pixooIP}</span>
@@ -636,7 +648,10 @@ function linkSuccess() {
   </div>
   <div class="form-check form-switch" id="blueFlag">
     <input class="form-check-input" type="checkbox" role="switch" id="blueFlagCheckbox"> <label class="form-check-label theme" data-i18n="removeBlueFlags" for="blueFlagCheckbox">Remove Blue Flags?</label>
-  </div>`);
+  </div>
+  <div class="form-check form-switch" id="extraFlagSwitch">
+  <input class="form-check-input" type="checkbox" role="switch" id="extraFlagCheckbox"> <label class="form-check-label theme" data-i18n="extraFlags" for="extraFlagCheckbox">Enable Extra Flags?</label>
+</div>`);
     miscOptionsRef = $('#selectDevice,#selectMisc').detach();
     $(document).localize();
     let theme: {id: number; name: string};
@@ -702,25 +717,36 @@ it. */
         $('#blueFlag').on('change', () => {
             if (disabledBlueFlag) {
                 disabledBlueFlag = false;
-                if (debugOn) log('Blue Flags Enabled: ' + disabledBlueFlag);
+                if (debugOn) log('Blue Flags are Enabled');
                 return disabledBlueFlag;
             } else {
                 disabledBlueFlag = true;
-                if (debugOn) log('Blue Flags Disabled: ' + disabledBlueFlag);
+                if (debugOn) log('Blue Flags are Disabled');
                 return disabledBlueFlag;
             }
         });
         $('#mvLogoSwitch').on('change', () => {
             if (useMVLogo) {
                 useMVLogo = false;
-                if (debugOn) log('MV Logo Enabled: ' + useMVLogo);
+                if (debugOn) log('MV Logo Disabled');
                 $('#mapSwitch').prop('disabled', false);
                 return useMVLogo;
             } else {
                 useMVLogo = true;
-                if (debugOn) log('MV Logo Disabled: ' + useMVLogo);
+                if (debugOn) log('MV Logo Enabled');
                 $('#mapSwitch').prop('disabled', true);
                 return useMVLogo;
+            }
+        });
+        $('#extraFlagSwitch').on('change', () => {
+            if (enableExtraFlags) {
+                enableExtraFlags = false;
+                if (debugOn) log('Extra Flags are Disabled');
+                return enableExtraFlags;
+            } else {
+                enableExtraFlags = true;
+                if (debugOn) log('Extra Flags are Enabled');
+                return enableExtraFlags;
             }
         });
         /* Creating a switch that toggles the use of a track map as a background. */
@@ -993,6 +1019,7 @@ const checkRCM = async () => {
         if (debugOn) console.table(recentMessage);
         if (debugOn) console.log('Most Recent RCM Message: ');
         if (debugOn) console.table(result.Messages.slice(-1)[0]);
+
         /* Checking if the message contains the word "BLACK AND ORANGE" and if it does, it sets the category to "Flag" and the flag to "BLACK AND ORANGE". */
         if (recentMessage.Message.match(/BLACK AND ORANGE/i)) {
             const carNumberMatch = recentMessage.Message.match(/CAR (\d+)/i);
@@ -1033,7 +1060,7 @@ recentMessage.Message to see if it contains the text "CAR #" where # is a number
 checking the recentMessage.Message to see if it contains the text "5 SECOND TIME PENALTY" or "10
 SECOND TIME PENALTY". If it does, it is changing the gif to the appropriate gif and then turning it
 off after a certain amount of time. */
-        if (recentMessage.SubCategory === 'TimePenalty') {
+        if (recentMessage.SubCategory === 'TimePenalty' && enableExtraFlags) {
             /* Using a regular expression to match the message to a pattern. */
             const carNumberMatch = recentMessage.Message.match(/CAR (\d+)/i);
             if (carNumberMatch) {
@@ -1058,7 +1085,7 @@ off after a certain amount of time. */
                 }
             }
         }
-        if (recentMessage.SubCategory === 'StopGoPenalty') {
+        if (recentMessage.SubCategory === 'StopGoPenalty' && enableExtraFlags) {
             /* Using a regular expression to match the message to a pattern. */
             const carNumberMatch = recentMessage.Message.match(/CAR (\d+)/i);
             if (carNumberMatch) {
@@ -1093,13 +1120,13 @@ off after a certain amount of time. */
             turnOff('ss');
             return;
         }
-        if (recentMessage.Message.match(/DRS ENABLED/i)) {
+        if (recentMessage.Message.match(/DRS ENABLED/i) && enableExtraFlags) {
             changeGif('DRSenabled', currentMode);
             await timer(3500);
             turnOff('DRSenabled');
             return;
         }
-        if (recentMessage.Message.match(/DRS DISABLED/i)) {
+        if (recentMessage.Message.match(/DRS DISABLED/i) && enableExtraFlags) {
             changeGif('DRSdisabled', currentMode);
             await timer(3500);
             turnOff('DRSdisabled');
@@ -1117,13 +1144,13 @@ off after a certain amount of time. */
             turnOff('pitclosed');
             return;
         }
-        if (recentMessage.Message.match(/RECOVERY VEHICLE ON TRACK/i)) {
+        if (recentMessage.Message.match(/RECOVERY VEHICLE ON TRACK/i) && enableExtraFlags) {
             changeGif('recoveryvehicle', currentMode);
             await timer(5000);
             turnOff('recoveryvehicle');
             return;
         }
-        if (recentMessage.Message.match(/MEDICAL CAR DEPLOYED/i)) {
+        if (recentMessage.Message.match(/MEDICAL CAR DEPLOYED/i) && enableExtraFlags) {
             changeGif('medicalcar', currentMode);
             await timer(5000);
             turnOff('medicalcar');
@@ -1136,64 +1163,26 @@ off after a certain amount of time. */
             turnOff('slippery');
             return;
         }
-        if (recentMessage.Category === 'SafetyCar' && recentMessage.Mode !== 'VIRTUAL SAFETY CAR') {
-            sc = true;
-            changeGif('sc', currentMode);
+
+        if (recentMessage.Message.match(/DOUBLE YELLOW/i)) {
+            changeGif('dyellow', currentMode);
+            return;
         }
-        if (recentMessage.Mode === 'VIRTUAL SAFETY CAR') {
-            vsc = true;
-            changeGif('vsc', currentMode);
+
+        if (recentMessage.Message.match(/BLUE FLAG/i)) {
+            if (!disabledBlueFlag) {
+                changeGif('blue', currentMode);
+                await timer(1000);
+                turnOff('blue');
+            }
+            return;
         }
+
         if (recentMessage.Flag === 'CHEQUERED') {
             changeGif('chequered', currentMode);
             await timer(90000);
             turnOff('chequered');
             return;
-        }
-        /* Checking if the recent message is a track message and if it is, it is checking if the flag is
-red. If it is, it changes the gif to red. If it is not, it sets the sc, vsc, and red
-variables to false and then changes the gif to green. It then waits 2.5 seconds and turns off
-the green gif. */
-        if (recentMessage.Scope === 'Track') {
-            if (recentMessage.Flag === 'RED') {
-                changeGif('red', currentMode);
-                return;
-            }
-            sc = false;
-            vsc = false;
-            red = false;
-            changeGif('green', currentMode);
-            await timer(2500);
-            turnOff('green');
-            return;
-        }
-        if (recentMessage.Category === 'Flag') {
-            switch (recentMessage.Flag) {
-                case 'YELLOW':
-                    changeGif('yellow', currentMode);
-                    break;
-                case 'DOUBLE YELLOW':
-                    changeGif('dyellow', currentMode);
-                    break;
-                case 'TRACK CLEAR':
-                    changeGif('green', currentMode);
-                    await timer(2500);
-                    turnOff('green');
-                    break;
-                case 'RED':
-                    red = true;
-                    changeGif('red', currentMode);
-                    await timer(90000);
-                    turnOff('red');
-                    break;
-                case 'BLUE':
-                    changeGif('blue', currentMode);
-                    await timer(1000);
-                    turnOff('blue');
-                    break;
-                default:
-                    break;
-            }
         }
     }
 };
@@ -1257,12 +1246,20 @@ async function checkTrackStatus() {
                 red = false;
                 changeGif('vsc', currentMode);
                 break;
+            case '7': // VSCEnding
+                sc = false;
+                yellow = false;
+                vsc = true;
+                red = false;
+                changeGif('vsc', currentMode);
+                break;
             default:
                 break;
         }
         currentTrackStatus = recentTrackStatus; // update the current status
         if (debugOn) console.log(`Current Track Status: ${currentTrackStatus}`);
     }
+    return currentTrackStatus;
 }
 
 /**
@@ -1316,18 +1313,17 @@ async function updateData() {
             checkRCM();
             checkRain();
         }
-        return LT_Data;
     } catch (error) {
         console.error(error);
         console.log('Reloaded Window Due to Disconnect');
         window.location.reload();
         return null;
     }
+    setTimeout(updateData, 500);
 }
 
-/* Update the Live Timing data every 100 milliseconds */
-setInterval(updateData, 100);
-
+/* Update the Live Timing data initially */
+updateData();
 /**
  * If the background is transparent, make it opaque. If the background is opaque, make it transparent.
  */
