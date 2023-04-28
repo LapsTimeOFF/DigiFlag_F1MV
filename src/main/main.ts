@@ -2,7 +2,7 @@ import {app, BrowserWindow, ipcMain} from 'electron';
 import express from 'express';
 import {address} from 'ip';
 import path from 'path';
-// import { rateLimit } from 'express-rate-limit';
+import {rateLimit} from 'express-rate-limit';
 import {
     getWindowSizeSettings,
     getWindowPositionSettings,
@@ -19,12 +19,12 @@ let pixooIPAddress = '';
 /* Creating an express app. */
 const expressApp = express();
 /* Limiting the rate at which the API can be called. */
-// const limiter = rateLimit({
-//     windowMs: 1*60*1000, // 1 minute
-//     max: 5
-//   });
+const limiter = rateLimit({
+    windowMs: 1000, // 1 second
+    max: 0, // no maximum limit
+});
 // Apply Rate Limit to all requests
-//   expressApp.use(limiter);
+expressApp.use(limiter);
 /* Creating a server that listens on port 9093. */
 expressApp
     .listen(9093, () => {
