@@ -477,7 +477,7 @@ function selectMapTheme(id: string) {
 async function turnOff(flag: string) {
     let url = `http://${expressIP}:9093/getGifPixoo/5/${flag}.gif`;
 
-    if (flag === 'yellow' || flag === 'dyellow' || flag === 'red') {
+    if (flag === 'yellow' || flag === 'red') {
         return;
     }
 
@@ -1166,6 +1166,8 @@ off after a certain amount of time. */
 
         if (recentMessage.Message.match(/DOUBLE YELLOW/i)) {
             changeGif('dyellow', currentMode);
+            await timer(10000);
+            turnOff('dyellow');
             return;
         }
 
