@@ -21,7 +21,7 @@ const expressApp = express();
 /* Limiting the rate at which the API can be called. */
 const limiter = rateLimit({
     windowMs: 1000, // 1 second
-    max: 0, // no maximum limit
+    max: 1, // no maximum limit
 });
 // Apply Rate Limit to all requests
 expressApp.use(limiter);

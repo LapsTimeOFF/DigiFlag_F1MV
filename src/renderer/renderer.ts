@@ -549,8 +549,13 @@ async function turnOff(flag: string) {
  * @returns a Promise.
  */
 async function changeGif(flag: string, mode: number) {
+    const flagPath = getGifPath(flag);
+    if (flag === 'void' && useMVLogo === true) {
+        flag = `mv` 
+    }
     if (mode === 1 && currentMode.valueOf() === 1) {
         const url = `http://${expressIP}:9093/getGifPixoo/5/${flag}.gif`;
+        console.log(`URL sent to Pixoo64: ${url}`)
         try {
             const response = await fetch(`http://${pixooIP}:80/post`, {
                 method: 'POST',
@@ -572,7 +577,6 @@ async function changeGif(flag: string, mode: number) {
             console.error(err);
         }
     }
-    const flagPath = getGifPath(flag);
     $('#digiflag').prop('src', flagPath);
     if (flag !== 'rain') {
         lightOnRain = false;
