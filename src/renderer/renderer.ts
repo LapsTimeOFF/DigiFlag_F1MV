@@ -510,7 +510,11 @@ async function turnOff(flag: string) {
         url = `http://${expressIP}:9093/getGifPixoo/5/rain.gif`;
     } else {
         $('#digiflag').prop('src', getGifPath('void'));
-        url = `http://${expressIP}:9093/getGifPixoo/5/void.gif`;
+        if (useMVLogo === true) {
+            url = `http://${expressIP}:9093/getGifPixoo/5/mv.gif` 
+        } else {
+            url = `http://${expressIP}:9093/getGifPixoo/5/void.gif`;
+        }
     }
 
     if (currentMode.valueOf() === 1) {
@@ -536,7 +540,7 @@ async function turnOff(flag: string) {
         }
     }
 
-    if (debugOn) console.log(`${flag} Flag was Turned Off`);
+    if (debugOn) console.log(`${flag} Flag was Turned Off ${url}`);
 }
 /**
  * "If the flag is blue and the blue flag is disabled, return. If the mode is 1 and the current mode is
