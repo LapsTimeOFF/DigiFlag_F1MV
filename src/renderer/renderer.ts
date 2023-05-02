@@ -518,6 +518,10 @@ async function turnOff(flag: string) {
     }
 
     if (currentMode.valueOf() === 1) {
+        if (debugOn) {
+            console.log(`${flag} flag was turned off`);
+            console.log(`URL sent to Pixoo64: ${url}`);
+        }
         try {
             const response = await fetch(`http://${pixooIP}:80/post`, {
                 method: 'POST',
@@ -539,8 +543,6 @@ async function turnOff(flag: string) {
             console.error(err);
         }
     }
-
-    if (debugOn) console.log(`${flag} Flag was Turned Off ${url}`);
 }
 /**
  * "If the flag is blue and the blue flag is disabled, return. If the mode is 1 and the current mode is
@@ -559,7 +561,7 @@ async function changeGif(flag: string, mode: number) {
     }
     if (mode === 1 && currentMode.valueOf() === 1) {
         const url = `http://${expressIP}:9093/getGifPixoo/5/${flag}.gif`;
-        console.log(`URL sent to Pixoo64: ${url}`)
+        if (debugOn) console.log(`URL sent to Pixoo64: ${url}`);
         try {
             const response = await fetch(`http://${pixooIP}:80/post`, {
                 method: 'POST',
@@ -1241,7 +1243,7 @@ async function checkTrackStatus() {
                 red = false;
                 changeGif('sc', currentMode);
                 break;
-            case '5': // Red
+            case '5': // Red                
                 if (debugOn) console.log(`New track status : 🟥 %cRed`, 'color:#f0250a');
                 sc = false;
                 yellow = false;
