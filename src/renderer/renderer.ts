@@ -67,10 +67,10 @@ let currentTheme = 1;
 let currentMapTheme = 0;
 let raceName = 'Unknown';
 let currentMode = 0; // 0 for window, 1 for pixoo64
-let disabledBlueFlag = false;
-let useTrackMap = false;
-let useMVLogo = false;
-let enableExtraFlags = false;
+let blueFlagSwitch = false;
+let trackMapSwitch = false;
+let mvLogoSwitch = false;
+let extraFlagSwitch = false;
 let pixooIP: string;
 const instanceWindowWidth = 800;
 const instanceWindowHeight = 600;
@@ -242,7 +242,7 @@ async function getPixooIP(): Promise<string> {
  * @returns The trackMapPath variable is being returned.
  */
 function getCurrentTrackPath(currentMapTheme: number): string {
-    if (useTrackMap === true) {
+    if (trackMapSwitch === true) {
         let trackMapPath: string;
         /* Creating a variable called trackMaps and assigning it the value of the trackMaps property of the mapThemes JSON in filesConfiguration.json. */
         const trackMaps = mapThemes[currentMapTheme].trackMaps;
@@ -405,7 +405,7 @@ function getGifPath(flag: string) {
     /* Getting the current track path. */
     const trackMapPath = getCurrentTrackPath(currentMapTheme);
     /* Checking if the flag is 'void' and if the useTrackMap is true and if the trackMapPath has a file extension. */
-    if (flag === 'void' && useMVLogo === true) {
+    if (flag === 'void' && mvLogoSwitch === true) {
         for (let themeIndex = 0; themeIndex < themes.length; themeIndex++) {
             const theme = themes[themeIndex];
             if (theme.id === currentTheme) {
@@ -414,7 +414,7 @@ function getGifPath(flag: string) {
         }
     } else if (
         flag === 'void' &&
-        useTrackMap === true &&
+        trackMapSwitch === true &&
         trackMapPath.slice(((trackMapPath.lastIndexOf('.') - 1) >>> 0) + 2)
     ) {
         /* Setting only the void GIF to use TrackMap. */
@@ -456,7 +456,7 @@ function selectTheme(id: number) {
  * @param id - the id of the map theme selected
  */
 function selectMapTheme(id: string) {
-    if (useTrackMap == true) {
+    if (trackMapSwitch == true) {
         if (debugOn) log('Map Theme selected : ' + mapThemes[id].name);
         currentMapTheme = parseInt(id);
         getCurrentTrackPath(currentMapTheme);
@@ -510,14 +510,14 @@ async function turnOff(flag: string) {
         url = `http://${expressIP}:9093/getGifPixoo/5/rain.gif`;
     } else {
         $('#digiflag').prop('src', getGifPath('void'));
-        if (useMVLogo === true) {
-            url = `http://${expressIP}:9093/getGifPixoo/5/mv.gif` 
+        if (mvLogoSwitch === true) {
+            url = `http://${expressIP}:9093/getGifPixoo/5/mv.gif`;
         } else {
             url = `http://${expressIP}:9093/getGifPixoo/5/void.gif`;
         }
     }
 
-    if (currentMode.valueOf() === 1 ) {
+    if (currentMode.valueOf() === 1) {
         if (debugOn) {
             console.log(`${flag} flag was turned off`);
             console.log(`URL sent to Pixoo64: ${url}`);
@@ -543,8 +543,10 @@ async function turnOff(flag: string) {
             console.error(err);
         }
         // Need to force a delay after an http post to the Pixoo64, else may crash the Pixoo64
-        if (debugOn) { console.log(`Pixoo64 API cool down 1750ms`) }
-        await timer(1750)
+        if (debugOn) {
+            console.log(`Pixoo64 API cool down 1750ms`);
+        }
+        await timer(1750);
     }
 }
 /**
@@ -559,10 +561,10 @@ async function turnOff(flag: string) {
  */
 async function changeGif(flag: string, mode: number) {
     const flagPath = getGifPath(flag);
-    if (flag === 'void' && useMVLogo === true) {
-        flag = `mv` 
+    if (flag === 'void' && mvLogoSwitch === true) {
+        flag = `mv`;
     }
-    if (mode === 1 && currentMode.valueOf() === 1 && flagPath !== undefined ) {
+    if (mode === 1 && currentMode.valueOf() === 1 && flagPath !== undefined) {
         const url = `http://${expressIP}:9093/getGifPixoo/5/${flag}.gif`;
         if (debugOn) console.log(`URL sent to Pixoo64: ${url}`);
         try {
@@ -586,8 +588,10 @@ async function changeGif(flag: string, mode: number) {
             console.error(err);
         }
         // Need to force a delay after an http post to the Pixoo64, else may crash the Pixoo64
-        if (debugOn) { console.log(`Pixoo64 API cool down 1750ms`) }
-        await timer(1750)
+        if (debugOn) {
+            console.log(`Pixoo64 API cool down 1750ms`);
+        }
+        await timer(1750);
     }
     $('#digiflag').prop('src', flagPath);
     if (flag !== 'rain') {
@@ -636,7 +640,6 @@ function linkSuccess() {
             Window DigiFlag
         </label>
         </div>
-        <span class="badge text-bg-danger" data-i18n="pixoo64IsNotCompatible" id="notAvailable" disabled>Pixoo 64 is Not Compatible with the Selected Theme</span>
         <div class="form-check" id="pixoo64">
         <input class="form-check-input" type="radio" name="flexRadioDefault" id="pixoo64Radio" data-bs-toggle="collapse" data-bs-target="#pixooIPContainer" aria-expanded="false" aria-controls="pixooIPContainer" disabled>
         <label class="form-check-label" for="pixoo64Radio">
@@ -660,13 +663,13 @@ function linkSuccess() {
     </div>
   </div>
   <div class="form-check form-switch" id="mvLogoSwitch">
-    <input class="form-check-input" type="checkbox" role="switch" id="mvSwitch"> <label class="form-check-label theme" data-i18n="useMultiviewerLogo" for="mvSwitch">Use MultiViewer Logo?</label>
+    <input class="form-check-input" type="checkbox" role="switch" id="mvSwitch"> <label class="form-check-label theme" data-i18n="multiviewerLogo" for="mvSwitch">MultiViewer Logo</label>
   </div>
   <div class="form-check form-switch" id="blueFlag">
-    <input class="form-check-input" type="checkbox" role="switch" id="blueFlagCheckbox"> <label class="form-check-label theme" data-i18n="removeBlueFlags" for="blueFlagCheckbox">Remove Blue Flags?</label>
+    <input class="form-check-input" type="checkbox" role="switch" id="blueFlagCheckbox"> <label class="form-check-label theme" data-i18n="blueFlags" for="blueFlagCheckbox">Blue Flags</label>
   </div>
   <div class="form-check form-switch" id="extraFlagSwitch">
-  <input class="form-check-input" type="checkbox" role="switch" id="extraFlagCheckbox"> <label class="form-check-label theme" data-i18n="extraFlags" for="extraFlagCheckbox">Enable Extra Flags?</label>
+  <input class="form-check-input" type="checkbox" role="switch" id="extraFlagCheckbox"> <label class="form-check-label theme" data-i18n="extraFlags" for="extraFlagCheckbox">Extra Flags</label>
 </div>`);
     miscOptionsRef = $('#selectDevice,#selectMisc').detach();
     $(document).localize();
@@ -690,11 +693,18 @@ function linkSuccess() {
         themeSelectRef = $('#selectTheme').detach();
 
         if (themes[currentTheme].compatibleWith.Pixoo64) {
-            $('#notAvailable').hide();
+            $('#window').hide();
+            $('#pixoo64').show();
             $('#pixoo64Radio').prop('disabled', false);
+            $('#mvSwitch').prop('disabled', false);
+            $('#collapsetrackMapSelect').removeClass();
+            $('#collapsetrackMapSelect').addClass('collapse');
+            $('#mapSwitch').prop('disabled', true);
+            $('#mapSwitch').prop('checked', false);
         } else {
             currentMode = 0;
-            $('#notAvailable').show();
+            $('#window').show();
+            $('#pixoo64').hide();
             $('#pixoo64Radio').prop('checked', false);
             $('#pixooIPContainer').removeClass();
             $('#pixooIPContainer').addClass('collapse');
@@ -712,10 +722,6 @@ function linkSuccess() {
                 getExpressIP();
                 getPixooIP();
                 if (debugOn) console.log('Current Mode: ' + currentMode);
-                $('#collapsetrackMapSelect').removeClass();
-                $('#collapsetrackMapSelect').addClass('collapse');
-                $('#mapSwitch').prop('disabled', true);
-                $('#mapSwitch').prop('checked', false);
             } else {
                 if (debugOn) console.log('Window was Selected');
                 currentMode = 0;
@@ -731,51 +737,51 @@ function linkSuccess() {
         /* Checking if the blue flag is disabled, if it is, it will enable it. If it is not, it will disable
 it. */
         $('#blueFlag').on('change', () => {
-            if (disabledBlueFlag) {
-                disabledBlueFlag = false;
-                if (debugOn) log('Blue Flags are Enabled');
-                return disabledBlueFlag;
+            if (blueFlagSwitch) {
+                blueFlagSwitch = false;
+                if (debugOn) log('Blue Flags OFF');
+                return blueFlagSwitch;
             } else {
-                disabledBlueFlag = true;
-                if (debugOn) log('Blue Flags are Disabled');
-                return disabledBlueFlag;
+                blueFlagSwitch = true;
+                if (debugOn) log('Blue Flags ON');
+                return blueFlagSwitch;
             }
         });
         $('#mvLogoSwitch').on('change', () => {
-            if (useMVLogo) {
-                useMVLogo = false;
-                if (debugOn) log('MV Logo Disabled');
+            if (mvLogoSwitch) {
+                mvLogoSwitch = false;
+                if (debugOn) log('MV Logo OFF');
                 $('#mapSwitch').prop('disabled', false);
-                return useMVLogo;
+                return mvLogoSwitch;
             } else {
-                useMVLogo = true;
-                if (debugOn) log('MV Logo Enabled');
+                mvLogoSwitch = true;
+                if (debugOn) log('MV Logo ON');
                 $('#mapSwitch').prop('disabled', true);
-                return useMVLogo;
+                return mvLogoSwitch;
             }
         });
         $('#extraFlagSwitch').on('change', () => {
-            if (enableExtraFlags) {
-                enableExtraFlags = false;
-                if (debugOn) log('Extra Flags are Disabled');
-                return enableExtraFlags;
+            if (extraFlagSwitch) {
+                extraFlagSwitch = false;
+                if (debugOn) log('Extra Flags OFF');
+                return extraFlagSwitch;
             } else {
-                enableExtraFlags = true;
-                if (debugOn) log('Extra Flags are Enabled');
-                return enableExtraFlags;
+                extraFlagSwitch = true;
+                if (debugOn) log('Extra Flags ON');
+                return extraFlagSwitch;
             }
         });
         /* Creating a switch that toggles the use of a track map as a background. */
         $('#trackMapSwitch').on('change', () => {
-            if (useTrackMap) {
-                useTrackMap = false;
-                if (debugOn) log('use TrackMap as Background? : ' + useTrackMap);
+            if (trackMapSwitch) {
+                trackMapSwitch = false;
+                if (debugOn) log('use TrackMap as Background? : ' + trackMapSwitch);
                 $('#mvSwitch').prop('disabled', false);
                 $('#launchDigiFlag').prop('disabled', false);
-                return useTrackMap;
+                return trackMapSwitch;
             } else {
-                useTrackMap = true;
-                if (debugOn) log('use TrackMap as Background? : ' + useTrackMap);
+                trackMapSwitch = true;
+                if (debugOn) log('use TrackMap as Background? : ' + trackMapSwitch);
                 $('#mvSwitch').prop('disabled', true);
                 $('#launchDigiFlag').prop('disabled', true);
                 $('#trackMapStyleSelect>option').remove();
@@ -798,7 +804,7 @@ it. */
                     selectMapTheme(mapID.toString());
                     $('#launchDigiFlag').prop('disabled', false);
                 });
-                return useTrackMap;
+                return trackMapSwitch;
             }
         });
         $('#menuContent').append(
@@ -1076,7 +1082,7 @@ recentMessage.Message to see if it contains the text "CAR #" where # is a number
 checking the recentMessage.Message to see if it contains the text "5 SECOND TIME PENALTY" or "10
 SECOND TIME PENALTY". If it does, it is changing the gif to the appropriate gif and then turning it
 off after a certain amount of time. */
-        if (recentMessage.SubCategory === 'TimePenalty' && enableExtraFlags) {
+        if (recentMessage.SubCategory === 'TimePenalty' && extraFlagSwitch) {
             /* Using a regular expression to match the message to a pattern. */
             const carNumberMatch = recentMessage.Message.match(/CAR (\d+)/i);
             if (carNumberMatch) {
@@ -1101,7 +1107,7 @@ off after a certain amount of time. */
                 }
             }
         }
-        if (recentMessage.SubCategory === 'StopGoPenalty' && enableExtraFlags) {
+        if (recentMessage.SubCategory === 'StopGoPenalty' && extraFlagSwitch) {
             /* Using a regular expression to match the message to a pattern. */
             const carNumberMatch = recentMessage.Message.match(/CAR (\d+)/i);
             if (carNumberMatch) {
@@ -1136,13 +1142,13 @@ off after a certain amount of time. */
             turnOff('ss');
             return;
         }
-        if (recentMessage.Message.match(/DRS ENABLED/i) && enableExtraFlags) {
+        if (recentMessage.Message.match(/DRS ENABLED/i) && extraFlagSwitch) {
             changeGif('DRSenabled', currentMode);
             await timer(3500);
             turnOff('DRSenabled');
             return;
         }
-        if (recentMessage.Message.match(/DRS DISABLED/i) && enableExtraFlags) {
+        if (recentMessage.Message.match(/DRS DISABLED/i) && extraFlagSwitch) {
             changeGif('DRSdisabled', currentMode);
             await timer(3500);
             turnOff('DRSdisabled');
@@ -1160,13 +1166,13 @@ off after a certain amount of time. */
             turnOff('pitclosed');
             return;
         }
-        if (recentMessage.Message.match(/RECOVERY VEHICLE ON TRACK/i) && enableExtraFlags) {
+        if (recentMessage.Message.match(/RECOVERY VEHICLE ON TRACK/i) && extraFlagSwitch) {
             changeGif('recoveryvehicle', currentMode);
             await timer(5000);
             turnOff('recoveryvehicle');
             return;
         }
-        if (recentMessage.Message.match(/MEDICAL CAR DEPLOYED/i) && enableExtraFlags) {
+        if (recentMessage.Message.match(/MEDICAL CAR DEPLOYED/i) && extraFlagSwitch) {
             changeGif('medicalcar', currentMode);
             await timer(5000);
             turnOff('medicalcar');
@@ -1188,7 +1194,7 @@ off after a certain amount of time. */
         }
 
         if (recentMessage.Message.match(/BLUE FLAG/i)) {
-            if (!disabledBlueFlag) {
+            if (blueFlagSwitch) {
                 changeGif('blue', currentMode);
                 await timer(1000);
                 turnOff('blue');
@@ -1249,7 +1255,7 @@ async function checkTrackStatus() {
                 red = false;
                 changeGif('sc', currentMode);
                 break;
-            case '5': // Red                
+            case '5': // Red
                 if (debugOn) console.log(`New track status : 🟥 %cRed`, 'color:#f0250a');
                 sc = false;
                 yellow = false;

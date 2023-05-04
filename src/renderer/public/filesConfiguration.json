@@ -5,7 +5,7 @@
       "name": "DigiFlag Pixel",
       "compatibleWith": {
         "Window": true,
-        "Pixoo64": true
+        "Pixoo64": false
       },
       "sourcePath": "gifs/pixel",
       "gifs": {
@@ -231,7 +231,7 @@
         "2022 Saudi Arabian Grand Prix": "tracks/2022/Saudi_Arabia/Saudi Arabian Grand Prix_16-9.png",
         "2022 Australian Grand Prix": "tracks/2022/Australia/Australian Grand Prix_16-9.png",
         "2022 Emilia Romagna Grand Prix": "tracks/2022/",
-        "2022 Miami Grand Prix": "tracks/2022/",
+        "2022 Miami Grand Prix": "tracks/2022/Miami/Miami Grand Prix_16-9.png",
         "2022 Spanish Grand Prix": "tracks/2022/",
         "2022 Monaco Grand Prix": "tracks/2022/",
         "2022 Azerbaijan Grand Prix": "tracks/2022/Azerbaijan/Azerbaijan Grand Prix_16-9.png",
@@ -254,7 +254,7 @@
         "2023 Saudi Arabian Grand Prix": "tracks/2023/Saudi_Arabia/Saudi Arabian Grand Prix_16-9.png",
         "2023 Australian Grand Prix": "tracks/2023/Australia/Australian Grand Prix_16-9.png",
         "2023 Emilia Romagna Grand Prix": "tracks/2023/",
-        "2023 Miami Grand Prix": "tracks/2023/",
+        "2023 Miami Grand Prix": "tracks/2023/Miami/Miami Grand Prix_16-9.png",
         "2023 Spanish Grand Prix": "tracks/2023/",
         "2023 Monaco Grand Prix": "tracks/2023/",
         "2023 Azerbaijan Grand Prix": "tracks/2023/Azerbaijan/Azerbaijan Grand Prix_16-9.png",
