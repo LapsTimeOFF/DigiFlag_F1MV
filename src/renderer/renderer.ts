@@ -517,7 +517,7 @@ async function turnOff(flag: string) {
         }
     }
 
-    if (currentMode.valueOf() === 1) {
+    if (currentMode.valueOf() === 1 ) {
         if (debugOn) {
             console.log(`${flag} flag was turned off`);
             console.log(`URL sent to Pixoo64: ${url}`);
@@ -542,6 +542,9 @@ async function turnOff(flag: string) {
         } catch (err) {
             console.error(err);
         }
+        // Need to force a delay after an http post to the Pixoo64, else may crash the Pixoo64
+        if (debugOn) { console.log(`Pixoo64 API cool down 1750ms`) }
+        await timer(1750)
     }
 }
 /**
@@ -559,7 +562,7 @@ async function changeGif(flag: string, mode: number) {
     if (flag === 'void' && useMVLogo === true) {
         flag = `mv` 
     }
-    if (mode === 1 && currentMode.valueOf() === 1) {
+    if (mode === 1 && currentMode.valueOf() === 1 && flagPath !== undefined ) {
         const url = `http://${expressIP}:9093/getGifPixoo/5/${flag}.gif`;
         if (debugOn) console.log(`URL sent to Pixoo64: ${url}`);
         try {
@@ -582,6 +585,9 @@ async function changeGif(flag: string, mode: number) {
         } catch (err) {
             console.error(err);
         }
+        // Need to force a delay after an http post to the Pixoo64, else may crash the Pixoo64
+        if (debugOn) { console.log(`Pixoo64 API cool down 1750ms`) }
+        await timer(1750)
     }
     $('#digiflag').prop('src', flagPath);
     if (flag !== 'rain') {

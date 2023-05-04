@@ -19,12 +19,12 @@ let pixooIPAddress = '';
 /* Creating an express app. */
 const expressApp = express();
 /* Limiting the rate at which the API can be called. */
-const limiter = rateLimit({
-    windowMs: 1000, // 1 second
-    max: 1, // no maximum limit
-});
+// const limiter = rateLimit({
+//     windowMs: 1500, // 1 second
+//     max: 1, // no maximum limit
+// });
 // Apply Rate Limit to all requests
-expressApp.use(limiter);
+// expressApp.use(limiter);
 /* Creating a server that listens on port 9093. */
 expressApp
     .listen(9093, () => {
