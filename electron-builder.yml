@@ -57,8 +57,11 @@ dmg:
     type: link
     path: "/Applications"
 linux:
+  maintainer: "DigiFlag Team"
+  icon: "build/icon.icns"
   target:
   - AppImage
+  - deb
   - target: zip
     arch:
     - x64

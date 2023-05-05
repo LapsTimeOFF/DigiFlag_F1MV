@@ -2,22 +2,29 @@ import {app, BrowserWindow, ipcMain} from 'electron';
 import express from 'express';
 import {address} from 'ip';
 import path from 'path';
-import { rateLimit } from 'express-rate-limit';
-import request from 'request';
-import {getWindowSizeSettings, getWindowPositionSettings, saveWindowPos, saveWindowSize, getAlwaysOnTopState, saveAlwaysOnTopState,} from './storage';
+import {rateLimit} from 'express-rate-limit';
+import {
+    getWindowSizeSettings,
+    getWindowPositionSettings,
+    saveWindowPos,
+    saveWindowSize,
+    getAlwaysOnTopState,
+    saveAlwaysOnTopState,
+} from './storage';
 import {failedToLoadAPI} from './errorTable';
-import {themes,mapThemes} from './filesConfiguration.json';
-import { autoUpdater } from "electron-updater"
+import {themes, mapThemes} from './filesConfiguration.json';
+import {autoUpdater} from 'electron-updater';
 const version = app.getVersion();
+let pixooIPAddress = '';
 /* Creating an express app. */
 const expressApp = express();
 /* Limiting the rate at which the API can be called. */
-const limiter = rateLimit({
-    windowMs: 1*60*1000, // 1 minute
-    max: 5
-  });
-  // Apply Rate Limit to all requests
-  expressApp.use(limiter);
+// const limiter = rateLimit({
+//     windowMs: 1500, // 1 second
+//     max: 1, // no maximum limit
+// });
+// Apply Rate Limit to all requests
+// expressApp.use(limiter);
 /* Creating a server that listens on port 9093. */
 expressApp
     .listen(9093, () => {
@@ -26,18 +33,19 @@ expressApp
     .on('error', () => {
         throw failedToLoadAPI;
     });
+
 /* A route that is used to get a gif from the server. */
 expressApp.get('/getGif/:gif/:themeID', (req, res) => {
     const {gif, themeID} = req.params;
     const theme = themes[themeID];
     const gifPath = theme.gifs[gif];
-    res.sendFile(`${gifPath}`, { root : path.join(__dirname,'../renderer/')});
+    res.sendFile(`${gifPath}`, {root: path.join(__dirname, '../renderer/')});
 });
 expressApp.get('/getTrack/:track/:themeID', (req, res) => {
     const {track, themeID} = req.params;
     const theme = mapThemes[themeID];
     const trackPath = theme.trackMaps[track];
-    res.sendFile(`${trackPath}`, { root : path.join(__dirname,'../renderer/')});
+    res.sendFile(`${trackPath}`, {root: path.join(__dirname, '../renderer/')});
 });
 /* A route that is used to change the GIF on the Pixoo64. */
 expressApp.get('/getGifPixoo/:themeID/:gif.gif/', (req, res) => {
@@ -49,54 +57,53 @@ expressApp.get('/getGifPixoo/:themeID/:gif.gif/', (req, res) => {
         res.send("Theme requested doesn't support Pixoo64");
         return;
     }
-    const gifPath = theme.gifs.pixoo64[gif];
-    res.sendFile(`${gifPath}`, { root : path.join(__dirname,'../renderer/')});
+    const gifPath = theme.gifs[gif];
+    res.sendFile(`${gifPath}`, {root: path.join(__dirname, '../renderer/')});
 });
-/* A route that is used to change the GIF on the Pixoo64. */
-expressApp.get('/pixoo/:themeID/:ip/:gif.gif', (req, res) => {
-    const {gif, themeID, ip} = req.params;
-    const theme = themes[themeID];
-    /* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
-    if (theme.compatibleWith.Pixoo64 !== true) {
-        res.statusCode = 400;
-        res.send("Theme requested doesn't support Pixoo64");
-        return;
-    }
-    /* Sending a POST request to the Pixoo64. */
-    request.post(
-        `http://${ip}:80/post`,
-        {
-            json: {
-                Command: 'Device/PlayTFGif',
-                FileType: 2,
-                FileName: `http://${address()}:9093/getGifPixoo/${themeID}/${gif}.gif`,
-            },
-        },
-        /* A callback function that is called when the request is completed. */
-        (err, response, body) => {
-            if (err) {
-                res.statusCode = 500;
-                res.send('Failed to change GIF on Pixoo64');
-                return;
-            }
-            if (response.headers['content-type'] !== 'application/json') {
-                res.statusCode = 500;
-                res.send('Unexpected content type in response');
-                return;
-            }
-            const responseBody = JSON.parse(body);
-            if (responseBody.error_code !== 0) {
-                res.statusCode = 500;
-                res.send('Failed to change GIF on Pixoo64');
-                return;
-            }
-            res.send('OK');
-        }
-    );
-});
+// /* A route that is used to change the GIF on the Pixoo64. */
+// expressApp.get('/pixoo/:themeID/:ip/:gif.gif', (req, res) => {
+//     const {gif, themeID, ip} = req.params;
+//     const theme = themes[themeID];
+//     /* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
+//     if (theme.compatibleWith.Pixoo64 !== true) {
+//         res.statusCode = 400;
+//         res.send("Theme requested doesn't support Pixoo64");
+//         return;
+//     }
+//     /* Sending a POST request to the Pixoo64. */
+//     request.post(
+//         `http://${pixooIPAddress}:80/post`,
+//         {
+//             json: {
+//                 Command: 'Device/PlayTFGif',
+//                 FileType: 2,
+//                 FileName: `http://${address()}:9093/getGifPixoo/${themeID}/${gif}.gif`,
+//             },
+//         },
+//         /* A callback function that is called when the request is completed. */
+//         (err, response, body) => {
+//             if (err) {
+//                 res.statusCode = 500;
+//                 res.send('Failed to change GIF on Pixoo64');
+//                 return;
+//             }
+//             if (response.headers['content-type'] !== 'application/json') {
+//                 res.statusCode = 500;
+//                 res.send('Unexpected content type in response');
+//                 return;
+//             }
+//             const responseBody = JSON.parse(body);
+//             if (responseBody.error_code !== 0) {
+//                 res.statusCode = 500;
+//                 res.send('Failed to change GIF on Pixoo64');
+//                 return;
+//             }
+//             res.send('OK');
+//         }
+//     );
+// });
 
-
-let mainWindow:BrowserWindow
+let mainWindow: BrowserWindow;
 /**
  * `createWindow` is a function that takes three arguments: `width`, `height`, and `title`, and returns
  * a new `BrowserWindow` object
@@ -105,7 +112,14 @@ let mainWindow:BrowserWindow
  * @param {string} title - The title of the window.
  * @returns A BrowserWindow object.
  */
-function createWindow(width: number, height: number, windowPositionX: number, windowPositionY: number, title: string, alwaysOnTop:boolean) {
+function createWindow(
+    width: number,
+    height: number,
+    windowPositionX: number,
+    windowPositionY: number,
+    title: string,
+    alwaysOnTop: boolean
+) {
     mainWindow = new BrowserWindow({
         width: width,
         height: height,
@@ -116,14 +130,15 @@ function createWindow(width: number, height: number, windowPositionX: number, wi
         transparent: false,
         titleBarStyle: 'hidden',
         /* Setting the icon of the window. */
-        icon: path.join(__dirname,'../../build/icon.png'),
+        icon: path.join(__dirname, '../../build/icon.png'),
         alwaysOnTop: alwaysOnTop,
         autoHideMenuBar: true,
         /* Hiding the window until it is ready to be shown. */
         show: false,
         webPreferences: {
             preload: path.join(__dirname, '../preload/preload.js'),
-            nodeIntegration:true
+            contextIsolation: true,
+            sandbox: false,
         },
     });
     // HMR for renderer base on electron-vite cli.
@@ -179,10 +194,10 @@ the size of the window as an argument. */
     mainWindow.setMinimumSize(256, 256);
 
     mainWindow.on('close', function () {
-        mainWindow = null // Clean up your window object.
-     })
+        mainWindow = null; // Clean up your window object.
+    });
 
-    mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    mainWindow.webContents.setWindowOpenHandler(({url}) => {
         if (url === 'https://github.com/LapsTimeOFF/DigiFlag_F1MV') {
             return {
                 action: 'allow',
@@ -198,23 +213,23 @@ the size of the window as an argument. */
                     frame: false,
                     transparent: true,
                     fullscreenable: false,
-                    minWidth:256,
-                    minHeight:256,
-                    webPreferences:{
-                        nodeIntegration:true,
+                    minWidth: 256,
+                    minHeight: 256,
+                    webPreferences: {
                         preload: path.join(__dirname, '../preload/preload.js'),
+                        contextIsolation: true,
+                        sandbox: false,
                     },
                 },
             };
         } else {
             return {
-                action: 'deny'
+                action: 'deny',
             };
         }
     });
     return mainWindow;
 }
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.whenReady().then(() => {
@@ -227,12 +242,26 @@ app.whenReady().then(() => {
     if (version.includes('dev')) console.log('WindowPosition: ', windowPosition);
     if (version.includes('dev')) console.log('alwaysOnTopState: ', alwaysOnTopState);
 
-    createWindow(windowSize[0], windowSize[1], windowPosition[0], windowPosition[1], 'DigiFlag - ' + version, alwaysOnTopState);
+    createWindow(
+        windowSize[0],
+        windowSize[1],
+        windowPosition[0],
+        windowPosition[1],
+        'DigiFlag - v' + version,
+        alwaysOnTopState
+    );
     app.on('activate', () => {
         // On OS X it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
         if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow(windowSize[0], windowSize[1], windowPosition[0], windowPosition[1], 'DigiFlag - ' + version, alwaysOnTopState);
+            createWindow(
+                windowSize[0],
+                windowSize[1],
+                windowPosition[0],
+                windowPosition[1],
+                'DigiFlag - v' + version,
+                alwaysOnTopState
+            );
         }
     });
 });
@@ -245,9 +274,13 @@ app.on('window-all-closed', () => {
     }
 });
 
-ipcMain.handle('get-version',async()=>{
-    return app.getVersion()
-})
+ipcMain.handle('get-version', async () => {
+    return app.getVersion();
+});
+ipcMain.handle('get-pixooIP', async (_, pixooIP: string) => {
+    pixooIPAddress = pixooIP;
+    return pixooIPAddress;
+});
 
 ipcMain.handle('get-always-on-top', () => {
     // Get the current state from storage
@@ -264,4 +297,9 @@ ipcMain.handle('set-always-on-top', () => {
     // Save the new state to storage
     saveAlwaysOnTopState(newState);
     console.log(mainWindow.isAlwaysOnTop());
+});
+
+ipcMain.handle('get-expressIP', async () => {
+    const expressIP = address();
+    return expressIP;
 });
