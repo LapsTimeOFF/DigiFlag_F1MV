@@ -72,6 +72,7 @@ let trackMapSwitch = false;
 let mvLogoSwitch = false;
 let extraFlagSwitch = false;
 let pixooIP: string;
+let pixoostartup = true;
 const instanceWindowWidth = 800;
 const instanceWindowHeight = 600;
 const instanceWindowOffsetX = 100;
@@ -1206,6 +1207,19 @@ off after a certain amount of time. */
             changeGif('chequered', currentMode);
             await timer(90000);
             turnOff('chequered');
+            return;
+        }
+         // At start, display MVlogo to init display
+    if (pixoostartup === true && currentMode === 1) {
+            if (debugOn) log('Pixoo64 showing startup sequence');
+            pixoostartup = false;
+            changeGif('mv', currentMode);
+            await timer(2000);
+            changeGif('green', currentMode);
+            await timer(2000);
+            changeGif('chequered', currentMode);
+            await timer(2000);
+            changeGif('void', currentMode);
             return;
         }
     }
