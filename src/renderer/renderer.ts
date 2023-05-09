@@ -73,6 +73,7 @@ let mvLogoSwitch = false;
 let extraFlagSwitch = false;
 let pixooIP: string;
 let pixoostartup = true;
+let pixoovoid = false;
 const instanceWindowWidth = 800;
 const instanceWindowHeight = 600;
 const instanceWindowOffsetX = 100;
@@ -1132,96 +1133,108 @@ off after a certain amount of time. */
             recentMessage.SubCategory !== 'IncidentInvestigationAfterSession' &&
             recentMessage.SubCategory !== 'SessionResume'
         ) {
+            pixoovoid = false;
             changeGif('rs', currentMode);
             await timer(20000);
             turnOff('rs');
+            pixoovoid = true;
             return;
         }
         if (recentMessage.Message.match(/STANDING START PROCEDURE/i) && recentMessage.SubCategory !== 'SessionResume') {
+            pixoovoid = false;
             changeGif('ss', currentMode);
             await timer(20000);
             turnOff('ss');
+            pixoovoid = true;
             return;
         }
         if (recentMessage.Message.match(/DRS ENABLED/i) && extraFlagSwitch) {
+            pixoovoid = false;
             changeGif('DRSenabled', currentMode);
             await timer(3500);
             turnOff('DRSenabled');
+            pixoovoid = true;
             return;
         }
         if (recentMessage.Message.match(/DRS DISABLED/i) && extraFlagSwitch) {
+            pixoovoid = false;
             changeGif('DRSdisabled', currentMode);
             await timer(3500);
             turnOff('DRSdisabled');
+            pixoovoid = true;
             return;
         }
         if (recentMessage.Message.match(/PIT LANE ENTRY CLOSED/i)) {
+            pixoovoid = false;
             changeGif('pitclosed', currentMode);
             await timer(3500);
             turnOff('pitclosed');
+            pixoovoid = true;
             return;
         }
         if (recentMessage.Message.match(/PIT ENTRY CLOSED/i)) {
+            pixoovoid = false;
             changeGif('pitclosed', currentMode);
             await timer(3500);
             turnOff('pitclosed');
+            pixoovoid = true;
             return;
         }
         if (recentMessage.Message.match(/RECOVERY VEHICLE ON TRACK/i) && extraFlagSwitch) {
+            pixoovoid = false;
             changeGif('recoveryvehicle', currentMode);
             await timer(5000);
             turnOff('recoveryvehicle');
+            pixoovoid = true;
             return;
         }
         if (recentMessage.Message.match(/MEDICAL CAR DEPLOYED/i) && extraFlagSwitch) {
+            pixoovoid = false;
             changeGif('medicalcar', currentMode);
             await timer(5000);
             turnOff('medicalcar');
+            pixoovoid = true;
             return;
         }
 
         if (recentMessage.SubCategory === 'TrackSurfaceSlippery') {
+            pixoovoid = false;
             changeGif('slippery', currentMode);
             await timer(5000);
             turnOff('slippery');
+            pixoovoid = true;
             return;
         }
 
         if (recentMessage.Message.match(/DOUBLE YELLOW/i)) {
+            pixoovoid = false;
             changeGif('dyellow', currentMode);
             await timer(10000);
             turnOff('dyellow');
+            pixoovoid = true;
             return;
         }
 
-        if (recentMessage.Message.match(/BLUE FLAG/i)) {
+        if (recentMessage.Message.match(/BLUE FLAG/i) && recentMessage.Flag !== 'CHEQUERED') {
             if (blueFlagSwitch) {
+                pixoovoid = false;
                 changeGif('blue', currentMode);
-                await timer(1000);
+                await timer(2000);
                 turnOff('blue');
+                pixoovoid = true;
             }
             return;
         }
 
         if (recentMessage.Flag === 'CHEQUERED') {
+            pixoovoid = false;
             changeGif('chequered', currentMode);
             await timer(90000);
             turnOff('chequered');
+            pixoovoid = true;
             return;
         }
-         // At start, display MVlogo to init display
-    if (pixoostartup === true && currentMode === 1) {
-            if (debugOn) log('Pixoo64 showing startup sequence');
-            pixoostartup = false;
-            changeGif('mv', currentMode);
-            await timer(2000);
-            changeGif('green', currentMode);
-            await timer(2000);
-            changeGif('chequered', currentMode);
-            await timer(2000);
-            changeGif('void', currentMode);
-            return;
-        }
+
     }
 };
 /**
@@ -1249,9 +1262,11 @@ async function checkTrackStatus() {
                     yellow = false;
                     vsc = false;
                     red = false;
+                    pixoovoid = false;
                     changeGif('green', currentMode);
                     await timer(2500);
                     turnOff('green');
+                    pixoovoid = true;
                 }
                 break;
             case '2': // Yellow
@@ -1260,6 +1275,7 @@ async function checkTrackStatus() {
                 yellow = true;
                 vsc = false;
                 red = false;
+                pixoovoid = false;
                 changeGif('yellow', currentMode);
                 break;
             case '4': // SCDeployed
@@ -1267,6 +1283,7 @@ async function checkTrackStatus() {
                 yellow = false;
                 vsc = false;
                 red = false;
+                pixoovoid = false;
                 changeGif('sc', currentMode);
                 break;
             case '5': // Red
@@ -1275,6 +1292,7 @@ async function checkTrackStatus() {
                 yellow = false;
                 vsc = false;
                 red = true;
+                pixoovoid = false;
                 changeGif('red', currentMode);
                 break;
             case '6': // VSCDeployed
@@ -1282,6 +1300,7 @@ async function checkTrackStatus() {
                 yellow = false;
                 vsc = true;
                 red = false;
+                pixoovoid = false;
                 changeGif('vsc', currentMode);
                 break;
             case '7': // VSCEnding
@@ -1289,6 +1308,7 @@ async function checkTrackStatus() {
                 yellow = false;
                 vsc = true;
                 red = false;
+                pixoovoid = false;
                 changeGif('vsc', currentMode);
                 break;
             default:
@@ -1307,23 +1327,29 @@ async function checkTrackStatus() {
  */
 
 async function checkRain() {
-    if (!started) return;
-    /* Extract if it's raining or not from the Live Timing data */
+if (!started) return;
+/* Extract if it's raining or not from the Live Timing data */
     const Rain = LT_Data.WeatherData.Rainfall;
-    if (Rain !== currentRainStatus) {
+    if (Rain !== currentRainStatus && pixoovoid == true) {
         switch (Rain) {
             case '0': // Not raining
                 if (lightOnRain) {
-                    if (debugOn) console.log(`%cIt Stopped Raining!`, 'color:orange');
-                    changeGif('void', currentMode);
+                    if (pixoostartup !== true) {
+                        if (debugOn) console.log(`%cIt Stopped Raining!`, 'color:orange');
+                        changeGif('void', currentMode);
+                    }
+                    else { if (debugOn) console.log(`%cIt Stopped Raining but something more important is on the Pixoo64`, 'color:aqua');}
                     lightOnRain = false;
                 }
                 break;
             case '1': // Raining
                 if (!lightOnRain) {
-                    if (debugOn) console.log(`%cIt's Raining!`, 'color:aqua');
-                    changeGif('rain', currentMode);
-                    lightOnRain = true;
+                    if (pixoostartup !== true ) {
+                        if (debugOn) console.log(`%cIt's Raining!`, 'color:aqua');
+                        changeGif('rain', currentMode);
+                        lightOnRain = true;
+                    }
+                    else { if (debugOn) console.log(`%cIt's Raining but something more important is on the Pixoo64`, 'color:aqua');}
                 }
                 break;
         }
@@ -1340,16 +1366,34 @@ async function checkRain() {
 async function updateData() {
     try {
         if (started) {
-            LT_Data = await window.api.LiveTimingAPIGraphQL(config, [
-                'RaceControlMessages',
-                'TrackStatus',
-                'CarData',
-                'TimingData',
-                'WeatherData',
-            ]);
-            checkTrackStatus();
-            checkRCM();
-            checkRain();
+                // At start, display MVlogo to init display         
+            if (pixoostartup === true && currentMode === 1) {
+                if (debugOn) log('Pixoo64 showing startup sequence');
+                changeGif('mv', currentMode);
+                await timer(2000);
+                changeGif('green', currentMode);
+                await timer(2000);
+                changeGif('chequered', currentMode);
+                await timer(2000);
+                changeGif('void', currentMode);
+                await timer(2000);
+                if (debugOn) log('Pixoo64 ending startup sequence');
+                await timer(2000);
+                // We change the status at the end of the sequence to ensure we don't interfere with the startup, e.g. rain detected
+                pixoostartup = false;
+            }
+            if (pixoostartup == false ) {
+                LT_Data = await window.api.LiveTimingAPIGraphQL(config, [
+                    'RaceControlMessages',
+                    'TrackStatus',
+                    'CarData',
+                    'TimingData',
+                    'WeatherData',
+                ]);
+                checkTrackStatus();
+                checkRCM();
+                checkRain();
+            }
         }
     } catch (error) {
         console.error(error);
