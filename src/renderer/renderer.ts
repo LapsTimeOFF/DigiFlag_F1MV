@@ -1231,6 +1231,14 @@ off after a certain amount of time. */
             isGifPlaying = false;
             return;
         }
+        if (recentMessage.Message.match(/PIT EXIT OPEN/i)) {
+            isGifPlaying = true;
+            changeGif('green', currentMode);
+            await timer(3500);
+            turnOff('green');
+            isGifPlaying = false;
+            return;
+        }
         if (recentMessage.Message.match(/PIT ENTRY CLOSED/i)) {
             isGifPlaying = true;
             changeGif('pitclosed', currentMode);

@@ -70,7 +70,7 @@
     "electron-log": "^4.4.8",
     "electron-notarize": "^1.2.2",
     "electron-vite": "^1.0.22",
-    "eslint": "^8.41.0",
+    "eslint": "^8.42.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
