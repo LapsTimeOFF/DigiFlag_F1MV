@@ -3,10 +3,10 @@ lockfileVersion: '6.0'
 dependencies:
   '@electron-toolkit/preload':
     specifier: ^1.0.3
-    version: 1.0.3(electron@24.2.0)
+    version: 1.0.3(electron@25.1.1)
   '@electron-toolkit/utils':
     specifier: ^1.0.2
-    version: 1.0.2(electron@24.2.0)
+    version: 1.0.2(electron@25.1.1)
   electron-store:
     specifier: ^8.1.0
     version: 8.1.0
@@ -70,8 +70,8 @@ devDependencies:
     specifier: ^5.59.1
     version: 5.59.2(eslint@8.39.0)(typescript@5.0.4)
   electron:
-    specifier: ^24.2.0
-    version: 24.2.0
+    specifier: ^25.1.1
+    version: 25.1.1
   electron-builder:
     specifier: ^23.6.0
     version: 23.6.0
@@ -345,12 +345,12 @@ packages:
       ajv-keywords: 3.5.2(ajv@6.12.6)
     dev: true
 
-  /@electron-toolkit/preload@1.0.3(electron@24.2.0):
+  /@electron-toolkit/preload@1.0.3(electron@25.1.1):
     resolution: {integrity: sha512-3V/BS5Rg+Yd8lJyPA6kvHJe7zznPx9A5QrJ7AZlmnEkVWadiGSLrD87xyEaDlzgWKFuLJsyE9E4E0uNIJLWSvQ==}
     peerDependencies:
       electron: '>=13.0.0'
     dependencies:
-      electron: 24.2.0
+      electron: 25.1.1
     dev: false
 
   /@electron-toolkit/tsconfig@1.0.1(@types/node@18.16.1):
@@ -361,12 +361,12 @@ packages:
       '@types/node': 18.16.1
     dev: true
 
-  /@electron-toolkit/utils@1.0.2(electron@24.2.0):
+  /@electron-toolkit/utils@1.0.2(electron@25.1.1):
     resolution: {integrity: sha512-EHqVijVPdjBJBivxJH5E/Gu6Dzd5GfoUH0Ilbtx+EQarwaeJLPLxRM5DzD54uuhs1b8TGDI7uMYmcJW2CKrijg==}
     peerDependencies:
       electron: '>=13.0.0'
     dependencies:
-      electron: 24.2.0
+      electron: 25.1.1
       jszip: 3.10.1
     dev: false
 
@@ -1944,8 +1944,8 @@ packages:
       - supports-color
     dev: true
 
-  /electron@24.2.0:
-    resolution: {integrity: sha512-fEYAftYqFhveniWJbEHXjNMWjooFFIuqNj/eEFJkGzycInfBJq/c4E/dew++s6s0YLubxFnjoF2qZiqapLj0gA==}
+  /electron@25.1.1:
+    resolution: {integrity: sha512-WvFUfVsJn6YiP35UxdibYVjU2LceastyMm4SVp2bmb4XvKEvItAIiwxgm7tPC5Syl1243aRCvQLqr84sZ71pyQ==}
     engines: {node: '>= 12.20.55'}
     hasBin: true
     requiresBuild: true
