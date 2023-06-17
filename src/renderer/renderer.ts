@@ -458,6 +458,8 @@ function getGifPath(flag: string) {
     ) {
         /* Setting only the void GIF to use TrackMap. */
         flagPath = trackMapPath;
+        $('#digiflag').css('width', 'auto');
+        $('#digiflag').css('object-fit', 'contain');
     } else {
         for (let themeIndex = 0; themeIndex < themes.length; themeIndex++) {
             const theme = themes[themeIndex];
@@ -465,6 +467,8 @@ function getGifPath(flag: string) {
                 flagPath = theme.gifs[flag];
             }
         }
+        $('#digiflag').css('width', '100%');
+        $('#digiflag').css('object-fit', 'cover');
     }
     /* The above code is checking if a given flag path exists for a theme. If the flag path exists, it
 returns the path. If the flag path does not exist, it logs a warning message to the console. */
