@@ -21,7 +21,9 @@ const timer = (ms: number) => new Promise((res) => setTimeout(res, ms));
 let debugOn = true;
 let expressIP = '';
 // let windowTransparency = false;
-let scale = 1;
+let currentZoom = 1;
+const maxZoom = 2;
+const minZoom = 0.5;
 let started = false;
 let currentTrackStatus = null;
 let currentRainStatus: string = null;
@@ -61,6 +63,19 @@ let LT_Data = {
         WindSpeed: '',
     },
 };
+export interface PixooData {
+    ReturnCode: number;
+    ReturnMessage: string;
+    DeviceList: DeviceList[];
+}
+
+export interface DeviceList {
+    DeviceName: string;
+    DeviceId: number;
+    DevicePrivateIP: string;
+    DeviceMac: string;
+}
+
 let lightOnRain = false;
 /* Declaring a variable called currentTheme and assigning it a value of 1. */
 let currentTheme = 1;
@@ -72,6 +87,8 @@ let trackMapSwitch = false;
 let mvLogoSwitch = false;
 let extraFlagSwitch = false;
 let pixooIP: string;
+let pixoostartup = false;
+let isGifPlaying = false;
 const instanceWindowWidth = 800;
 const instanceWindowHeight = 600;
 const instanceWindowOffsetX = 100;
@@ -141,6 +158,8 @@ getDigiFlagVersion();
  */
 async function getExpressIP(): Promise<string> {
     expressIP = await window.api.getExpressIP();
+    console.log(`Express IP: ${expressIP}`);
+    $('#expressIP').text(`Express Server IP: ${expressIP}`);
     return expressIP;
 }
 
@@ -225,7 +244,7 @@ async function getCurrentSessionInfo(): Promise<string> {
 async function getPixooIP(): Promise<string> {
     try {
         const response = await fetch('https://app.divoom-gz.com/Device/ReturnSameLANDevice');
-        const pixooData = await response.json();
+        const pixooData: PixooData = await response.json();
         pixooIP = pixooData.DeviceList[0].DevicePrivateIP;
         $('#pixooIP').text(`Pixoo IP: ${pixooIP}`);
         window.api.getPixooIP(pixooIP);
@@ -233,6 +252,26 @@ async function getPixooIP(): Promise<string> {
     } catch (error) {
         console.error(error);
         return 'Failed to get IP Address of Pixoo Device!';
+    }
+}
+/**
+ * Initializes the Pixoo64 device by displaying a startup sequence of GIF images.
+ *
+ * @returns A Promise that resolves when the initialization is complete.
+ */
+async function initializePixoo() {
+    // At start, display MVlogo to init display
+    if (pixoostartup === true && currentMode === 1) {
+        if (debugOn) log('Pixoo64 showing startup sequence');
+        changeGif('pixoostartup', currentMode);
+        //Wait for Pixoo Startup Gif to Finish. Gif is 15.32 Seconds Long
+        await timer(15320);
+        changeGif('void', currentMode);
+        await timer(2000);
+        if (debugOn) log('Pixoo64 ending startup sequence');
+        await timer(2000);
+        // We change the status at the end of the sequence to ensure we don't interfere with the startup, e.g. rain detected
+        pixoostartup = false;
     }
 }
 
@@ -352,7 +391,7 @@ function loadSettings() {
 function restoreSettings() {
     $('.toast').remove();
     if (localStorage !== null) localStorage.clear();
-    config.host = 'localhost';
+    config.host = '127.0.0.1';
     config.port = 10101;
     $('#networkSettings > h5')
         .after(`<div class="toast text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000" data-bs-autohide="true">
@@ -475,6 +514,7 @@ function selectMapTheme(id: string) {
  * @returns The return value of the last statement in the function.
  */
 async function turnOff(flag: string) {
+    $('#currentPixooFlag').text(flag);
     let url = `http://${expressIP}:9093/getGifPixoo/5/${flag}.gif`;
 
     if (flag === 'yellow' || flag === 'red') {
@@ -560,6 +600,7 @@ async function turnOff(flag: string) {
  * @returns a Promise.
  */
 async function changeGif(flag: string, mode: number) {
+    $('#currentPixooFlag').text(flag);
     const flagPath = getGifPath(flag);
     if (flag === 'void' && mvLogoSwitch === true) {
         flag = `mv`;
@@ -643,9 +684,12 @@ function linkSuccess() {
         <div class="form-check" id="pixoo64">
         <input class="form-check-input" type="radio" name="flexRadioDefault" id="pixoo64Radio" data-bs-toggle="collapse" data-bs-target="#pixooIPContainer" aria-expanded="false" aria-controls="pixooIPContainer" disabled>
         <label class="form-check-label" for="pixoo64Radio">
-            Divoom Pixoo64 Wi-Fi
+        Divoom Pixoo64 Wi-Fi
         </label>
+        </div>
         <div class="collapse" id="pixooIPContainer">
+        <div class="card text-bg-dark p-1 align-items-center">
+        <span id="expressIP">Express IP: ${expressIP}</span>
         <span id="pixooIP">Pixoo IP: ${pixooIP}</span>
         </div>
         </div>
@@ -666,10 +710,10 @@ function linkSuccess() {
     <input class="form-check-input" type="checkbox" role="switch" id="mvSwitch"> <label class="form-check-label theme" data-i18n="multiviewerLogo" for="mvSwitch">MultiViewer Logo</label>
   </div>
   <div class="form-check form-switch" id="blueFlag">
-    <input class="form-check-input" type="checkbox" role="switch" id="blueFlagCheckbox"> <label class="form-check-label theme" data-i18n="blueFlags" for="blueFlagCheckbox">Blue Flags</label>
+    <input class="form-check-input" type="checkbox" role="switch" id="blueFlagSwitch"> <label class="form-check-label theme" data-i18n="blueFlags" for="blueFlagSwitch">Blue Flags</label>
   </div>
-  <div class="form-check form-switch" id="extraFlagSwitch">
-  <input class="form-check-input" type="checkbox" role="switch" id="extraFlagCheckbox"> <label class="form-check-label theme" data-i18n="extraFlags" for="extraFlagCheckbox">Extra Flags</label>
+  <div class="form-check form-switch" id="extraFlag">
+  <input class="form-check-input" type="checkbox" role="switch" id="extraFlagSwitch"> <label class="form-check-label theme" data-i18n="extraFlags" for="extraFlagSwitch">Extra Flags</label>
 </div>`);
     miscOptionsRef = $('#selectDevice,#selectMisc').detach();
     $(document).localize();
@@ -693,16 +737,28 @@ function linkSuccess() {
         themeSelectRef = $('#selectTheme').detach();
 
         if (themes[currentTheme].compatibleWith.Pixoo64) {
+            $('#menuContent')
+                .append(`<div id="menuButtonsContainer"><button type="button" id="backButton" class="btn btn-success" data-i18n="back">Back</button>
+            <button type="button" id="launchPixoo" class="btn btn-success" data-i18n="launchPixoo">Launch DigiFlag on Pixoo64</button></div>`);
+            $('#launchPixoo').removeClass();
+            $('#launchPixoo').addClass('btn btn-secondary');
+            $('#launchPixoo').prop('disabled', true);
             $('#window').hide();
             $('#pixoo64').show();
             $('#pixoo64Radio').prop('disabled', false);
-            $('#mvSwitch').prop('disabled', false);
+            $('#mvSwitch').prop('disabled', true);
+            $('#blueFlagSwitch').prop('disabled', true);
+            $('#extraFlagSwitch').prop('disabled', true);
             $('#collapsetrackMapSelect').removeClass();
             $('#collapsetrackMapSelect').addClass('collapse');
             $('#mapSwitch').prop('disabled', true);
             $('#mapSwitch').prop('checked', false);
         } else {
             currentMode = 0;
+            $('#menuContent').append(
+                `<div id="menuButtonsContainer"><button type="button" id="backButton" class="btn btn-success" data-i18n="back">Back</button>
+                <button type="button" id="launchDigiFlag" class="btn btn-success" data-i18n="startDigiflag">Start DigiFlag</button>`
+            );
             $('#window').show();
             $('#pixoo64').hide();
             $('#pixoo64Radio').prop('checked', false);
@@ -712,15 +768,21 @@ function linkSuccess() {
             $('#pixoo64Radio').prop('disabled', true);
             $('#mapSwitch').prop('disabled', false);
             $('#mvSwitch').prop('disabled', false);
+            $('#blueFlagSwitch').prop('disabled', false);
+            $('#extraFlagSwitch').prop('disabled', false);
         }
-        $('#selectDevice').on('change', (e) => {
+        $('#selectDevice').on('change', async (e) => {
             if (e.target.id === 'pixoo64Radio') {
                 if (debugOn) console.log('Pixoo64 was Selected');
                 currentMode = 1;
-                $('#launchDigiFlag').hide();
-                $('#launchPixoo').show();
-                getExpressIP();
-                getPixooIP();
+                await getExpressIP();
+                await getPixooIP();
+                $('#launchPixoo').removeClass();
+                $('#launchPixoo').addClass('btn btn-success');
+                $('#launchPixoo').prop('disabled', false);
+                $('#mvSwitch').prop('disabled', false);
+                $('#blueFlagSwitch').prop('disabled', false);
+                $('#extraFlagSwitch').prop('disabled', false);
                 if (debugOn) console.log('Current Mode: ' + currentMode);
             } else {
                 if (debugOn) console.log('Window was Selected');
@@ -760,7 +822,7 @@ it. */
                 return mvLogoSwitch;
             }
         });
-        $('#extraFlagSwitch').on('change', () => {
+        $('#extraFlag').on('change', () => {
             if (extraFlagSwitch) {
                 extraFlagSwitch = false;
                 if (debugOn) log('Extra Flags OFF');
@@ -807,15 +869,11 @@ it. */
                 return trackMapSwitch;
             }
         });
-        $('#menuContent').append(
-            `<div id="menuButtonsContainer"><button type="button" id="backButton" class="btn btn-success" data-i18n="back">Back</button>
-            <button type="button" id="launchDigiFlag" class="btn btn-success" data-i18n="startDigiflag">Start DigiFlag</button>
-            <button type="button" id="launchPixoo" class="btn btn-success" data-i18n="launchPixoo" style="display: none;">Send to Pixoo</button></div>`
-        );
         $('#backButton').on('click', () => {
             themeSelectRef.appendTo('#menuContent');
             $(document).localize();
             miscOptionsRef.remove();
+            pixoostartup = false;
             $('#menuButtonsContainer').remove();
         });
         $('#launchDigiFlag').on('click', () => {
@@ -838,8 +896,14 @@ it. */
         });
         $('#launchPixoo').on('click', () => {
             $('.menu-box').remove();
-            $('body').append(`<img src="${getGifPath('void')}" id="digiflag" class="img-fluid center-screen">`);
-            $('#digiflag').insertBefore('.bottom-screen');
+            $('body').append(
+                `
+            <div id="pixooText" class="card text-white bg-transparent align-items-center"> <h1 class="card-title">
+            DigiFlag Currently Displaying` +
+                    `<h1 id="currentPixooFlag"></h1>` +
+                    `<h1> on Pixoo64</h1></div>`
+            );
+            $('#pixooText').insertBefore('.bottom-screen');
             $('.bottom-screen:not(:hover)').animate(
                 {
                     opacity: 0,
@@ -853,6 +917,8 @@ it. */
             $('#zoomIn,#zoomOut,#zoomReset').show();
             $('#zoomControl').css('z-index', 1);
             started = true;
+            pixoostartup = true;
+            initializePixoo();
         });
         $(document).localize();
     });
@@ -981,8 +1047,8 @@ $(function () {
             saveSettings(config.host, config.port);
         });
         $('#restoreSettings').on('click', () => {
-            /* Setting the value of the input fields back to localhost and 10101. */
-            $('#ip').val('localhost');
+            /* Setting the value of the input fields back to 127.0.0.1 and 10101. */
+            $('#ip').val('127.0.0.1');
             $('#port').val(10101);
             restoreSettings();
         });
@@ -995,31 +1061,40 @@ $(function () {
     $('#openGithub').on('click', () => {
         createNewInstance('https://github.com/LapsTimeOFF/DigiFlag_F1MV');
     });
-    /* Increasing the zoom of the image by 20px when the button is clicked. */
+    // On click event for zooming in. If currentZoom is less than maxZoom, increase currentZoom by 0.1 and update it to one decimal place. Apply scale transformation to 'main' and '.center-screen' elements.
     $('#zoomIn').on('click', () => {
-        const zoomScaleAdd = (scale = scale + 0.25);
-        if (zoomScaleAdd >= 1.75) scale = 0.75;
-        $('main,.center-screen').css({
-            transform: 'scale(' + zoomScaleAdd + ')',
-        });
+        if (currentZoom < maxZoom) {
+            currentZoom += 0.1;
+            currentZoom = Number(currentZoom.toFixed(1));
+            $('main, .center-screen').css({
+                transform: 'scale(' + currentZoom + ')',
+            });
+        }
     });
-    /* Decreasing the zoom of the image by 20px when the button is clicked. */
+
+    // On click event for zooming out. If currentZoom is greater than minZoom, decrease currentZoom by 0.1 and update it to one decimal place. Apply scale transformation to 'main' and '.center-screen' elements.
     $('#zoomOut').on('click', () => {
-        const zoomScaleSubtract = (scale = scale - 0.25);
-        if (zoomScaleSubtract <= 0.25) scale = 1.25;
-        $('main,.center-screen').css({
-            transform: 'scale(' + zoomScaleSubtract + ')',
-        });
+        if (currentZoom > minZoom) {
+            currentZoom -= 0.1;
+            currentZoom = Number(currentZoom.toFixed(1));
+            $('main, .center-screen').css({
+                transform: 'scale(' + currentZoom + ')',
+            });
+        }
     });
+    // On click event for resetting zoom. Remove the 'style' attribute from 'main' and '.center-screen' elements. Set currentZoom to 1.
     $('#zoomReset').on('click', () => {
         $('main,.center-screen').removeAttr('style');
-        scale = 1;
+        currentZoom = 1;
     });
 });
 
 const checkRCM = async () => {
     if (started === false) return;
     const result = LT_Data.RaceControlMessages;
+    if (!result || !result.Messages || !oldMessages.Messages) {
+        return;
+    }
     if (result.Messages.length === oldMessages.Messages.length) {
         return;
     } else {
@@ -1064,17 +1139,22 @@ const checkRCM = async () => {
 to black and white, wait 2.5 seconds, then change the gif to the racing number, wait 2.5 seconds,
 then turn off the racing number gif, then turn off the black and white gif. */
         if (recentMessage.Message.match(/BLACK AND WHITE/i)) {
+            isGifPlaying = true;
             changeGif('blackandwhite', currentMode);
             await timer(3500);
             const recentRacingNumber = recentMessage.RacingNumber;
             if (recentRacingNumber in themes[currentTheme].gifs) {
+                isGifPlaying = false;
+                isGifPlaying = true;
                 changeGif(recentRacingNumber, currentMode);
                 await timer(3500);
                 turnOff(recentRacingNumber);
+                isGifPlaying = false;
             } else {
                 if (debugOn) console.log(`No racing number GIF found for ${recentRacingNumber}`);
             }
             turnOff('blackandwhite');
+            isGifPlaying = false;
             return;
         }
         /* Checking the recentMessage.SubCategory to see if it is a TimePenalty. If it is, it is checking the
@@ -1090,20 +1170,28 @@ off after a certain amount of time. */
                 const carNumber = carNumberMatch[1];
                 if (debugOn) console.log(`Car Number: ${carNumber}`);
                 if (recentMessage.Message.match(/5 SECOND TIME PENALTY/i)) {
+                    isGifPlaying = true;
                     changeGif('timepenalty5sec', currentMode);
                     await timer(3500);
                     turnOff('timepenalty5sec');
+                    isGifPlaying = false;
+                    isGifPlaying = true;
                     changeGif(carNumber, currentMode);
                     await timer(3500);
                     turnOff(carNumber);
+                    isGifPlaying = false;
                 }
                 if (recentMessage.Message.match(/10 SECOND TIME PENALTY/i)) {
+                    isGifPlaying = true;
                     changeGif('timepenalty10sec', currentMode);
                     await timer(3500);
                     turnOff('timepenalty10sec');
+                    isGifPlaying = false;
+                    isGifPlaying = true;
                     changeGif(carNumber, currentMode);
                     await timer(3500);
                     turnOff(carNumber);
+                    isGifPlaying = false;
                 }
             }
         }
@@ -1115,12 +1203,16 @@ off after a certain amount of time. */
                 const carNumber = carNumberMatch[1];
                 if (debugOn) console.log(`Car Number: ${carNumber}`);
                 if (recentMessage.Message.match(/10 SECOND STOP\/GO PENALTY/i)) {
+                    isGifPlaying = true;
                     changeGif('stopgopenalty10sec', currentMode);
                     await timer(3500);
                     turnOff('stopgopenalty10sec');
+                    isGifPlaying = false;
+                    isGifPlaying = true;
                     changeGif(carNumber, currentMode);
                     await timer(3500);
                     turnOff(carNumber);
+                    isGifPlaying = false;
                 }
             }
         }
@@ -1131,81 +1223,113 @@ off after a certain amount of time. */
             recentMessage.SubCategory !== 'IncidentInvestigationAfterSession' &&
             recentMessage.SubCategory !== 'SessionResume'
         ) {
+            isGifPlaying = true;
             changeGif('rs', currentMode);
             await timer(20000);
             turnOff('rs');
+            isGifPlaying = false;
             return;
         }
         if (recentMessage.Message.match(/STANDING START PROCEDURE/i) && recentMessage.SubCategory !== 'SessionResume') {
+            isGifPlaying = true;
             changeGif('ss', currentMode);
             await timer(20000);
             turnOff('ss');
+            isGifPlaying = false;
             return;
         }
         if (recentMessage.Message.match(/DRS ENABLED/i) && extraFlagSwitch) {
+            isGifPlaying = true;
             changeGif('DRSenabled', currentMode);
             await timer(3500);
             turnOff('DRSenabled');
+            isGifPlaying = false;
             return;
         }
         if (recentMessage.Message.match(/DRS DISABLED/i) && extraFlagSwitch) {
+            isGifPlaying = true;
             changeGif('DRSdisabled', currentMode);
             await timer(3500);
             turnOff('DRSdisabled');
+            isGifPlaying = false;
             return;
         }
         if (recentMessage.Message.match(/PIT LANE ENTRY CLOSED/i)) {
+            isGifPlaying = true;
             changeGif('pitclosed', currentMode);
             await timer(3500);
             turnOff('pitclosed');
+            isGifPlaying = false;
+            return;
+        }
+        if (recentMessage.Message.match(/PIT EXIT OPEN/i)) {
+            isGifPlaying = true;
+            changeGif('green', currentMode);
+            await timer(3500);
+            turnOff('green');
+            isGifPlaying = false;
             return;
         }
         if (recentMessage.Message.match(/PIT ENTRY CLOSED/i)) {
+            isGifPlaying = true;
             changeGif('pitclosed', currentMode);
             await timer(3500);
             turnOff('pitclosed');
+            isGifPlaying = false;
             return;
         }
         if (recentMessage.Message.match(/RECOVERY VEHICLE ON TRACK/i) && extraFlagSwitch) {
+            isGifPlaying = true;
             changeGif('recoveryvehicle', currentMode);
             await timer(5000);
             turnOff('recoveryvehicle');
+            isGifPlaying = false;
             return;
         }
         if (recentMessage.Message.match(/MEDICAL CAR DEPLOYED/i) && extraFlagSwitch) {
+            isGifPlaying = true;
             changeGif('medicalcar', currentMode);
             await timer(5000);
             turnOff('medicalcar');
+            isGifPlaying = false;
             return;
         }
 
         if (recentMessage.SubCategory === 'TrackSurfaceSlippery') {
+            isGifPlaying = true;
             changeGif('slippery', currentMode);
             await timer(5000);
             turnOff('slippery');
+            isGifPlaying = false;
             return;
         }
 
         if (recentMessage.Message.match(/DOUBLE YELLOW/i)) {
+            isGifPlaying = true;
             changeGif('dyellow', currentMode);
             await timer(10000);
             turnOff('dyellow');
+            isGifPlaying = false;
             return;
         }
 
-        if (recentMessage.Message.match(/BLUE FLAG/i)) {
+        if (recentMessage.Message.match(/BLUE FLAG/i) && recentMessage.Flag !== 'CHEQUERED') {
             if (blueFlagSwitch) {
+                isGifPlaying = true;
                 changeGif('blue', currentMode);
-                await timer(1000);
+                await timer(2000);
                 turnOff('blue');
+                isGifPlaying = false;
             }
             return;
         }
 
         if (recentMessage.Flag === 'CHEQUERED') {
+            isGifPlaying = true;
             changeGif('chequered', currentMode);
             await timer(90000);
             turnOff('chequered');
+            isGifPlaying = false;
             return;
         }
     }
@@ -1235,9 +1359,11 @@ async function checkTrackStatus() {
                     yellow = false;
                     vsc = false;
                     red = false;
+                    isGifPlaying = true;
                     changeGif('green', currentMode);
                     await timer(2500);
                     turnOff('green');
+                    isGifPlaying = false;
                 }
                 break;
             case '2': // Yellow
@@ -1246,6 +1372,7 @@ async function checkTrackStatus() {
                 yellow = true;
                 vsc = false;
                 red = false;
+                isGifPlaying = true;
                 changeGif('yellow', currentMode);
                 break;
             case '4': // SCDeployed
@@ -1253,6 +1380,7 @@ async function checkTrackStatus() {
                 yellow = false;
                 vsc = false;
                 red = false;
+                isGifPlaying = true;
                 changeGif('sc', currentMode);
                 break;
             case '5': // Red
@@ -1261,6 +1389,7 @@ async function checkTrackStatus() {
                 yellow = false;
                 vsc = false;
                 red = true;
+                isGifPlaying = true;
                 changeGif('red', currentMode);
                 break;
             case '6': // VSCDeployed
@@ -1268,6 +1397,7 @@ async function checkTrackStatus() {
                 yellow = false;
                 vsc = true;
                 red = false;
+                isGifPlaying = true;
                 changeGif('vsc', currentMode);
                 break;
             case '7': // VSCEnding
@@ -1275,6 +1405,7 @@ async function checkTrackStatus() {
                 yellow = false;
                 vsc = true;
                 red = false;
+                isGifPlaying = true;
                 changeGif('vsc', currentMode);
                 break;
             default:
@@ -1296,20 +1427,24 @@ async function checkRain() {
     if (!started) return;
     /* Extract if it's raining or not from the Live Timing data */
     const Rain = LT_Data.WeatherData.Rainfall;
-    if (Rain !== currentRainStatus) {
+    if (Rain !== currentRainStatus && !isGifPlaying) {
         switch (Rain) {
             case '0': // Not raining
                 if (lightOnRain) {
-                    if (debugOn) console.log(`%cIt Stopped Raining!`, 'color:orange');
-                    changeGif('void', currentMode);
-                    lightOnRain = false;
+                    if (pixoostartup === false) {
+                        if (debugOn) console.log(`%cIt Stopped Raining!`, 'color:orange');
+                        changeGif('void', currentMode);
+                        lightOnRain = false;
+                    }
                 }
                 break;
             case '1': // Raining
                 if (!lightOnRain) {
-                    if (debugOn) console.log(`%cIt's Raining!`, 'color:aqua');
-                    changeGif('rain', currentMode);
-                    lightOnRain = true;
+                    if (pixoostartup === false) {
+                        if (debugOn) console.log(`%cIt's Raining!`, 'color:aqua');
+                        changeGif('rain', currentMode);
+                        lightOnRain = true;
+                    }
                 }
                 break;
         }
@@ -1326,22 +1461,21 @@ async function checkRain() {
 async function updateData() {
     try {
         if (started) {
-            LT_Data = await window.api.LiveTimingAPIGraphQL(config, [
-                'RaceControlMessages',
-                'TrackStatus',
-                'CarData',
-                'TimingData',
-                'WeatherData',
-            ]);
-            checkTrackStatus();
-            checkRCM();
-            checkRain();
+            if (pixoostartup === false) {
+                LT_Data = await window.api.LiveTimingAPIGraphQL(config, [
+                    'RaceControlMessages',
+                    'TrackStatus',
+                    'CarData',
+                    'TimingData',
+                    'WeatherData',
+                ]);
+                checkTrackStatus();
+                checkRCM();
+                checkRain();
+            }
         }
     } catch (error) {
         console.error(error);
-        console.log('Reloaded Window Due to Disconnect');
-        window.location.reload();
-        return null;
     }
     setTimeout(updateData, 500);
 }

@@ -2,7 +2,7 @@ import {app, BrowserWindow, ipcMain} from 'electron';
 import express from 'express';
 import {address} from 'ip';
 import path from 'path';
-import {rateLimit} from 'express-rate-limit';
+// import {rateLimit} from 'express-rate-limit';
 import {
     getWindowSizeSettings,
     getWindowPositionSettings,

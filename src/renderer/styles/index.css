@@ -28,7 +28,7 @@ img {
 }
 
 img#digiflag {
-    width: 100vw;
+    width: auto;
     height: 100%;
     object-fit: cover;
     transition: all 0.2s ease-in-out;
@@ -133,6 +133,45 @@ button:focus-within {
     justify-content: center;
     margin-bottom: 5px;
     width: fit-content;
+}
+
+#digiflagHeaderText {
+    margin-top: 0px;
+    margin-bottom: 50px;
+    text-align: center;
+    letter-spacing: 0.15rem;
+    background: linear-gradient(
+        to right,
+        #ff2400,
+        #e81d1d,
+        #e8b71d,
+        #e3e81d,
+        #1de840,
+        #1ddde8,
+        #2b1de8,
+        #dd00f3,
+        #dd00f3
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-size: 30% 30%;
+    animation: rainbow 5000ms ease-in-out infinite reverse;
+}
+@keyframes rainbow {
+    0% {
+        background-position: 0% 82%;
+    }
+    50% {
+        background-position: 100% 19%;
+        text-shadow: -4px 4px #ff0000, -8px 8px #ff5722, -12px 12px #f9a825, -16px 16px #eeff41, -20px 20px #43a047,
+            -24px 24px #26c6da, -28px 28px #2196f3, -32px 32px #7e57c2, -36px 36px #f48fb1;
+        color: white;
+    }
+
+    100% {
+        background-position: 0% 82%;
+    }
 }
 
 #logoContainer {
@@ -286,6 +325,18 @@ input:invalid {
     color: #dc3545;
     transition: color 0.1s linear;
 }
+#blueFlagSwitch:hover[disabled] + label {
+    cursor: not-allowed;
+    border-color: #dc3545 !important;
+    color: #dc3545;
+    transition: color 0.1s linear;
+}
+#extraFlagSwitch:hover[disabled] + label {
+    cursor: not-allowed;
+    border-color: #dc3545 !important;
+    color: #dc3545;
+    transition: color 0.1s linear;
+}
 
 #themes {
     display: inline-flex;
@@ -339,13 +390,13 @@ input:invalid {
 
 input[type='radio']:hover {
     cursor: pointer;
-    background-color: #198754;
-    border: 2px solid white;
+    border: 2px solid #3ea6ff;
     box-shadow: none;
 }
 
 input[type='radio']:checked {
     cursor: pointer;
+    border: 2px solid white;
     box-shadow: none;
     transition: all 0.2s linear;
 }
@@ -359,7 +410,7 @@ input[type='radio']:checked + label {
 
 input[type='radio']:checked:hover {
     cursor: pointer;
-    background-color: #0d6efd;
+    border: 2px solid white;
     transition: background-color 0.2s ease-in-out;
 }
 
@@ -473,6 +524,16 @@ input::-webkit-inner-spin-button {
     background-color: #dc3545;
     transition: color 0.1s linear;
 }
+#currentPixooFlag {
+    text-transform: capitalize;
+}
+
+#launchDigiFlag {
+    transition: background-color 0.5s ease-in-out;
+}
+#launchPixoo {
+    transition: background-color 0.5s ease-in-out;
+}
 
 #zoomControl {
     display: flex;
@@ -501,7 +562,11 @@ input::-webkit-inner-spin-button {
 #zoomControl > button:not(:hover) {
     background-color: transparent;
     border: 2px solid transparent !important;
-    stroke: none;
+}
+
+#zoomControl > button:active {
+    background: #0242a2;
+    border: 2px solid white !important;
 }
 
 svg.settings {
