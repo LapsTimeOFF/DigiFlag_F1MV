@@ -524,6 +524,9 @@ input::-webkit-inner-spin-button {
     background-color: #dc3545;
     transition: color 0.1s linear;
 }
+#currentPixooFlag {
+    text-transform: capitalize;
+}
 
 #launchDigiFlag {
     transition: background-color 0.5s ease-in-out;
