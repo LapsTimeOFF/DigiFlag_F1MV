@@ -1304,7 +1304,7 @@ off after a certain amount of time. */
             return;
         }
 
-        if (recentMessage.Message.match(/DOUBLE YELLOW/i)) {
+        if (recentMessage.Message.match(/DOUBLE YELLOW/i) && sc !== true) {
             isGifPlaying = true;
             changeGif('dyellow', currentMode);
             await timer(10000);
