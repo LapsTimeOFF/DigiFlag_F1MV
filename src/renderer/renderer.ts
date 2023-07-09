@@ -66,10 +66,10 @@ let LT_Data = {
 export interface PixooData {
     ReturnCode: number;
     ReturnMessage: string;
-    DeviceList: DeviceList[];
+    DeviceList: PixooDeviceList[];
 }
 
-export interface DeviceList {
+export interface PixooDeviceList {
     DeviceName: string;
     DeviceId: number;
     DevicePrivateIP: string;
@@ -584,9 +584,9 @@ async function turnOff(flag: string) {
         }
         // Need to force a delay after an http post to the Pixoo64, else may crash the Pixoo64
         if (debugOn) {
-            console.log(`Pixoo64 API cool down 1750ms`);
+            console.log(`Pixoo64 API cool down 3000ms`);
         }
-        await timer(1750);
+        await timer(3000);
     }
 }
 /**
@@ -630,9 +630,9 @@ async function changeGif(flag: string, mode: number) {
         }
         // Need to force a delay after an http post to the Pixoo64, else may crash the Pixoo64
         if (debugOn) {
-            console.log(`Pixoo64 API cool down 1750ms`);
+            console.log(`Pixoo64 API cool down 3000ms`);
         }
-        await timer(1750);
+        await timer(3000);
     }
     $('#digiflag').prop('src', flagPath);
     if (flag !== 'rain') {
@@ -1304,7 +1304,7 @@ off after a certain amount of time. */
             return;
         }
 
-        if (recentMessage.Message.match(/DOUBLE YELLOW/i)) {
+        if (recentMessage.Message.match(/DOUBLE YELLOW/i) && sc !== true) {
             isGifPlaying = true;
             changeGif('dyellow', currentMode);
             await timer(10000);
