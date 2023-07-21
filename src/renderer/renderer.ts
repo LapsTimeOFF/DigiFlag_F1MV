@@ -1313,21 +1313,19 @@ off after a certain amount of time. */
             return;
         }
 
-        if (recentMessage.Message.match(/BLUE FLAG/i) && recentMessage.Flag !== 'CHEQUERED') {
-            if (blueFlagSwitch) {
-                isGifPlaying = true;
-                changeGif('blue', currentMode);
-                await timer(2000);
-                turnOff('blue');
-                isGifPlaying = false;
-            }
+        if (recentMessage.Message.match(/BLUE FLAG/i) && recentMessage.Flag !== 'CHEQUERED' && blueFlagSwitch) {
+            isGifPlaying = true;
+            changeGif('blue', currentMode);
+            await timer(2000);
+            turnOff('blue');
+            isGifPlaying = false;
             return;
         }
 
-        if (recentMessage.Flag === 'CHEQUERED') {
+        if (recentMessage.Message.match(/CHEQUERED FLAG/i)) {
             isGifPlaying = true;
             changeGif('chequered', currentMode);
-            await timer(90000);
+            await timer(30000);
             turnOff('chequered');
             isGifPlaying = false;
             return;
