@@ -20,9 +20,6 @@ dependencies:
   express:
     specifier: ^4.18.2
     version: 4.18.2
-  express-rate-limit:
-    specifier: ^6.8.0
-    version: 6.8.0(express@4.18.2)
   i18next:
     specifier: ^23.2.11
     version: 23.2.11
@@ -2381,15 +2378,6 @@ packages:
   /exponential-backoff@3.1.1:
     resolution: {integrity: sha512-dX7e/LHVJ6W3DE1MHWi9S1EYzDESENfLrYohG2G++ovZrYOkm4Knwa0mc1cn84xJOR4KEU0WSchhLbd0UklbHw==}
     dev: true
-
-  /express-rate-limit@6.8.0(express@4.18.2):
-    resolution: {integrity: sha512-yVeDWczkh8qgo9INJB1tT4j7LFu+n6ei/oqSMsqpsUIGYjTM+gk+Q3wv19TMUdo8chvus8XohAuOhG7RYRM9ZQ==}
-    engines: {node: '>= 14.0.0'}
-    peerDependencies:
-      express: ^4 || ^5
-    dependencies:
-      express: 4.18.2
-    dev: false
 
   /express@4.18.2:
     resolution: {integrity: sha512-5/PsL6iGPdfQ/lKM1UuielYgv3BUoJfz1aUwU9vHZ+J7gyvwdQXFEBIEIaxeGf0GIcreATNyBExtalisDbuMqQ==}
