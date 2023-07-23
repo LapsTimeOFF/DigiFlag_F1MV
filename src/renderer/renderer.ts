@@ -263,9 +263,15 @@ async function initializePixoo() {
     // At start, display MVlogo to init display
     if (pixoostartup === true && currentMode === 1) {
         if (debugOn) log('Pixoo64 showing startup sequence');
-        changeGif('pixoostartup', currentMode);
-        //Wait for Pixoo Startup Gif to Finish. Gif is 15.32 Seconds Long
-        await timer(15320);
+        /*If `mvLogoSwitch` is `true`, it will display a Pixoo Startup Gif with an MV Logo.
+        Otherwise, it will use the standard Pixoo Startup. */
+        if (mvLogoSwitch === true) {
+            changeGif('pixoostartupMV', currentMode);
+        } else {
+            changeGif('pixoostartup', currentMode);
+        }
+        //Wait for Pixoo Startup Gif to Finish
+        await timer(10000);
         changeGif('void', currentMode);
         await timer(2000);
         if (debugOn) log('Pixoo64 ending startup sequence');
@@ -1131,7 +1137,6 @@ const checkRCM = async () => {
                 } else {
                     if (debugOn) console.log(`No racing number GIF found for ${carNumber}`);
                 }
-                turnOff('mec');
                 return;
             }
         }
@@ -1144,8 +1149,6 @@ then turn off the racing number gif, then turn off the black and white gif. */
             await timer(3500);
             const recentRacingNumber = recentMessage.RacingNumber;
             if (recentRacingNumber in themes[currentTheme].gifs) {
-                isGifPlaying = false;
-                isGifPlaying = true;
                 changeGif(recentRacingNumber, currentMode);
                 await timer(3500);
                 turnOff(recentRacingNumber);
@@ -1153,8 +1156,6 @@ then turn off the racing number gif, then turn off the black and white gif. */
             } else {
                 if (debugOn) console.log(`No racing number GIF found for ${recentRacingNumber}`);
             }
-            turnOff('blackandwhite');
-            isGifPlaying = false;
             return;
         }
         /* Checking the recentMessage.SubCategory to see if it is a TimePenalty. If it is, it is checking the
@@ -1173,9 +1174,6 @@ off after a certain amount of time. */
                     isGifPlaying = true;
                     changeGif('timepenalty5sec', currentMode);
                     await timer(3500);
-                    turnOff('timepenalty5sec');
-                    isGifPlaying = false;
-                    isGifPlaying = true;
                     changeGif(carNumber, currentMode);
                     await timer(3500);
                     turnOff(carNumber);
@@ -1185,9 +1183,6 @@ off after a certain amount of time. */
                     isGifPlaying = true;
                     changeGif('timepenalty10sec', currentMode);
                     await timer(3500);
-                    turnOff('timepenalty10sec');
-                    isGifPlaying = false;
-                    isGifPlaying = true;
                     changeGif(carNumber, currentMode);
                     await timer(3500);
                     turnOff(carNumber);
@@ -1206,9 +1201,6 @@ off after a certain amount of time. */
                     isGifPlaying = true;
                     changeGif('stopgopenalty10sec', currentMode);
                     await timer(3500);
-                    turnOff('stopgopenalty10sec');
-                    isGifPlaying = false;
-                    isGifPlaying = true;
                     changeGif(carNumber, currentMode);
                     await timer(3500);
                     turnOff(carNumber);
@@ -1313,18 +1305,16 @@ off after a certain amount of time. */
             return;
         }
 
-        if (recentMessage.Message.match(/BLUE FLAG/i) && recentMessage.Flag !== 'CHEQUERED') {
-            if (blueFlagSwitch) {
-                isGifPlaying = true;
-                changeGif('blue', currentMode);
-                await timer(2000);
-                turnOff('blue');
-                isGifPlaying = false;
-            }
+        if (recentMessage.Message.match(/BLUE FLAG/i) && recentMessage.Flag !== 'CHEQUERED' && blueFlagSwitch) {
+            isGifPlaying = true;
+            changeGif('blue', currentMode);
+            await timer(2000);
+            turnOff('blue');
+            isGifPlaying = false;
             return;
         }
 
-        if (recentMessage.Flag === 'CHEQUERED') {
+        if (recentMessage.Message.match(/CHEQUERED FLAG/i)) {
             isGifPlaying = true;
             changeGif('chequered', currentMode);
             await timer(90000);

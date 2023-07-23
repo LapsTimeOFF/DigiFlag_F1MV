@@ -2,7 +2,6 @@ import {app, BrowserWindow, ipcMain} from 'electron';
 import express from 'express';
 import {address} from 'ip';
 import path from 'path';
-// import {rateLimit} from 'express-rate-limit';
 import {
     getWindowSizeSettings,
     getWindowPositionSettings,
@@ -14,17 +13,11 @@ import {
 import {failedToLoadAPI} from './errorTable';
 import {themes, mapThemes} from './filesConfiguration.json';
 import {autoUpdater} from 'electron-updater';
+
 const version = app.getVersion();
 let pixooIPAddress = '';
 /* Creating an express app. */
 const expressApp = express();
-/* Limiting the rate at which the API can be called. */
-// const limiter = rateLimit({
-//     windowMs: 1500, // 1 second
-//     max: 1, // no maximum limit
-// });
-// Apply Rate Limit to all requests
-// expressApp.use(limiter);
 /* Creating a server that listens on port 9093. */
 expressApp
     .listen(9093, () => {
@@ -60,48 +53,6 @@ expressApp.get('/getGifPixoo/:themeID/:gif.gif/', (req, res) => {
     const gifPath = theme.gifs[gif];
     res.sendFile(`${gifPath}`, {root: path.join(__dirname, '../renderer/')});
 });
-// /* A route that is used to change the GIF on the Pixoo64. */
-// expressApp.get('/pixoo/:themeID/:ip/:gif.gif', (req, res) => {
-//     const {gif, themeID, ip} = req.params;
-//     const theme = themes[themeID];
-//     /* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
-//     if (theme.compatibleWith.Pixoo64 !== true) {
-//         res.statusCode = 400;
-//         res.send("Theme requested doesn't support Pixoo64");
-//         return;
-//     }
-//     /* Sending a POST request to the Pixoo64. */
-//     request.post(
-//         `http://${pixooIPAddress}:80/post`,
-//         {
-//             json: {
-//                 Command: 'Device/PlayTFGif',
-//                 FileType: 2,
-//                 FileName: `http://${address()}:9093/getGifPixoo/${themeID}/${gif}.gif`,
-//             },
-//         },
-//         /* A callback function that is called when the request is completed. */
-//         (err, response, body) => {
-//             if (err) {
-//                 res.statusCode = 500;
-//                 res.send('Failed to change GIF on Pixoo64');
-//                 return;
-//             }
-//             if (response.headers['content-type'] !== 'application/json') {
-//                 res.statusCode = 500;
-//                 res.send('Unexpected content type in response');
-//                 return;
-//             }
-//             const responseBody = JSON.parse(body);
-//             if (responseBody.error_code !== 0) {
-//                 res.statusCode = 500;
-//                 res.send('Failed to change GIF on Pixoo64');
-//                 return;
-//             }
-//             res.send('OK');
-//         }
-//     );
-// });
 
 let mainWindow: BrowserWindow;
 /**
