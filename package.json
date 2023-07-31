@@ -68,7 +68,7 @@
     "electron-builder": "^24.6.3",
     "electron-log": "^4.4.8",
     "electron-notarize": "^1.2.2",
-    "electron-vite": "^1.0.25",
+    "electron-vite": "^1.0.26",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^8.9.0",
     "eslint-plugin-prettier": "^5.0.0",
