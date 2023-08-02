@@ -84,7 +84,7 @@ devDependencies:
     version: 1.2.2
   electron-vite:
     specifier: ^1.0.25
-    version: 1.0.25(vite@4.4.7)
+    version: 1.0.25(vite@4.4.8)
   eslint:
     specifier: ^8.46.0
     version: 8.46.0
@@ -107,8 +107,8 @@ devDependencies:
     specifier: ^5.1.6
     version: 5.1.6
   vite:
-    specifier: ^4.4.7
-    version: 4.4.7(@types/node@20.4.5)
+    specifier: ^4.4.8
+    version: 4.4.8(@types/node@20.4.5)
 
 packages:
 
@@ -2159,7 +2159,7 @@ packages:
       - supports-color
     dev: false
 
-  /electron-vite@1.0.25(vite@4.4.7):
+  /electron-vite@1.0.25(vite@4.4.8):
     resolution: {integrity: sha512-qdqLWfxP1aW7kXQUx8hw9aKrFTjb5dRl866V+Y58cAdt1iF8iAigJj2hRw5oBbUbtT2RmrtX+3ikCgV+AmAYVw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -2176,7 +2176,7 @@ packages:
       esbuild: 0.18.15
       magic-string: 0.30.1
       picocolors: 1.0.0
-      vite: 4.4.7(@types/node@20.4.5)
+      vite: 4.4.8(@types/node@20.4.5)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -4000,6 +4000,7 @@ packages:
   /slice-ansi@3.0.0:
     resolution: {integrity: sha512-pSyv7bSTC7ig9Dcgbw9AuRNUb5k5V6oDudjZoMBSr13qpLBG7tB+zgCkARjq7xIUgdz5P1Qe8u+rSGdouOOIyQ==}
     engines: {node: '>=8'}
+    requiresBuild: true
     dependencies:
       ansi-styles: 4.3.0
       astral-regex: 2.0.0
@@ -4341,8 +4342,8 @@ packages:
     dev: true
     optional: true
 
-  /vite@4.4.7(@types/node@20.4.5):
-    resolution: {integrity: sha512-6pYf9QJ1mHylfVh39HpuSfMPojPSKVxZvnclX1K1FyZ1PXDOcLBibdq5t1qxJSnL63ca8Wf4zts6mD8u8oc9Fw==}
+  /vite@4.4.8(@types/node@20.4.5):
+    resolution: {integrity: sha512-LONawOUUjxQridNWGQlNizfKH89qPigK36XhMI7COMGztz8KNY0JHim7/xDd71CZwGT4HtSRgI7Hy+RlhG0Gvg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
