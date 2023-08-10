@@ -64,7 +64,7 @@
     "@types/request": "^2.48.8",
     "@typescript-eslint/eslint-plugin": "^6.2.0",
     "@typescript-eslint/parser": "^6.2.0",
-    "electron": "^25.3.2",
+    "electron": "^25.5.0",
     "electron-builder": "^24.6.3",
     "electron-log": "^4.4.8",
     "electron-notarize": "^1.2.2",
