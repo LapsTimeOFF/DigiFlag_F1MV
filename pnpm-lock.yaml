@@ -53,8 +53,8 @@ devDependencies:
     specifier: ^4.17.18
     version: 4.17.18
   '@types/ip':
-    specifier: ^1.1.0
-    version: 1.1.0
+    specifier: ^1.1.1
+    version: 1.1.1
   '@types/jquery':
     specifier: ^3.5.19
     version: 3.5.19
@@ -862,8 +862,8 @@ packages:
     resolution: {integrity: sha512-/K3ds8TRAfBvi5vfjuz8y6+GiAYBZ0x4tXv1Av6CWBWn0IlADc+ZX9pMq7oU0fNQPnBwIZl3rmeLp6SBApbxSQ==}
     dev: true
 
-  /@types/ip@1.1.0:
-    resolution: {integrity: sha512-dwNe8gOoF70VdL6WJBwVHtQmAX4RMd62M+mAB9HQFjG1/qiCLM/meRy95Pd14FYBbEDwCq7jgJs89cHpLBu4HQ==}
+  /@types/ip@1.1.1:
+    resolution: {integrity: sha512-/v+XZuKNBQHJi3dKeFt9LySLzWNkgmaYRtnFfg27Ag0MO9tQLzHUuAA8zOhPtbDvDGkcnZGr4pVZQPGNft/WYA==}
     dependencies:
       '@types/node': 20.5.9
     dev: true
