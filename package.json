@@ -1,7 +1,7 @@
 {
   "name": "digiflag-f1mv",
   "productName": "DigiFlag-F1MV",
-  "version": "2.5.11",
+  "version": "2.5.12",
   "description": "DigiFlag for F1 MultiViewer",
   "main": "./dist/main/main.js",
   "license": "MIT",

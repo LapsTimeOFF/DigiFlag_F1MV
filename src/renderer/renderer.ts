@@ -369,7 +369,7 @@ function createNewInstance(url?: string | URL, windowTitle?: string): Window | n
             url,
             '_blank',
             `left=${instanceWindowOffsetX},top=${instanceWindowOffsetY},frame=${false},
-            transparent=${true},menubar=no,autoHideMenuBar==${false},width=${instanceWindowWidth},height=${instanceWindowHeight},title=${windowTitle},icon=./build/icon.ico,nodeIntegration=yes,contextIsolation=no`
+            transparent=${true},menubar=no,autoHideMenuBar=${true},width=${instanceWindowWidth},height=${instanceWindowHeight},title=${windowTitle},icon=./build/icon.ico,nodeIntegration=no`
         );
         return windowInstance;
     } catch (error) {
