@@ -69,7 +69,7 @@
     "electron-builder": "^24.6.4",
     "electron-log": "^4.4.8",
     "electron-vite": "^1.0.28",
-    "eslint": "^8.50.0",
+    "eslint": "^8.51.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "husky": "^8.0.3",
