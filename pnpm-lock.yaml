@@ -59,8 +59,8 @@ devDependencies:
     specifier: ^1.1.1
     version: 1.1.1
   '@types/jquery':
-    specifier: ^3.5.21
-    version: 3.5.21
+    specifier: ^3.5.24
+    version: 3.5.24
   '@types/node':
     specifier: 20.8.2
     version: 20.8.2
@@ -873,8 +873,8 @@ packages:
       '@types/node': 20.8.2
     dev: true
 
-  /@types/jquery@3.5.21:
-    resolution: {integrity: sha512-BgCalH4OX2JcjbnD9E86L+WeN6IcCGZle+Iy0I6eOMuraAfcMb0Z1x9E51rC2Dqq+m8KexEoDBW6GIJxUPmLEg==}
+  /@types/jquery@3.5.24:
+    resolution: {integrity: sha512-V/TG69ge5amcr8Ap7vY3SObqKfZlV7ttqcYnNcYnndI77ySIRi05+3GjvfwRtE2qalAC2ySLIL1ker512sI20g==}
     dependencies:
       '@types/sizzle': 2.3.4
     dev: true
