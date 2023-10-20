@@ -7,10 +7,10 @@ settings:
 dependencies:
   '@electron-toolkit/preload':
     specifier: ^2.0.0
-    version: 2.0.0(electron@25.9.2)
+    version: 2.0.0(electron@27.0.1)
   '@electron-toolkit/utils':
     specifier: ^2.0.1
-    version: 2.0.1(electron@25.9.2)
+    version: 2.0.1(electron@27.0.1)
   electron-store:
     specifier: ^8.1.0
     version: 8.1.0
@@ -74,8 +74,8 @@ devDependencies:
     specifier: ^6.8.0
     version: 6.8.0(eslint@8.51.0)(typescript@5.2.2)
   electron:
-    specifier: ^25.9.2
-    version: 25.9.2
+    specifier: ^27.0.1
+    version: 27.0.1
   electron-builder:
     specifier: ^24.6.4
     version: 24.6.4
@@ -350,12 +350,12 @@ packages:
       ajv-keywords: 3.5.2(ajv@6.12.6)
     dev: true
 
-  /@electron-toolkit/preload@2.0.0(electron@25.9.2):
+  /@electron-toolkit/preload@2.0.0(electron@27.0.1):
     resolution: {integrity: sha512-zpZDzbqJTZQC5d4LRs2EKruKWnqah+T75s+niBYFemYLtiW5TTZcWi3Q8UxHqnwTudDMuWJb233aaS2yjx3Xiw==}
     peerDependencies:
       electron: '>=13.0.0'
     dependencies:
-      electron: 25.9.2
+      electron: 27.0.1
     dev: false
 
   /@electron-toolkit/tsconfig@1.0.1(@types/node@20.8.7):
@@ -366,12 +366,12 @@ packages:
       '@types/node': 20.8.7
     dev: true
 
-  /@electron-toolkit/utils@2.0.1(electron@25.9.2):
+  /@electron-toolkit/utils@2.0.1(electron@27.0.1):
     resolution: {integrity: sha512-3nnjd3D1NIjxdzNrvR5fkJ3kbJNbRkpHppv0/pSbMX6I0DaBzpPXeSfDYuJJKzZrAc3CmGcJa0MU4+AjEOlT4g==}
     peerDependencies:
       electron: '>=13.0.0'
     dependencies:
-      electron: 25.9.2
+      electron: 27.0.1
     dev: false
 
   /@electron/asar@3.2.7:
@@ -1969,8 +1969,8 @@ packages:
       - supports-color
     dev: true
 
-  /electron@25.9.2:
-    resolution: {integrity: sha512-hVBN5rsrL99BKNHvzMeYy2PkAmewuIobu4U3o3EzVz4MDoLmMfW4yTH5GZ4RbJrpokoEky5IzGtRR/ggPzL6Fw==}
+  /electron@27.0.1:
+    resolution: {integrity: sha512-AjDGgpf2thNxVXoNqEG+0GCUK4upAEa2B+IoM5Yk9YrOLd6uUOEMfGI9rhPtj+jC14iKOvBdefY2uAzcDC0qng==}
     engines: {node: '>= 12.20.55'}
     hasBin: true
     requiresBuild: true
@@ -2623,14 +2623,17 @@ packages:
   /has-proto@1.0.1:
     resolution: {integrity: sha512-7qE+iP+O+bgF9clE5+UoBFzE65mlBiVj3tKCrlNQ0Ogwm0BjpT/gK4SlLYDMybDh5I3TCTKnPPa0oMG7JDYrhg==}
     engines: {node: '>= 0.4'}
+    requiresBuild: true
 
   /has-symbols@1.0.3:
     resolution: {integrity: sha512-l3LCuF6MgDNwTDKkdYGEihYjt5pRPbEg46rtlmnSPlUbgmB8LOIrKJbYYFBSbnPaJexMKtiPO8hmeRjRz2Td+A==}
     engines: {node: '>= 0.4'}
+    requiresBuild: true
 
   /has@1.0.4:
     resolution: {integrity: sha512-qdSAmqLF6209RFj4VVItywPMbm3vWylknmB3nvNiUIs72xAimcM8nVYxYr7ncvZq5qzk9MKIZR8ijqD/1QuYjQ==}
     engines: {node: '>= 0.4.0'}
+    requiresBuild: true
 
   /hosted-git-info@4.1.0:
     resolution: {integrity: sha512-kyCuEOWjJqZuDbRHzL8V93NzQhwIB71oFWSyzVo+KPZI+pnQPPxucdkrOZvkLRnrf5URsQM+IJ09Dw29cRALIA==}
