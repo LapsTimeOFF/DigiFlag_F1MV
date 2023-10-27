@@ -1155,6 +1155,8 @@ then turn off the racing number gif, then turn off the black and white gif. */
                 isGifPlaying = false;
             } else {
                 if (debugOn) console.log(`No racing number GIF found for ${recentRacingNumber}`);
+                turnOff('blackandwhite');
+                isGifPlaying = false;
             }
             return;
         }
@@ -1308,9 +1310,19 @@ off after a certain amount of time. */
         if (recentMessage.Message.match(/BLUE FLAG/i) && recentMessage.Flag !== 'CHEQUERED' && blueFlagSwitch) {
             isGifPlaying = true;
             changeGif('blue', currentMode);
-            await timer(2000);
-            turnOff('blue');
-            isGifPlaying = false;
+            await timer(3500);
+            /* Using a regular expression to match the message to a pattern. */
+            const recentRacingNumber = recentMessage.RacingNumber;
+            if (recentRacingNumber in themes[currentTheme].gifs) {
+                changeGif(recentRacingNumber, currentMode);
+                await timer(3500);
+                turnOff(recentRacingNumber);
+                isGifPlaying = false;
+            } else {
+                if (debugOn) console.log(`No racing number GIF found for ${recentRacingNumber}`);
+                turnOff('blue');
+                isGifPlaying = false;
+            }
             return;
         }
 
