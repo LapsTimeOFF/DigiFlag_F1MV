@@ -31,6 +31,7 @@
     {
       "id": 1,
       "name": "DigiFlag T1 1:1",
+      "picture":"../assets/DigiFlag Theme Preview/T1_11.png",
       "compatibleWith": {
         "Window": true,
         "Pixoo64": false
@@ -58,6 +59,7 @@
     {
       "id": 2,
       "name": "DigiFlag T1 16:9",
+      "picture":"../assets/DigiFlag Theme Preview/T1_169.png",
       "compatibleWith": {
         "Window": true,
         "Pixoo64": false
@@ -85,6 +87,7 @@
     {
       "id": 3,
       "name": "DigiFlag T2 1:1",
+      "picture":"../assets/DigiFlag Theme Preview/T2_11.png",
       "compatibleWith": {
         "Window": true,
         "Pixoo64": false
@@ -145,6 +148,7 @@
     {
       "id": 4,
       "name": "DigiFlag T2 16:9",
+      "picture":"../assets/DigiFlag Theme Preview/T2_169.png",
       "compatibleWith": {
         "Window": true,
         "Pixoo64": false
@@ -367,7 +371,7 @@
         "2023 United States Grand Prix": "tracks/2023/Austin/US Grand Prix_16-9_sat.png",
         "2023 Mexico City Grand Prix": "tracks/2023/Mexico/Mexico City Grand Prix_16-9_sat.png",
         "2023 São Paulo Grand Prix": "tracks/2023/Sao_Palo/Sao Paulo Grand Prix_16-9_sat.png",
-        "2023 Las Vegas Grand Prix": "tracks/2023/",
+        "2023 Las Vegas Grand Prix": "tracks/2023/Las Vegas/Las Vegas Grand Prix_16-9_sat.png",
         "2023 Abu Dhabi Grand Prix": "tracks/2023/Abu_Dhabi/Abu Dhabi Grand Prix_16-9_sat.png"
       }
     }
