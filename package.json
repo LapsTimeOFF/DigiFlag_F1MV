@@ -67,7 +67,7 @@
     "@typescript-eslint/parser": "^6.11.0",
     "electron": "^27.1.0",
     "electron-builder": "^24.6.4",
-    "electron-log": "^5.0.0",
+    "electron-log": "^5.0.1",
     "electron-vite": "^1.0.29",
     "eslint": "^8.54.0",
     "eslint-config-prettier": "^9.0.0",
