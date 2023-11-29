@@ -64,7 +64,7 @@
     "@types/node": "20.9.2",
     "@types/request": "^2.48.12",
     "@typescript-eslint/eslint-plugin": "^6.11.0",
-    "@typescript-eslint/parser": "^6.11.0",
+    "@typescript-eslint/parser": "^6.13.1",
     "electron": "^27.1.0",
     "electron-builder": "^24.6.4",
     "electron-log": "^5.0.0",
