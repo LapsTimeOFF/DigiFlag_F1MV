@@ -282,24 +282,35 @@ async function initializePixoo() {
 }
 
 /**
- * It takes the currentMapTheme as an argument and returns the trackMapPath for the current race.
- * @param currentMapTheme - The current map theme that the user has selected.
- * @returns The trackMapPath variable is being returned.
+ * The function `getCurrentTrackPath` returns the path of the current track map based on the current map theme
+ * @param {number} currentMapTheme - The currentMapTheme parameter is a number that represents the
+ * theme of the map.
+ * @returns  The function will return either the track map path if it is found in the map theme, or it
+ * will return 'Map Not Found' if the track map is not found. If the track map switch is not enabled,
+ * it will return 'TrackMap Not Enabled'.
  */
 function getCurrentTrackPath(currentMapTheme: number): string {
     if (trackMapSwitch === true) {
         let trackMapPath: string;
-        /* Creating a variable called trackMaps and assigning it the value of the trackMaps property of the mapThemes JSON in filesConfiguration.json. */
-        const trackMaps = mapThemes[currentMapTheme].trackMaps;
-        /* Checking to see if the raceName is in the trackMaps object. If it is, it returns the mapPath for the current race. */
-        if (raceName in trackMaps) {
-            trackMapPath = trackMaps[raceName];
-            if (debugOn) console.log(`Track Map Path: ${trackMapPath}`);
-            return trackMapPath;
-        } else {
-            if (debugOn) console.log('Map Not Found');
-            return 'Map Not Found';
+
+        // Creating a variable called mapTheme and assigning it the value of the mapThemes JSON in filesConfiguration.json.
+        const mapTheme = mapThemes[currentMapTheme];
+
+        /* The above code is iterating through the `trackMaps` property of each season in the `mapTheme`
+       object. It checks if the `raceName` exists as a key in the `trackMaps` object. If it does,
+       it assigns the corresponding value to the `trackMapPath` variable and returns it. */
+        for (let i = 0; i < mapTheme.seasons.length; i++) {
+            const trackMaps = mapTheme.seasons[i].trackMaps;
+
+            if (raceName in trackMaps) {
+                trackMapPath = trackMaps[raceName];
+                if (debugOn) console.log(`Track Map Path: ${trackMapPath}`);
+                return trackMapPath;
+            }
         }
+
+        if (debugOn) console.log('Map Not Found');
+        return 'Map Not Found';
     } else {
         return 'TrackMap Not Enabled';
     }
