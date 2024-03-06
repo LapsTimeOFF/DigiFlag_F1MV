@@ -81,6 +81,7 @@ let lightOnRain = false;
 let currentTheme = 1;
 let currentMapTheme = 0;
 let raceName = 'Unknown';
+let raceYear = 0;
 let currentMode = 0; // 0 for window, 1 for pixoo64
 let blueFlagSwitch = false;
 let trackMapSwitch = false;
@@ -225,8 +226,8 @@ async function getCurrentSessionInfo(): Promise<string> {
         const response = await window.api.LiveTimingAPIGraphQL(config, ['SessionInfo']);
         const sessionName = await response.SessionInfo.Meeting.Name;
         const sessionType = await response.SessionInfo.Name;
-        const sessionYear = parseInt(response.SessionInfo.StartDate);
-        raceName = `${sessionYear + ' ' + sessionName}`;
+        raceYear = parseInt(response.SessionInfo.StartDate);
+        raceName = `${raceYear + ' ' + sessionName}`;
         $('#raceName').text(raceName + ' ' + sessionType);
         if (debugOn) console.log(`Current Race Name: ${raceName}`);
         return raceName;
@@ -314,6 +315,35 @@ function getCurrentTrackPath(currentMapTheme: number): string {
     } else {
         return 'TrackMap Not Enabled';
     }
+}
+/**
+ * The function `getDriverNumberPath` retrieves the path for a specific driver number based on the
+ * current theme and race year.
+ * @param {string} DriverNumber - The `DriverNumber` parameter in the `getDriverNumberPath` function is
+ * a string that represents the driver number for which you want to retrieve the corresponding path.
+ * @returns The function `getDriverNumberPath` returns the `DriverNumberPath` based on the
+ * `DriverNumber` index if a match is found in the `driverNumbersArray`. If no match is found, it
+ * returns 'Driver Number Not Found'.
+ */
+function getDriverNumberPath(DriverNumber: string): string {
+    const driverNumbersArray = themes[currentTheme].gifs.driverNumber;
+    let DriverNumberPath: string;
+
+    if (driverNumbersArray) {
+        for (let i = 0; i < driverNumbersArray.length; i++) {
+            const DriverNumbers = driverNumbersArray[i].DriverNumbers;
+            const DriverSeason = driverNumbersArray[i].year;
+
+            if (DriverSeason.match(raceYear.toString())) {
+                DriverNumberPath = DriverNumbers[DriverNumber];
+                if (debugOn) console.log(`Driver Number Path: ${DriverNumberPath}`);
+                return DriverNumberPath;
+            }
+        }
+    }
+
+    if (debugOn) console.log('Driver Number Not Found');
+    return 'Driver Number Not Found';
 }
 
 /**
@@ -450,13 +480,19 @@ function debugMode(status: boolean) {
 /* Setting the debugMode to true or false based on the value of debugOn. */
 debugMode(debugOn);
 /**
- * If the flag is 'void' and the useTrackMap is true and the trackMapPath has a file extension, then
- * set the flagPath to the trackMapPath, otherwise, loop through the themes and if the theme.id is
- * equal to the currentTheme, then set the flagPath to the theme.gifs[flag]
- * @param flag - The flag to get the path for.
- * @returns The path to the GIF file.
+ * The function `getGifPath` determines the path of a GIF based on the provided flag and optional
+ * driver number, considering various conditions and themes.
+ * @param {string} flag - The `flag` parameter in the `getGifPath` function is used to determine which
+ * GIF path to retrieve. It is a required parameter and should be a string value. The function checks
+ * different conditions based on the value of the `flag` parameter to determine the appropriate GIF
+ * path to return.
+ * @param {string} [driverNumber] - The `driverNumber` parameter in the `getGifPath` function is an
+ * optional parameter that represents the driver number. If provided,
+ * it is used to generate the path for the GIF image corresponding to that driver number.
+ * @returns The function `getGifPath` returns the path of a GIF image based on the provided flag and
+ * optional driver number.
  */
-function getGifPath(flag: string) {
+function getGifPath(flag: string, driverNumber?: string) {
     let flagPath = '';
     /* Getting the current track path. */
     const trackMapPath = getCurrentTrackPath(currentMapTheme);
@@ -484,11 +520,15 @@ function getGifPath(flag: string) {
                 flagPath = theme.gifs[flag];
             }
         }
+        if (driverNumber) {
+            const driverNumberPath = getDriverNumberPath(driverNumber);
+            flagPath = driverNumberPath;
+        }
         $('#digiflag').css('width', '100%');
         $('#digiflag').css('object-fit', 'cover');
     }
-    /* The above code is checking if a given flag path exists for a theme. If the flag path exists, it
-returns the path. If the flag path does not exist, it logs a warning message to the console. */
+    /* The code below is checking if a given flag path exists for a theme. If the flag path exists, it
+    returns the path. If the flag path does not exist, it logs a warning message to the console. */
     if (flagPath === undefined) {
         console.warn(`${flag} Does Not Exist for this Theme!`);
     } else {
@@ -614,11 +654,15 @@ async function turnOff(flag: string) {
  * </code>
  * @param {string}flag - the flag to change to
  * @param {number}mode -  0 = DigiFlag, 1 = Pixoo64
+ * @param {string} [driverNumber] - The `driverNumber` parameter in the `changeGif` function is an
+ * optional parameter of type string. It is used as an argument in the `getGifPath` function to
+ * retrieve the path of a GIF based on the provided flag and driver number.
  * @returns a Promise.
  */
-async function changeGif(flag: string, mode: number) {
+
+async function changeGif(flag: string, mode: number, driverNumber?: string) {
     $('#currentPixooFlag').text(flag);
-    const flagPath = getGifPath(flag);
+    const flagPath = getGifPath(flag, driverNumber);
     if (flag === 'void' && mvLogoSwitch === true) {
         flag = `mv`;
     }
@@ -1159,8 +1203,8 @@ then turn off the racing number gif, then turn off the black and white gif. */
             changeGif('blackandwhite', currentMode);
             await timer(3500);
             const recentRacingNumber = recentMessage.RacingNumber;
-            if (recentRacingNumber in themes[currentTheme].gifs) {
-                changeGif(recentRacingNumber, currentMode);
+            if (recentRacingNumber) {
+                changeGif(recentRacingNumber, currentMode, recentRacingNumber);
                 await timer(3500);
                 turnOff(recentRacingNumber);
                 isGifPlaying = false;
@@ -1187,7 +1231,7 @@ off after a certain amount of time. */
                     isGifPlaying = true;
                     changeGif('timepenalty5sec', currentMode);
                     await timer(3500);
-                    changeGif(carNumber, currentMode);
+                    changeGif(carNumber, currentMode, carNumber);
                     await timer(3500);
                     turnOff(carNumber);
                     isGifPlaying = false;
@@ -1196,7 +1240,7 @@ off after a certain amount of time. */
                     isGifPlaying = true;
                     changeGif('timepenalty10sec', currentMode);
                     await timer(3500);
-                    changeGif(carNumber, currentMode);
+                    changeGif(carNumber, currentMode, carNumber);
                     await timer(3500);
                     turnOff(carNumber);
                     isGifPlaying = false;
@@ -1214,7 +1258,7 @@ off after a certain amount of time. */
                     isGifPlaying = true;
                     changeGif('stopgopenalty10sec', currentMode);
                     await timer(3500);
-                    changeGif(carNumber, currentMode);
+                    changeGif(carNumber, currentMode, carNumber);
                     await timer(3500);
                     turnOff(carNumber);
                     isGifPlaying = false;
@@ -1324,8 +1368,8 @@ off after a certain amount of time. */
             await timer(3500);
             /* Using a regular expression to match the message to a pattern. */
             const recentRacingNumber = recentMessage.RacingNumber;
-            if (recentRacingNumber in themes[currentTheme].gifs) {
-                changeGif(recentRacingNumber, currentMode);
+            if (recentRacingNumber) {
+                changeGif(recentRacingNumber, currentMode, recentRacingNumber);
                 await timer(3500);
                 turnOff(recentRacingNumber);
                 isGifPlaying = false;

@@ -14,13 +14,17 @@ export interface Season {
     trackMaps: {[key: string]: string};
 }
 
+export interface DriverNumbers {
+    year: string;
+    DriverNumbers: {[key: string]: string};
+}
+
 export interface Theme {
     id: number;
     name: string;
     compatibleWith: CompatibleWith;
     sourcePath?: string;
     gifs: Gifs;
-    picture?: string;
 }
 
 export interface CompatibleWith {
@@ -46,30 +50,7 @@ export interface Gifs {
     vsc: string;
     white: string;
     yellow: string;
-    '1': string;
-    '2': string;
-    '3': string;
-    '4': string;
-    '10': string;
-    '11': string;
-    '14': string;
-    '16': string;
-    '18': string;
-    '20': string;
-    '21': string;
-    '22': string;
-    '23': string;
-    '24': string;
-    '27': string;
-    '31': string;
-    '33': string;
-    '34': string;
-    '40': string;
-    '44': string;
-    '55': string;
-    '63': string;
-    '77': string;
-    '81': string;
+    driverNumber?: DriverNumbers[];
     DRSenabled: string;
     DRSdisabled: string;
     medicalcar: string;
