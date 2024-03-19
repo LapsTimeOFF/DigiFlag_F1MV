@@ -63,7 +63,7 @@
     "@types/jquery": "^3.5.29",
     "@types/node": "20.11.24",
     "@types/request": "^2.48.12",
-    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@typescript-eslint/parser": "^7.1.0",
     "electron": "^29.1.0",
     "electron-builder": "^24.12.0",
