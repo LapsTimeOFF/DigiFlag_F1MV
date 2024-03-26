@@ -18,7 +18,8 @@
         "ecmaVersion": "latest"
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "html"
     ],
     "rules": {
         "@typescript-eslint/no-var-requires": "off"

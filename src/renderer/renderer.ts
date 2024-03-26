@@ -1143,9 +1143,11 @@ $(function () {
             });
         }
     });
-    // On click event for resetting zoom. Remove the 'style' attribute from 'main' and '.center-screen' elements. Set currentZoom to 1.
+    // On click event for resetting zoom. Set transform css attribute to none from 'main' and '.center-screen' elements allowing scale to be reset. Set currentZoom to 1.
     $('#zoomReset').on('click', () => {
-        $('main,.center-screen').removeAttr('style');
+        $('main, .center-screen').css({
+            transform: 'none',
+        });
         currentZoom = 1;
     });
 });
