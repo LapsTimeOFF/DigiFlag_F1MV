@@ -12,6 +12,7 @@ import {
 } from './storage';
 import {failedToLoadAPI} from './errorTable';
 import {themes, mapThemes} from './filesConfiguration.json';
+import {Theme} from '../renderer/types/filesConfig';
 import {autoUpdater} from 'electron-updater';
 
 const version = app.getVersion();
@@ -30,7 +31,7 @@ expressApp
 /* A route that is used to get a gif from the server. */
 expressApp.get('/getGif/:gif/:themeID', (req, res) => {
     const {gif, themeID} = req.params;
-    const theme = themes[themeID];
+    const theme: Theme = themes[themeID];
     const gifPath = theme.gifs[gif];
     res.sendFile(`${gifPath}`, {root: path.join(__dirname, '../renderer/')});
 });
@@ -43,7 +44,7 @@ expressApp.get('/getTrack/:track/:themeID', (req, res) => {
 /* A route that is used to change the GIF on the Pixoo64. */
 expressApp.get('/getGifPixoo/:themeID/:gif.gif/', (req, res) => {
     const {gif, themeID} = req.params;
-    const theme = themes[themeID];
+    const theme: Theme = themes[themeID];
     /* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
     if (theme.compatibleWith.Pixoo64 !== true) {
         res.statusCode = 400;
@@ -52,6 +53,30 @@ expressApp.get('/getGifPixoo/:themeID/:gif.gif/', (req, res) => {
     }
     const gifPath = theme.gifs[gif];
     res.sendFile(`${gifPath}`, {root: path.join(__dirname, '../renderer/')});
+});
+/* A route that is used to get a DriverNumber GIF. */
+expressApp.get('/getGifPixoo/:themeID/DriverNumbers/:year/:driverNumber.gif/', (req, res) => {
+    const {driverNumber, themeID, year} = req.params;
+    const theme: Theme = themes[themeID];
+    const driverNumbersArray = theme.gifs.driverNumber;
+    let DriverNumberPath = '';
+
+    if (driverNumbersArray) {
+        for (let i = 0; i < driverNumbersArray.length; i++) {
+            const DriverNumbers = driverNumbersArray[i].DriverNumbers;
+            const DriverSeason = driverNumbersArray[i].year;
+
+            if (DriverSeason === year) {
+                DriverNumberPath = DriverNumbers[driverNumber];
+            }
+        }
+    }
+    /* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
+    if (theme.compatibleWith.Pixoo64 !== true) {
+        res.statusCode = 400;
+        res.send("Theme requested doesn't support Pixoo64");
+    }
+    res.sendFile(`${DriverNumberPath}`, {root: path.join(__dirname, '../renderer/')});
 });
 
 let mainWindow: BrowserWindow;

@@ -561,18 +561,29 @@ function selectMapTheme(id: string) {
 }
 
 /**
- * If the flag is one of the following, then if the safety car flag is true, set the flag to the safety
- * car flag, otherwise if the virtual safety car flag is true, set the flag to the virtual safety car
- * flag, otherwise if the red flag is true, set the flag to the red flag, otherwise if the yellow flag
- * is true, set the flag to the yellow flag, otherwise if the current mode is 1, set the flag to the
- * void flag, otherwise set the flag to the void flag.
- * </code>
- * @param {string}flag - The flag to turn off
- * @returns The return value of the last statement in the function.
+ * The function `turnOff` is an asynchronous function in TypeScript that updates a flag display based
+ * on certain conditions and sends a corresponding GIF URL to a Pixoo64 device for display.
+ * @param {string} flag - The `flag` parameter in the `turnOff` function is a string that represents a
+ * specific flag status. It is used to determine which GIF to display on a Pixoo64 device. The function
+ * checks the value of the `flag` parameter and sets the appropriate URL for fetching the corresponding
+ * GIF.
+ * @param {string} [driverNumber] - The `driverNumber` parameter in the `turnOff` function is an
+ * optional parameter of type string. It is used to specify the driver number when turning off a flag
+ * for a specific driver. If provided, it is used to construct a specific URL for fetching the
+ * corresponding GIF image for that driver's
+ * @returns The function `turnOff` returns nothing explicitly. It is an async function that performs
+ * various operations based on the input flag and certain conditions, but it does not have a return
+ * statement that explicitly returns a value.
  */
-async function turnOff(flag: string) {
+async function turnOff(flag: string, driverNumber?: string) {
     $('#currentPixooFlag').text(flag);
-    let url = `http://${expressIP}:9093/getGifPixoo/5/${flag}.gif`;
+    let url = '';
+    if (driverNumber && raceYear) {
+        url = `http://${expressIP}:9093/getGifPixoo/5/DriverNumbers/${raceYear}/${flag}.gif`;
+    } else {
+        url = `http://${expressIP}:9093/getGifPixoo/5/${flag}.gif`;
+        if (debugOn) console.log(`URL sent to Pixoo64: ${url}`);
+    }
 
     if (flag === 'yellow' || flag === 'red') {
         return;
@@ -667,8 +678,14 @@ async function changeGif(flag: string, mode: number, driverNumber?: string) {
         flag = `mv`;
     }
     if (mode === 1 && currentMode.valueOf() === 1 && flagPath !== undefined) {
-        const url = `http://${expressIP}:9093/getGifPixoo/5/${flag}.gif`;
-        if (debugOn) console.log(`URL sent to Pixoo64: ${url}`);
+        let url = '';
+        if (driverNumber && raceYear) {
+            url = `http://${expressIP}:9093/getGifPixoo/5/DriverNumbers/${raceYear}/${flag}.gif`;
+            if (debugOn) console.log(`Driver Number sent to Pixoo64: ${url}`);
+        } else {
+            url = `http://${expressIP}:9093/getGifPixoo/5/${flag}.gif`;
+            if (debugOn) console.log(`URL sent to Pixoo64: ${url}`);
+        }
         try {
             const response = await fetch(`http://${pixooIP}:80/post`, {
                 method: 'POST',
@@ -1208,7 +1225,7 @@ then turn off the racing number gif, then turn off the black and white gif. */
             if (recentRacingNumber) {
                 changeGif(recentRacingNumber, currentMode, recentRacingNumber);
                 await timer(3500);
-                turnOff(recentRacingNumber);
+                turnOff(recentRacingNumber, recentRacingNumber);
                 isGifPlaying = false;
             } else {
                 if (debugOn) console.log(`No racing number GIF found for ${recentRacingNumber}`);
@@ -1235,7 +1252,7 @@ off after a certain amount of time. */
                     await timer(3500);
                     changeGif(carNumber, currentMode, carNumber);
                     await timer(3500);
-                    turnOff(carNumber);
+                    turnOff(carNumber, carNumber);
                     isGifPlaying = false;
                 }
                 if (recentMessage.Message.match(/10 SECOND TIME PENALTY/i)) {
@@ -1244,7 +1261,7 @@ off after a certain amount of time. */
                     await timer(3500);
                     changeGif(carNumber, currentMode, carNumber);
                     await timer(3500);
-                    turnOff(carNumber);
+                    turnOff(carNumber, carNumber);
                     isGifPlaying = false;
                 }
             }
@@ -1262,7 +1279,7 @@ off after a certain amount of time. */
                     await timer(3500);
                     changeGif(carNumber, currentMode, carNumber);
                     await timer(3500);
-                    turnOff(carNumber);
+                    turnOff(carNumber, carNumber);
                     isGifPlaying = false;
                 }
             }
@@ -1373,7 +1390,7 @@ off after a certain amount of time. */
             if (recentRacingNumber) {
                 changeGif(recentRacingNumber, currentMode, recentRacingNumber);
                 await timer(3500);
-                turnOff(recentRacingNumber);
+                turnOff(recentRacingNumber, recentRacingNumber);
                 isGifPlaying = false;
             } else {
                 if (debugOn) console.log(`No racing number GIF found for ${recentRacingNumber}`);
