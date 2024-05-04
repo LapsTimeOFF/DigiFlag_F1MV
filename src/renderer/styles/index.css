@@ -140,18 +140,7 @@ button:focus-within {
     margin-bottom: 50px;
     text-align: center;
     letter-spacing: 0.15rem;
-    background: linear-gradient(
-        to right,
-        #ff2400,
-        #e81d1d,
-        #e8b71d,
-        #e3e81d,
-        #1de840,
-        #1ddde8,
-        #2b1de8,
-        #dd00f3,
-        #dd00f3
-    );
+    background: linear-gradient(to right, #7ec7d7, #c84579);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
@@ -164,8 +153,16 @@ button:focus-within {
     }
     50% {
         background-position: 100% 19%;
-        text-shadow: -4px 4px #ff0000, -8px 8px #ff5722, -12px 12px #f9a825, -16px 16px #eeff41, -20px 20px #43a047,
-            -24px 24px #26c6da, -28px 28px #2196f3, -32px 32px #7e57c2, -36px 36px #f48fb1;
+        text-shadow:
+            -4px 4px #7ec7d7,
+            -8px 8px #c84579,
+            -12px 12px #7ec7d7,
+            -16px 16px #c84579,
+            -20px 20px #7ec7d7,
+            -24px 24px #c84579,
+            -28px 28px #7ec7d7,
+            -32px 32px #c84579,
+            -36px 36px #7ec7d7;
         color: white;
     }
 
