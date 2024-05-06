@@ -43,7 +43,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
-    "electron-store": "^8.2.0",
+    "electron-store": "^9.0.0",
     "electron-updater": "^6.1.8",
     "express": "^4.19.2",
     "i18next": "^23.11.3",
