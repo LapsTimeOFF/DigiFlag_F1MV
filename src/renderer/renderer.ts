@@ -1372,7 +1372,12 @@ off after a certain amount of time. */
             return;
         }
 
-        if (recentMessage.Message.match(/DOUBLE YELLOW/i) && sc !== true) {
+        if (
+            recentMessage.Message.match(/DOUBLE YELLOW/i) &&
+            !recentMessage.Message.match(/LAP DELETED/i) &&
+            sc !== true &&
+            vsc !== true
+        ) {
             isGifPlaying = true;
             changeGif('dyellow', currentMode);
             await timer(10000);
