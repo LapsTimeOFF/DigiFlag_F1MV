@@ -5,7 +5,31 @@
 
 version: 2
 updates:
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    # Workflow files stored in the default location of `.github/workflows`. (You don't need to specify `/.github/workflows` for `directory`. You can use `directory: "/"`.)
+    directory: "/"
     schedule:
-      interval: "daily"
+      # By default, this will be on a Monday.
+      interval: "weekly"
+    groups:
+      # Group updates together, so that they are all applied in a single PR.
+      # xref: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#groups
+      actions-deps:
+        patterns:
+          - "*"
+
+  # Maintain dependencies for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      # By default, this will be on a Monday.
+      interval: "weekly"
+    groups:
+      # Group updates together, so that they are all applied in a single PR.
+      # xref: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#groups
+      npm-deps:
+        patterns:
+          - "*"
+    ignore:
+       - dependency-name: electron-store
