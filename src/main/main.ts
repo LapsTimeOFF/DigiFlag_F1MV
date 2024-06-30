@@ -1,6 +1,6 @@
 import {app, BrowserWindow, ipcMain} from 'electron';
 import express from 'express';
-import {address} from 'ip';
+import {ip} from 'address';
 import path from 'path';
 import {
     getWindowSizeSettings,
@@ -276,6 +276,6 @@ ipcMain.handle('set-always-on-top', () => {
 });
 
 ipcMain.handle('get-expressIP', async () => {
-    const expressIP = address();
+    const expressIP = ip();
     return expressIP;
 });
