@@ -15,7 +15,7 @@ module.exports = async (context) => {
         return;
     }
 
-    const appId = 'com.mv-integrations.digiflag';
+    const appId = 'com.DigiFlagTeam.DigiFlag-F1MV';
 
     const {appOutDir} = context;
 
