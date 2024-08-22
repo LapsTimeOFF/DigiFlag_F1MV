@@ -1,70 +1,76 @@
 appId: com.DigiFlagTeam.DigiFlag-F1MV
 artifactName: ${productName}-${version}-${os}-${arch}.${ext}
 productName: DigiFlag-F1MV
-copyright: Copyright © 2023 DigiFlag Team
+copyright: Copyright © 2024 DigiFlag Team
 generateUpdatesFilesForAllChannels: true
 npmRebuild: false
 publish:
-    provider: "github"
+    provider: 'github'
 nodeGypRebuild: false
 buildDependenciesFromSource: false
 directories:
-  buildResources: build
-  output: out
+    buildResources: build
+    output: out
 files:
-  - '!**/.vscode/*'
-  - '!src/*'
-  - '!electron.vite.config.{js,ts,mjs,cjs}'
-  - '!{.eslintignore,.eslintrc.js,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
-  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+    - '!**/.vscode/*'
+    - '!src/*'
+    - '!electron.vite.config.{js,ts,mjs,cjs}'
+    - '!{.eslintignore,.eslintrc.js,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+    - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asar: true
 asarUnpack:
-  - '**/*.{node,dll}'
+    - '**/*.{node,dll}'
 win:
-  executableName: DigiFlag-F1MV
-  # Remove Comment From Line Below For Faster Builds During Development. Add # During Production
-  # compression: store
-  target:
-  - zip
-  - target: nsis
-    arch:
-    - x64
-    - ia32
+    executableName: DigiFlag-F1MV
+    # Remove Comment From Line Below For Faster Builds During Development. Add # During Production
+    # compression: store
+    target:
+        - zip
+        - target: nsis
+          arch:
+              - x64
+              - ia32
 nsis:
-  shortcutName: ${productName}
-  uninstallDisplayName: ${productName}
-  createDesktopShortcut: always
-  oneClick: true
-  perMachine: true
+    shortcutName: ${productName}
+    uninstallDisplayName: ${productName}
+    createDesktopShortcut: always
+    oneClick: true
+    perMachine: true
+afterSign: build/notarize.js
 mac:
-  category: public.app-category.utilities
-  minimumSystemVersion: "10.12.0"
-  target:
-      - target: dmg
-        arch:
-            - x64
-            - arm64
+    category: public.app-category.utilities
+    minimumSystemVersion: '10.12.0'
+    hardenedRuntime: true
+    gatekeeperAssess: false
+    entitlements: build/entitlements.mac.plist
+    entitlementsInherit: build/entitlements.mac.plist
+    target:
+        - target: dmg
+          arch:
+              - x64
+              - arm64
 dmg:
-  backgroundColor: "#121212"
-  window:
-    width: 400
-    height: 300
-  contents:
-  - x: 100
-    y: 100
-  - x: 300
-    y: 100
-    type: link
-    path: "/Applications"
+    sign: false
+    backgroundColor: '#121212'
+    window:
+        width: 400
+        height: 300
+    contents:
+        - x: 100
+          y: 100
+        - x: 300
+          y: 100
+          type: link
+          path: '/Applications'
 linux:
-  maintainer: "DigiFlag Team"
-  icon: "build/icon.icns"
-  target:
-  - AppImage
-  - deb
-  - target: zip
-    arch:
-    - x64
-    - arm64
+    maintainer: 'DigiFlag Team'
+    icon: 'build/icon.icns'
+    target:
+        - AppImage
+        - deb
+        - target: zip
+          arch:
+              - x64
+              - arm64
 appImage:
-  category: Utility
+    category: Utility

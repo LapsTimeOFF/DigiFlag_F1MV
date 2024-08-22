@@ -10,12 +10,12 @@ module.exports = async (context) => {
         return;
     }
 
-    if (!('APPLE_ID' in process.env && 'APPLE_ID_PASS' in process.env)) {
-        console.warn('skipping notarizing, APPLE_ID and APPLE_ID_PASS env variables must be set.');
+    if (!('APPLE_ID' in process.env && 'APPLE_APP_SPECIFIC_PASSWORD' in process.env)) {
+        console.warn('skipping notarizing, APPLE_ID and APPLE_APP_SPECIFIC_PASSWORD env variables must be set.');
         return;
     }
 
-    const appId = 'com.electron.app';
+    const appId = 'com.mv-integrations.digiflag';
 
     const {appOutDir} = context;
 
@@ -23,10 +23,12 @@ module.exports = async (context) => {
 
     try {
         await notarize({
+            tool: 'notarytool',
+            teamId: process.env.APPLE_TEAM_ID,
             appBundleId: appId,
             appPath: `${appOutDir}/${appName}.app`,
             appleId: process.env.APPLE_ID,
-            appleIdPassword: process.env.APPLEIDPASS,
+            appleIdPassword: process.env.APPLE_APP_SPECIFIC_PASSWORD,
         });
     } catch (error) {
         console.error(error);

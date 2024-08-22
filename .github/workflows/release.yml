@@ -1,13 +1,13 @@
 name: Build & Release DigiFlag
 on:
-  push:
-    tags:
-      - v*.*.*
+    push:
+        tags:
+            - v*.*.*
 jobs:
     release:
         runs-on: ${{ matrix.os }}
         permissions:
-          contents: write
+            contents: write
         strategy:
             matrix:
                 os:
@@ -28,3 +28,9 @@ jobs:
               with:
                   github_token: ${{ secrets.github_token }}
                   release: true
+              env:
+                  APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+                  APPLE_ID: ${{ secrets.APPLE_ID }}
+                  APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+                  CSC_LINK: ${{ secrets.CSC_LINK }}
+                  CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
