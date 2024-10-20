@@ -1,12 +1,18 @@
 {
-  "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
-  "include": ["electron.vite.config.*", "src/main/*.ts", "src/main/*.json","src/preload/*","package.json", "src/renderer/i18n.ts"],
-  "compilerOptions": {
-    "composite": true,
-    "module": "CommonJS",
-    "target": "ES2022",
-    "moduleResolution": "Node",
-    "strict": false,
-    "types": ["jquery","electron-vite/node"]
-  }
+    "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
+    "include": ["electron.vite.config.*", "src/main/*.ts", "src/preload/*", "package.json", "src/renderer/i18n.ts"],
+    "compilerOptions": {
+        "composite": true,
+        "module": "ESNext",
+        "target": "ESNext",
+        "moduleResolution": "Bundler",
+        "experimentalDecorators": true,
+        "noImplicitReturns": true,
+        "noImplicitOverride": true,
+        "noUnusedLocals": true,
+        "allowUnreachableCode": false,
+        "strict": true,
+        "lib": ["ESNext", "DOM", "DOM.Iterable", "WebWorker.ImportScripts"],
+        "types": ["jquery", "bootstrap", "electron-vite/node"]
+    }
 }

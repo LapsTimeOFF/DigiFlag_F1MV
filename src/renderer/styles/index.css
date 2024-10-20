@@ -79,23 +79,9 @@ svg {
     -webkit-app-region: drag;
 }
 
-#version {
-    display: flex;
-    flex-direction: column;
-    align-self: center;
-    justify-content: center;
-    margin-bottom: 10px !important;
-    text-transform: capitalize;
-    border-radius: 128px !important;
-}
-#mvVersion {
-    display: flex;
-    flex-direction: column;
-    align-self: center;
-    justify-content: center;
-    margin-bottom: 10px !important;
-    text-transform: capitalize;
-    border-radius: 128px !important;
+#versionContainer {
+    margin-bottom: 10px;
+    border-radius: 128px;
 }
 
 button {
@@ -238,24 +224,30 @@ button:focus-within {
     border: 2px solid #495057;
 }
 
-input:invalid {
+#networkSettings > input:invalid {
     border: 2px solid red;
+    box-shadow: 0 0 0 0.1rem red;
+}
+
+#networkSettings > input:valid {
+    border: 2px solid limegreen;
+    box-shadow: 0 0 0 0.1rem limegreen;
+}
+
+#networkSettings > input:focus:invalid {
+    border: none;
 }
 
 #networkSettings > input:focus {
     border-color: #3ea6ff;
     box-shadow: 0 0 0 0.1rem #3ea6ff;
     transition: all 0.6s ease-in-out;
+    background: yellow;
+    color: red;
 }
 #networkSettings > input:focus-visible {
     outline: none;
     transition: all 0.6s ease-in-out;
-}
-
-#networkSettings > input:hover:not(:focus) {
-    border-color: #eee !important;
-    box-shadow: 0 0 0 1px #eee;
-    transition: all 0.3s ease-in-out;
 }
 
 #selectTheme {

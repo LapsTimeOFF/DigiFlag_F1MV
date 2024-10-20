@@ -1,22 +1,22 @@
-import {app, BrowserWindow, ipcMain} from 'electron';
-import express from 'express';
 import {ip} from 'address';
-import path from 'path';
+import {app, BrowserWindow, ipcMain} from 'electron';
+import updater from 'electron-updater';
+import express from 'express';
+import path from 'node:path';
+import {Theme} from '../renderer/types/filesConfig';
+import {failedToLoadAPI} from './errorTable';
+import {mapThemes, themes} from './filesConfiguration.json';
 import {
-    getWindowSizeSettings,
+    getAlwaysOnTopState,
     getWindowPositionSettings,
+    getWindowSizeSettings,
+    saveAlwaysOnTopState,
     saveWindowPos,
     saveWindowSize,
-    getAlwaysOnTopState,
-    saveAlwaysOnTopState,
 } from './storage';
-import {failedToLoadAPI} from './errorTable';
-import {themes, mapThemes} from './filesConfiguration.json';
-import {Theme} from '../renderer/types/filesConfig';
-import {autoUpdater} from 'electron-updater';
 
 const version = app.getVersion();
-let pixooIPAddress = '';
+let pixooIPAddress = [''];
 /* Creating an express app. */
 const expressApp = express();
 /* Creating a server that listens on port 9093. */
@@ -25,46 +25,47 @@ expressApp
         console.log('API Started');
     })
     .on('error', () => {
-        throw failedToLoadAPI;
+        app.quit();
+        throw new Error(`${failedToLoadAPI}`);
     });
 
 /* A route that is used to get a gif from the server. */
-expressApp.get('/getGif/:gif/:themeID', (req, res) => {
-    const {gif, themeID} = req.params;
+expressApp.get('/getGif/:gif/:themeID', (request, response) => {
+    const {gif, themeID} = request.params;
     const theme: Theme = themes[themeID];
     const gifPath = theme.gifs[gif];
-    res.sendFile(`${gifPath}`, {root: path.join(__dirname, '../renderer/')});
+    response.sendFile(`${gifPath}`, {root: path.join(import.meta.dirname, '../renderer/')});
 });
-expressApp.get('/getTrack/:track/:themeID', (req, res) => {
-    const {track, themeID} = req.params;
+expressApp.get('/getTrack/:track/:themeID', (request, response) => {
+    const {track, themeID} = request.params;
     const theme = mapThemes[themeID];
     const trackPath = theme.trackMaps[track];
-    res.sendFile(`${trackPath}`, {root: path.join(__dirname, '../renderer/')});
+    response.sendFile(`${trackPath}`, {root: path.join(import.meta.dirname, '../renderer/')});
 });
 /* A route that is used to change the GIF on the Pixoo64. */
-expressApp.get('/getGifPixoo/:themeID/:gif.gif/', (req, res) => {
-    const {gif, themeID} = req.params;
+expressApp.get('/getGifPixoo/:themeID/:gif.gif/', (request, response) => {
+    const {gif, themeID} = request.params;
     const theme: Theme = themes[themeID];
     /* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
     if (theme.compatibleWith.Pixoo64 !== true) {
-        res.statusCode = 400;
-        res.send("Theme requested doesn't support Pixoo64");
+        response.statusCode = 400;
+        response.send("Theme requested doesn't support Pixoo64");
         return;
     }
     const gifPath = theme.gifs[gif];
-    res.sendFile(`${gifPath}`, {root: path.join(__dirname, '../renderer/')});
+    response.sendFile(`${gifPath}`, {root: path.join(import.meta.dirname, '../renderer/')});
 });
 /* A route that is used to get a DriverNumber GIF. */
-expressApp.get('/getGifPixoo/:themeID/DriverNumbers/:year/:driverNumber.gif/', (req, res) => {
-    const {driverNumber, themeID, year} = req.params;
+expressApp.get('/getGifPixoo/:themeID/DriverNumbers/:year/:driverNumber.gif/', (request, response) => {
+    const {driverNumber, themeID, year} = request.params;
     const theme: Theme = themes[themeID];
     const driverNumbersArray = theme.gifs.driverNumber;
     let DriverNumberPath = '';
 
     if (driverNumbersArray) {
-        for (let i = 0; i < driverNumbersArray.length; i++) {
-            const DriverNumbers = driverNumbersArray[i].DriverNumbers;
-            const DriverSeason = driverNumbersArray[i].year;
+        for (const element of driverNumbersArray) {
+            const DriverNumbers = element.DriverNumbers;
+            const DriverSeason = element.year;
 
             if (DriverSeason === year) {
                 DriverNumberPath = DriverNumbers[driverNumber];
@@ -73,10 +74,10 @@ expressApp.get('/getGifPixoo/:themeID/DriverNumbers/:year/:driverNumber.gif/', (
     }
     /* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
     if (theme.compatibleWith.Pixoo64 !== true) {
-        res.statusCode = 400;
-        res.send("Theme requested doesn't support Pixoo64");
+        response.statusCode = 400;
+        response.send("Theme requested doesn't support Pixoo64");
     }
-    res.sendFile(`${DriverNumberPath}`, {root: path.join(__dirname, '../renderer/')});
+    response.sendFile(`${DriverNumberPath}`, {root: path.join(import.meta.dirname, '../renderer/')});
 });
 
 let mainWindow: BrowserWindow;
@@ -106,13 +107,14 @@ function createWindow(
         transparent: false,
         titleBarStyle: 'hidden',
         /* Setting the icon of the window. */
-        icon: path.join(__dirname, '../../build/icon.png'),
+        icon: path.join(import.meta.dirname, '../../build/icon.png'),
         alwaysOnTop: alwaysOnTop,
         autoHideMenuBar: true,
         /* Hiding the window until it is ready to be shown. */
         show: false,
         webPreferences: {
-            preload: path.join(__dirname, '../preload/preload.js'),
+            preload: path.join(import.meta.dirname, '../preload/preload.cjs'),
+            nodeIntegration: false,
             contextIsolation: true,
             sandbox: false,
         },
@@ -122,7 +124,7 @@ function createWindow(
     if (!app.isPackaged && process.env['ELECTRON_RENDERER_URL']) {
         mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
     } else {
-        mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+        mainWindow.loadFile(path.join(import.meta.dirname, '../renderer/index.html'));
     }
     // Event listeners on the window
     mainWindow.webContents.on('did-finish-load', () => {
@@ -131,7 +133,7 @@ function createWindow(
     });
 
     /* A type alias for a function that takes an array of unknowns and returns a value of type R. */
-    type Func<T extends unknown[], R> = (...args: T) => R;
+    type Function_<T extends unknown[], R> = (...arguments_: T) => R;
 
     /**
      * It returns a function that calls the given function after a delay, but if the returned function is
@@ -140,16 +142,16 @@ function createWindow(
      * @param {number} delay - The amount of time to wait before calling the function.
      * @returns A function that takes a function and a number and returns a function.
      */
-    function debounce<T extends unknown[], R>(func: Func<T, R>, delay: number): Func<T, void> {
-        let timeoutId: ReturnType<typeof setTimeout> | null;
+    function debounce<T extends unknown[], R>(function_: Function_<T, R>, delay: number): Function_<T, void> {
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-        return function (this: unknown, ...args: T) {
+        return function (this: unknown, ...arguments_: T) {
             if (timeoutId) {
                 clearTimeout(timeoutId);
             }
             timeoutId = setTimeout(() => {
-                func.apply(this, args);
-                timeoutId = null;
+                function_.apply(this, arguments_);
+                timeoutId = undefined;
             }, delay);
         };
     }
@@ -168,10 +170,6 @@ the size of the window as an argument. */
     );
     /* Setting the minimum size of the window to 256x256. */
     mainWindow.setMinimumSize(256, 256);
-
-    mainWindow.on('close', function () {
-        mainWindow = null; // Clean up your window object.
-    });
 
     mainWindow.webContents.setWindowOpenHandler(({url}) => {
         if (url === 'https://github.com/LapsTimeOFF/DigiFlag_F1MV') {
@@ -192,7 +190,8 @@ the size of the window as an argument. */
                     minWidth: 256,
                     minHeight: 256,
                     webPreferences: {
-                        preload: path.join(__dirname, '../preload/preload.js'),
+                        preload: path.join(import.meta.dirname, '../preload/preload.cjs'),
+                        nodeIntegration: false,
                         contextIsolation: true,
                         sandbox: false,
                     },
@@ -209,14 +208,14 @@ the size of the window as an argument. */
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.whenReady().then(() => {
-    autoUpdater.checkForUpdatesAndNotify();
+    updater.autoUpdater.checkForUpdatesAndNotify();
     const windowSize = getWindowSizeSettings();
     const windowPosition = getWindowPositionSettings();
     const alwaysOnTopState = getAlwaysOnTopState();
 
-    if (version.includes('dev')) console.log('WindowSize: ', windowSize);
-    if (version.includes('dev')) console.log('WindowPosition: ', windowPosition);
-    if (version.includes('dev')) console.log('alwaysOnTopState: ', alwaysOnTopState);
+    if (version.includes('dev')) console.log('WindowSize:', windowSize);
+    if (version.includes('dev')) console.log('WindowPosition:', windowPosition);
+    if (version.includes('dev')) console.log('alwaysOnTopState:', alwaysOnTopState);
 
     createWindow(
         windowSize[0],
@@ -227,7 +226,7 @@ app.whenReady().then(() => {
         alwaysOnTopState
     );
     app.on('activate', () => {
-        // On OS X it's common to re-create a window in the app when the
+        // On macOS it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow(
@@ -251,9 +250,9 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.handle('get-version', async () => {
-    return app.getVersion();
+    return version;
 });
-ipcMain.handle('get-pixooIP', async (_, pixooIP: string) => {
+ipcMain.handle('get-pixooIP', async (_, pixooIP: string[]) => {
     pixooIPAddress = pixooIP;
     return pixooIPAddress;
 });
