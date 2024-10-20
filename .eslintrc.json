@@ -1,7 +1,7 @@
 {
     "env": {
         "browser": true,
-        "es2022": true,
+        "es2023": true,
         "jquery": true,
         "node": true,
         "commonjs": true
@@ -9,19 +9,25 @@
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
+        "plugin:unicorn/recommended",
         "prettier"
     ],
-    "overrides": [
-    ],
+    "overrides": [],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": "latest"
+        "ecmaVersion": "latest",
+        "sourceType": "module"
     },
-    "plugins": [
-        "@typescript-eslint",
-        "html"
-    ],
+    "plugins": ["@typescript-eslint", "html"],
     "rules": {
-        "@typescript-eslint/no-var-requires": "off"
-    }
+        "unicorn/better-regex": "error",
+        "@typescript-eslint/no-var-requires": "off",
+        "unicorn/prefer-top-level-await": "off",
+        "unicorn/filename-case":"off",
+        "unicorn/numeric-separators-style": [
+            "error",
+            {"onlyIfContainsSeparator": true, "binary": {"onlyIfContainsSeparator": false}}
+        ]
+    },
+    "ignorePatterns": ["node_modules", "dist", "out", ".gitignore"]
 }

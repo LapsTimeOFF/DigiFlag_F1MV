@@ -1,5 +1,8 @@
 import {Theme, MapTheme, FilesConfig} from './types/filesConfig';
+import {F1LiveTimingState} from './types/multiViewerAPI';
 /* Declaring a variable called host and assigning it the value of "127.0.0.1". */
+
+const userAgent = globalThis.navigator.userAgent;
 const host = '127.0.0.1';
 /* Creating a variable called port and assigning it the value of 10101. */
 const port = 10101;
@@ -16,7 +19,7 @@ let mapThemes: MapTheme[];
  * number of milliseconds.
  * @param ms - The amount of time to wait before resolving the promise.
  */
-const timer = (ms: number) => new Promise((res) => setTimeout(res, ms));
+const timer = (ms: number) => new Promise((response) => setTimeout(response, ms));
 /* Declaring a variable called debugOn and assigning it a value of false. */
 let debugOn = true;
 let expressIP = '';
@@ -25,15 +28,15 @@ let currentZoom = 1;
 const maxZoom = 2;
 const minZoom = 0.5;
 let started = false;
-let currentTrackStatus = null;
-let currentRainStatus: string = null;
+let currentTrackStatus = '';
+let currentRainStatus = '';
 let yellow = false;
 let sc = false;
 let vsc = false;
 let red = false;
 let version = '';
-let themeSelectRef: JQuery<HTMLElement>;
-let miscOptionsRef: JQuery<HTMLElement>;
+let themeSelectReference: JQuery<HTMLElement>;
+let miscOptionsReference: JQuery<HTMLElement>;
 let LT_Data = {
     RaceControlMessages: {
         Messages: [
@@ -64,8 +67,8 @@ let LT_Data = {
     },
 };
 export interface PixooData {
-    ReturnCode: number;
-    ReturnMessage: string;
+    ReturnCode?: number;
+    ReturnMessage?: string;
     DeviceList: PixooDeviceList[];
 }
 
@@ -87,7 +90,7 @@ let blueFlagSwitch = false;
 let trackMapSwitch = false;
 let mvLogoSwitch = false;
 let extraFlagSwitch = false;
-let pixooIP: string;
+let pixooIPs: string[];
 let pixoostartup = false;
 let isGifPlaying = false;
 const instanceWindowWidth = 800;
@@ -109,27 +112,29 @@ let oldMessages = {
     ],
 };
 
-/* The code below is an immediately invoked async function that loads a JSON file called
-"filesConfiguration.json" using the fetch API. If the response is successful, it extracts the
-"themes" and "mapThemes" properties from the JSON data and assigns them to global variables. If the
-response is not successful, it throws an error with the HTTP status code. If there is an error
-during the fetch or JSON parsing, it logs the error to the console. */
-(async function loadFileConfiguration() {
-    try {
-        const response = await fetch('./filesConfiguration.json');
-        if (response.ok) {
-            const data: FilesConfig = await response.json();
-            themes = data.themes;
-            mapThemes = data.mapThemes;
-        } else {
-            throw new Error(`Failed to load file configuration: ${response.status}`);
-        }
-    } catch (error) {
-        console.error(error);
+try {
+    const response = await fetch('./filesConfiguration.json');
+    if (response.ok) {
+        const data: FilesConfig = await response.json();
+        themes = data.themes;
+        mapThemes = data.mapThemes;
+    } else {
+        throw new Error(`Failed to load file configuration: ${response.status}`);
     }
-})();
+} catch (error) {
+    console.error(error);
+}
 
 const logs: string[] = [];
+
+const escapeHtml = (unsafe: string) => {
+    return unsafe
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+};
 
 /**
  * If the last item in the logs array is the same as the text passed in, then return. Otherwise, add
@@ -139,7 +144,7 @@ const logs: string[] = [];
  */
 function log(text: string) {
     console.log(text);
-    if (logs[logs.length - 1] === text) return;
+    if (logs.at(-1) === text) return;
     logs.push(text);
 }
 
@@ -147,18 +152,21 @@ function log(text: string) {
  * This function asynchronously retrieves the version of DigiFlag and returns it as a string.
  * @returns  a Promise that resolves to a string, which is the version obtained from calling the `getVersion() function of the `window.api` object.
  */
-async function getDigiFlagVersion(): Promise<string> {
-    version = await window.api.getVersion();
+async function getDigiFlagVersion() {
+    version = await globalThis.api.getVersion();
     return version;
 }
-getDigiFlagVersion();
-
+if (/electron/i.test(userAgent)) {
+    await getDigiFlagVersion();
+} else {
+    version = '2.7.0';
+}
 /**
  * This function asynchronously retrieves the IP address of the Express server.
  * @returns A Promise that resolves to a string representing the IP address of the Express server.
  */
 async function getExpressIP(): Promise<string> {
-    expressIP = await window.api.getExpressIP();
+    expressIP = await globalThis.api.getExpressIP();
     console.log(`Express IP: ${expressIP}`);
     $('#expressIP').text(`Express Server IP: ${expressIP}`);
     return expressIP;
@@ -166,7 +174,7 @@ async function getExpressIP(): Promise<string> {
 
 let countDownRunning = false;
 /**
- * If the F1MV Instance is found, start a countdown timer, and when the timer is finished, run the
+ * If the MultiViewer Instance is found, start a countdown timer, and when the timer is finished, run the
  * getCurrentSessionInfo() function and the linkF1MV() function.
  */
 async function autoConnectF1MV() {
@@ -183,7 +191,7 @@ async function autoConnectF1MV() {
                     countDownRunning = true;
                     if ($('#tagLink').hasClass('badge text-bg-danger')) {
                         $('#tagLink').removeAttr('data-i18n');
-                        $('#tagLink').text('Retrying to Connect to F1MV in : ' + timeleft + ' seconds');
+                        $('#tagLink').text('Retrying to Connect to MultiViewer in : ' + timeleft + ' seconds');
                     } else if ($('#tagLink').hasClass('badge text-bg-warning')) {
                         $('#tagLink').removeAttr('data-i18n');
                         $('#tagLink').attr(
@@ -219,21 +227,34 @@ async function autoConnectF1MV() {
     }
 }
 /**
- * It gets the current race name from the F1MV API and displays it on the page.
+ * It gets the current race name from the MultiViewer API and displays it on the page.
  */
 async function getCurrentSessionInfo(): Promise<string> {
     try {
-        const response = await window.api.LiveTimingAPIGraphQL(config, ['SessionInfo']);
-        const sessionName = await response.SessionInfo.Meeting.Name;
-        const sessionType = await response.SessionInfo.Name;
-        raceYear = parseInt(response.SessionInfo.StartDate);
+        const response: F1LiveTimingState = await globalThis.api.LiveTimingAPIGraphQL(config, ['SessionInfo']);
+
+        // Check if response and response.SessionInfo exist
+        if (!response || !response.SessionInfo) {
+            throw new Error('SessionInfo is null or undefined');
+        }
+
+        const sessionName = response.SessionInfo.Meeting?.Name;
+        const sessionType = response.SessionInfo?.Name;
+        raceYear = Number.parseInt(response.SessionInfo.StartDate);
+
+        // Ensure sessionName and sessionType are defined
+        if (!sessionName || !sessionType) {
+            throw new Error('Incomplete session information');
+        }
+
         raceName = `${raceYear + ' ' + sessionName}`;
         $('#raceName').text(raceName + ' ' + sessionType);
         if (debugOn) console.log(`Current Race Name: ${raceName}`);
         return raceName;
     } catch (error) {
-        if (debugOn) console.error('Unable to Get Data From F1MV GraphQL API:' + '\n' + error.message);
-        return 'Unable to Get Data From F1MV GraphQL API';
+        if (debugOn)
+            console.error('Unable to Get Data From MultiViewer GraphQL API:' + '\n' + (error as Error).message);
+        return 'Unable to Get Data From MultiViewer GraphQL API';
     }
 }
 
@@ -242,18 +263,46 @@ async function getCurrentSessionInfo(): Promise<string> {
  * @returns The IP address of the Pixoo device.
  */
 
-async function getPixooIP(): Promise<string> {
+async function getPixooIPs(): Promise<PixooDeviceList[]> {
     try {
         const response = await fetch('https://app.divoom-gz.com/Device/ReturnSameLANDevice');
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const pixooData: PixooData = await response.json();
-        pixooIP = pixooData.DeviceList[0].DevicePrivateIP;
-        $('#pixooIP').text(`Pixoo IP: ${pixooIP}`);
-        window.api.getPixooIP(pixooIP);
-        return pixooIP;
+
+        // Extract all device IPs
+        pixooIPs = pixooData.DeviceList.map((device) => device.DevicePrivateIP);
+
+        // Send all IPs to the main process
+        globalThis.api.getPixooIP(pixooIPs);
+
+        return pixooData.DeviceList;
     } catch (error) {
-        console.error(error);
-        return 'Failed to get IP Address of Pixoo Device!';
+        console.error('Error fetching Pixoo devices:', error);
+
+        // Clear the pixooIPs array in case of error
+        pixooIPs = [];
+
+        // Return an empty array if there's an error
+        return [];
     }
+}
+
+function updatePixooDisplay(pixooDevices: PixooDeviceList[]) {
+    const pixooIPsContainer = document.querySelector('#pixooIPs');
+    if (pixooIPsContainer) {
+        pixooIPsContainer.innerHTML = pixooDevices
+            .map((device, index) => `<span id="pixooIP${index}">${device.DeviceName}: ${device.DevicePrivateIP}</span>`)
+            .join('<br>');
+    }
+}
+
+async function fetchAndDisplayPixooDevices() {
+    const pixooDevices = await getPixooIPs();
+    updatePixooDisplay(pixooDevices);
 }
 /**
  * Initializes the Pixoo64 device by displaying a startup sequence of GIF images.
@@ -300,8 +349,8 @@ function getCurrentTrackPath(currentMapTheme: number): string {
         /* The above code is iterating through the `trackMaps` property of each season in the `mapTheme`
        object. It checks if the `raceName` exists as a key in the `trackMaps` object. If it does,
        it assigns the corresponding value to the `trackMapPath` variable and returns it. */
-        for (let i = 0; i < mapTheme.seasons.length; i++) {
-            const trackMaps = mapTheme.seasons[i].trackMaps;
+        for (let index = 0; index < mapTheme.seasons.length; index++) {
+            const trackMaps = mapTheme.seasons[index].trackMaps;
 
             if (raceName in trackMaps) {
                 trackMapPath = trackMaps[raceName];
@@ -330,11 +379,11 @@ function getDriverNumberPath(DriverNumber: string): string {
     let DriverNumberPath: string;
 
     if (driverNumbersArray) {
-        for (let i = 0; i < driverNumbersArray.length; i++) {
-            const DriverNumbers = driverNumbersArray[i].DriverNumbers;
-            const DriverSeason = driverNumbersArray[i].year;
-
-            if (DriverSeason.match(raceYear.toString())) {
+        for (const element of driverNumbersArray) {
+            const DriverNumbers = element.DriverNumbers;
+            const DriverSeason = element.year;
+            const raceYearRegex = new RegExp(raceYear.toString());
+            if (raceYearRegex.test(DriverSeason)) {
                 DriverNumberPath = DriverNumbers[DriverNumber];
                 if (debugOn) console.log(`Driver Number Path: ${DriverNumberPath}`);
                 return DriverNumberPath;
@@ -400,8 +449,8 @@ function saveSettings(host: string, port: number): void {
  * @param windowTitle - The title of the window.
  * @returns The windowInstance variable is being returned.
  */
-function createNewInstance(url?: string | URL, windowTitle?: string): Window | null {
-    if (arguments.length == 0) {
+function createNewInstance(url?: string | URL, windowTitle?: string) {
+    if (arguments.length === 0) {
         url = './index.html';
         windowTitle = 'DigiFlag Instance';
     }
@@ -415,7 +464,7 @@ function createNewInstance(url?: string | URL, windowTitle?: string): Window | n
         return windowInstance;
     } catch (error) {
         console.error(error);
-        return null;
+        return;
     }
 }
 
@@ -431,7 +480,7 @@ function loadSettings() {
     const portData = localStorage.getItem('port');
     if (hostData && portData !== null) {
         config.host = hostData;
-        config.port = parseInt(portData);
+        config.port = Number.parseInt(portData);
     }
 }
 
@@ -456,6 +505,39 @@ function restoreSettings() {
     $('.toast').toast('show');
     if (debugOn) log('Reset Network Settings To Default');
     autoConnectF1MV();
+}
+function ipInvalidToast() {
+    $('.toast').remove();
+    $('#networkSettings > h5')
+        .after(`<div class="toast text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000" data-bs-autohide="true">
+        <div class="toast-header text-bg-danger">
+          <strong class="text-center me-auto">Invalid IP Address!</strong>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+        Please enter a valid IPv4 address (e.g., 192.168.0.1)
+        </div>
+    </div>
+    `);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    $('.toast').toast('show');
+}
+function portInvalidToast() {
+    $('.toast').remove();
+    $('#networkSettings > h5')
+        .after(`<div class="toast text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000" data-bs-autohide="true">
+        <div class="toast-header text-bg-danger">
+          <strong class="text-center me-auto">Invalid Port Number!</strong>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+        Please enter a valid port number (1-65535)
+        </div>
+    </div>
+    `);
+
+    $('.toast').toast('show');
 }
 
 /** It clears the local storage and sets host and port back to default.
@@ -498,8 +580,7 @@ function getGifPath(flag: string, driverNumber?: string) {
     const trackMapPath = getCurrentTrackPath(currentMapTheme);
     /* Checking if the flag is 'void' and if the useTrackMap is true and if the trackMapPath has a file extension. */
     if (flag === 'void' && mvLogoSwitch === true) {
-        for (let themeIndex = 0; themeIndex < themes.length; themeIndex++) {
-            const theme = themes[themeIndex];
+        for (const theme of themes) {
             if (theme.id === currentTheme) {
                 flagPath = theme.gifs['mv'];
             }
@@ -514,8 +595,7 @@ function getGifPath(flag: string, driverNumber?: string) {
         $('#digiflag').css('width', 'auto');
         $('#digiflag').css('object-fit', 'contain');
     } else {
-        for (let themeIndex = 0; themeIndex < themes.length; themeIndex++) {
-            const theme = themes[themeIndex];
+        for (const theme of themes) {
             if (theme.id === currentTheme) {
                 flagPath = theme.gifs[flag];
             }
@@ -554,7 +634,7 @@ function selectTheme(id: number) {
 function selectMapTheme(id: string) {
     if (trackMapSwitch == true) {
         if (debugOn) log('Map Theme selected : ' + mapThemes[id].name);
-        currentMapTheme = parseInt(id);
+        currentMapTheme = Number.parseInt(id);
         getCurrentTrackPath(currentMapTheme);
         $('#launchDigiFlag').prop('disabled', true);
     }
@@ -618,11 +698,10 @@ async function turnOff(flag: string, driverNumber?: string) {
         url = `http://${expressIP}:9093/getGifPixoo/5/rain.gif`;
     } else {
         $('#digiflag').prop('src', getGifPath('void'));
-        if (mvLogoSwitch === true) {
-            url = `http://${expressIP}:9093/getGifPixoo/5/mv.gif`;
-        } else {
-            url = `http://${expressIP}:9093/getGifPixoo/5/void.gif`;
-        }
+        url =
+            mvLogoSwitch === true
+                ? `http://${expressIP}:9093/getGifPixoo/5/mv.gif`
+                : `http://${expressIP}:9093/getGifPixoo/5/void.gif`;
     }
 
     if (currentMode.valueOf() === 1) {
@@ -630,31 +709,34 @@ async function turnOff(flag: string, driverNumber?: string) {
             console.log(`${flag} flag was turned off`);
             console.log(`URL sent to Pixoo64: ${url}`);
         }
-        try {
-            const response = await fetch(`http://${pixooIP}:80/post`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    Command: 'Device/PlayTFGif',
-                    FileType: 2,
-                    FileName: `${url}`,
-                }),
-            });
+        for (const pixooIP of pixooIPs) {
+            try {
+                const response = await fetch(`http://${pixooIP}:80/post`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        Command: 'Device/PlayTFGif',
+                        FileType: 2,
+                        FileName: `${url}`,
+                    }),
+                });
 
-            if (response.ok) {
-                const result = await response.json();
-                console.log(result);
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log(`Result for ${pixooIP}:`, result);
+                }
+            } catch (error) {
+                console.error(`Error for ${pixooIP}:`, error);
             }
-        } catch (err) {
-            console.error(err);
+
+            // Need to force a delay after an http post to the Pixoo64, else may crash the Pixoo64
+            if (debugOn) {
+                console.log(`Pixoo64 API cool down 3000ms for ${pixooIP}`);
+            }
+            await new Promise((resolve) => setTimeout(resolve, 3000));
         }
-        // Need to force a delay after an http post to the Pixoo64, else may crash the Pixoo64
-        if (debugOn) {
-            console.log(`Pixoo64 API cool down 3000ms`);
-        }
-        await timer(3000);
     }
 }
 /**
@@ -686,31 +768,33 @@ async function changeGif(flag: string, mode: number, driverNumber?: string) {
             url = `http://${expressIP}:9093/getGifPixoo/5/${flag}.gif`;
             if (debugOn) console.log(`URL sent to Pixoo64: ${url}`);
         }
-        try {
-            const response = await fetch(`http://${pixooIP}:80/post`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    Command: 'Device/PlayTFGif',
-                    FileType: 2,
-                    FileName: `${url}`,
-                }),
-            });
+        for (const pixooIP of pixooIPs) {
+            try {
+                const response = await fetch(`http://${pixooIP}:80/post`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        Command: 'Device/PlayTFGif',
+                        FileType: 2,
+                        FileName: `${url}`,
+                    }),
+                });
 
-            if (response.ok) {
-                const result = await response.json();
-                console.log(result);
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log(result);
+                }
+            } catch (error) {
+                console.error(error);
             }
-        } catch (err) {
-            console.error(err);
+            // Need to force a delay after an http post to the Pixoo64, else may crash the Pixoo64
+            if (debugOn) {
+                console.log(`Pixoo64 API cool down 3000ms`);
+            }
+            await timer(3000);
         }
-        // Need to force a delay after an http post to the Pixoo64, else may crash the Pixoo64
-        if (debugOn) {
-            console.log(`Pixoo64 API cool down 3000ms`);
-        }
-        await timer(3000);
     }
     $('#digiflag').prop('src', flagPath);
     if (flag !== 'rain') {
@@ -738,6 +822,7 @@ function linkSuccess() {
     $('#raceName').removeAttr('data-i18n');
 
     $('#tagSession').show();
+    $('#openMultiViewer').remove();
     $('#linkF1MV').remove();
     $('#infoTag').remove();
     $('#checkNetworkSettings').remove();
@@ -768,7 +853,7 @@ function linkSuccess() {
         <div class="collapse" id="pixooIPContainer">
         <div class="card text-bg-dark p-1 align-items-center">
         <span id="expressIP">Express IP: ${expressIP}</span>
-        <span id="pixooIP">Pixoo IP: ${pixooIP}</span>
+        <span id="pixooIPs"></span>
         </div>
         </div>
     `);
@@ -793,11 +878,11 @@ function linkSuccess() {
   <div class="form-check form-switch" id="extraFlag">
   <input class="form-check-input" type="checkbox" role="switch" id="extraFlagSwitch"> <label class="form-check-label theme" data-i18n="extraFlags" for="extraFlagSwitch">Extra Flags</label>
 </div>`);
-    miscOptionsRef = $('#selectDevice,#selectMisc').detach();
+    miscOptionsReference = $('#selectDevice,#selectMisc').detach();
     $(document).localize();
     let theme: {id: number; name: string};
-    for (let themeIndex = 0; themeIndex < themes.length; themeIndex++) {
-        theme = themes[themeIndex];
+    for (const theme_ of themes) {
+        theme = theme_;
         $('#themes').append(`
             <div class="form-check" id="window">
                 <input class="form-check-input theme" type="radio" name="theme" id="${theme.id}">
@@ -807,12 +892,12 @@ function linkSuccess() {
             </div>
         `);
     }
-    $('.theme').on('change', (e) => {
-        selectTheme(parseInt(e.target.id));
+    $('.theme').on('change', (event_) => {
+        selectTheme(Number.parseInt(event_.target.id));
     });
     $('#nextTheme').on('click', () => {
-        miscOptionsRef.appendTo('#menuContent');
-        themeSelectRef = $('#selectTheme').detach();
+        miscOptionsReference.appendTo('#menuContent');
+        themeSelectReference = $('#selectTheme').detach();
 
         if (themes[currentTheme].compatibleWith.Pixoo64) {
             $('#menuContent')
@@ -849,18 +934,20 @@ function linkSuccess() {
             $('#blueFlagSwitch').prop('disabled', false);
             $('#extraFlagSwitch').prop('disabled', false);
         }
-        $('#selectDevice').on('change', async (e) => {
-            if (e.target.id === 'pixoo64Radio') {
+        $('#selectDevice').on('change', async (event_) => {
+            if (event_.target.id === 'pixoo64Radio') {
                 if (debugOn) console.log('Pixoo64 was Selected');
                 currentMode = 1;
                 await getExpressIP();
-                await getPixooIP();
-                $('#launchPixoo').removeClass();
-                $('#launchPixoo').addClass('btn btn-success');
-                $('#launchPixoo').prop('disabled', false);
-                $('#mvSwitch').prop('disabled', false);
-                $('#blueFlagSwitch').prop('disabled', false);
-                $('#extraFlagSwitch').prop('disabled', false);
+                await fetchAndDisplayPixooDevices();
+                if (pixooIPs.length > 0) {
+                    $('#launchPixoo').removeClass();
+                    $('#launchPixoo').addClass('btn btn-success');
+                    $('#launchPixoo').prop('disabled', false);
+                    $('#mvSwitch').prop('disabled', false);
+                    $('#blueFlagSwitch').prop('disabled', false);
+                    $('#extraFlagSwitch').prop('disabled', false);
+                }
                 if (debugOn) console.log('Current Mode: ' + currentMode);
             } else {
                 if (debugOn) console.log('Window was Selected');
@@ -929,8 +1016,7 @@ it. */
                 $('#trackMapStyleSelect').append(
                     `<option  data-i18n="selectAMapStyle"  value="none" selected disabled hidden>Select a Map Style</option>`
                 );
-                for (let mapIndex = 0; mapIndex < mapThemes.length; mapIndex++) {
-                    const mapTheme = mapThemes[mapIndex];
+                for (const mapTheme of mapThemes) {
                     $('#trackMapStyleSelect').append(
                         `<option id=${mapTheme.id} value=${mapTheme.id}>${mapTheme.name}</option> `
                     );
@@ -941,16 +1027,19 @@ it. */
                 /* Changing the map style when the user selects a different style from the dropdown menu. */
                 $('#trackMapStyleSelect').on('change', () => {
                     const mapID = $('#trackMapStyleSelect').val();
-                    selectMapTheme(mapID.toString());
-                    $('#launchDigiFlag').prop('disabled', false);
+
+                    if (mapID !== undefined && mapID !== null) {
+                        selectMapTheme(mapID.toString());
+                        $('#launchDigiFlag').prop('disabled', false);
+                    }
                 });
                 return trackMapSwitch;
             }
         });
         $('#backButton').on('click', () => {
-            themeSelectRef.appendTo('#menuContent');
+            themeSelectReference.appendTo('#menuContent');
             $(document).localize();
-            miscOptionsRef.remove();
+            miscOptionsReference.remove();
             pixoostartup = false;
             $('#menuButtonsContainer').remove();
         });
@@ -1002,17 +1091,19 @@ it. */
     });
 }
 /**
- * It's a function that checks if the F1MV is running and if it is, it will change the text of a tag to
- * "F1MV is running".
+ * It's a function that checks if the MultiViewer is running and if it is, it will change the text of a tag to
+ * "MultiViewer is running".
  * @param force - boolean
  * @returns The response is a JSON object.
  */
 async function linkF1MV(force?: boolean) {
     if (debugOn) log('Link started...');
     try {
-        const response = await window.api.LiveTimingAPIGraphQL(config, 'Heartbeat');
+        const response = await globalThis.api.LiveTimingAPIGraphQL(config, 'Heartbeat');
 
-        if (!response) {
+        if (response) {
+            linkSuccess();
+        } else {
             if (force) {
                 linkSuccess();
                 return;
@@ -1027,17 +1118,14 @@ async function linkF1MV(force?: boolean) {
             $('#tagSession').addClass('badge text-bg-warning');
             $('#networkSettings').hide();
             $('#tagLink').attr('data-i18n', 'youAreConnectedToF1mvButTheLiveReplayTimingWindowIsNotOpen');
-            $('#checkNetworkSettings,#infoTag').hide();
             $('#raceName').attr('data-i18n', 'unableToRetrieveCurrentSessionFromF1mv');
             $('#checkNetworkSettings,#infoTag').hide();
             $(document).localize();
             setTimeout(() => {
                 autoConnectF1MV();
             }, 1000);
-        } else {
-            linkSuccess();
         }
-    } catch (e) {
+    } catch {
         if (force) {
             linkSuccess();
             return;
@@ -1047,7 +1135,7 @@ async function linkF1MV(force?: boolean) {
         $('#tagSession').addClass('badge text-bg-danger');
         $('#currentSession').addClass('text-bg-danger');
         $('#raceName').addClass('text-bg-danger');
-        /* Changing the text of the tag with the id tagLink to Failed to connect to F1MV */
+        /* Changing the text of the tag with the id tagLink to Failed to connect to MultiViewer */
         $('#tagLink').removeAttr('data-i18n');
         $('#raceName').removeAttr('data-i18n');
         $('#raceName').attr('data-i18n', 'failedToRetrieveCurrentSession');
@@ -1073,13 +1161,13 @@ $(function () {
     if (countDownRunning === false) {
         autoConnectF1MV();
     }
-    $('#version').text(`DigiFlag Version: ${version}`);
+    $('#appVersion').text(`v${version}`);
     $('#raceName').text(raceName);
     $('.bottom-screen:not(:hover)').css('opacity', 1);
     $('#linkF1MV').remove();
 
     /* The code below is appending a SVG globe icon, a h5 tag with the text "Network", a
-    label with the text "Multiviewer API IP: ", an input tag with the class "form-control" and the value of the variable host and the id "ip", a label with the text "Multiviewer API Port: ", an input tag with the class "form-control" and the value
+    label with the text "MultiViewer API IP: ", an input tag with the class "form-control" and the value of the variable host and the id "ip", a label with the text "MultiViewer API Port: ", an input tag with the class "form-control" and the value
     of the variable port and the id "port", a div tag with the class "networkbuttons-container" and
     two button tags with the class networkbuttons-container  */
     $('#settingsButton').one('click', () => {
@@ -1088,15 +1176,27 @@ $(function () {
         <circle cx="12" cy="12" r="10"/>
         <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
       </svg>`);
+        // Append Network Settings title
         $('#networkSettings').append('<h5 data-i18n="network">Network</h5>');
-        $('#networkSettings').append(
-            `<label for="ip">Multiviewer API IP:</label>
-            <input type="text" class="form-control-sm text-bg-dark" value="${config.host}" id="ip">`
+
+        const ipv4Pattern = new RegExp(
+            `^(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})\\.(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})\\.(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})\\.(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})$`,
+            'gm'
         );
 
+        const sanitizedHost = escapeHtml(config.host);
+        const sanitizedPort = escapeHtml(config.port.toString());
+
+        // Append IP input with validation
         $('#networkSettings').append(
-            `<label for="port">Multiviewer API Port:</label>
-            <input type="text" class="form-control-sm text-bg-dark" maxlength="5" value="${config.port}" id="port">`
+            `<label for="ip">MultiViewer API IP:</label>
+    <input type="text" class="form-control-sm text-bg-dark" value="${sanitizedHost}" id="ip" required pattern="${ipv4Pattern.source}">`
+        );
+
+        // Append Port input with validation
+        $('#networkSettings').append(
+            `<label for="port">MultiViewer API Port:</label>
+    <input type="number" class="form-control-sm text-bg-dark" maxlength="5" value="${sanitizedPort}" id="port" required min="1" max="65535">`
         );
         $('#networkSettings').append(
             $('<div/>', {
@@ -1109,21 +1209,57 @@ $(function () {
         $('#networkSettings').localize();
         $('#updateSettings').on('click', () => {
             if (debugOn) log('Editing Settings...');
-            /* Assigning the value of the input field with the id of "ip" to the variable "host". */
-            const host = $('#ip').val().toString();
-            config.host = host;
 
-            if (debugOn) log($('#ip').text());
-            if (debugOn) log(`IP = ${$('#ip').val()} = ${config.host}`);
-            /* Assigning the value of the input field with the id of port to the variable port. */
-            const port = $('#port').val().toString();
+            const hostInput = $('#ip').val();
+            const portInput = $('#port').val();
+            const ipv4Regex = ipv4Pattern;
 
-            config.port = parseInt(port);
+            // Clear any previous toasts
+            $('.toast').remove();
 
-            if (debugOn) log($('#port').text());
-            if (debugOn) log(`PORT = ${$('#port').val()} = ${config.port}`);
-            saveSettings(config.host, config.port);
+            // Check if the inputs are not undefined or null
+            if (hostInput && portInput) {
+                if (!ipv4Regex.test(hostInput.toString())) {
+                    ipInvalidToast();
+                    return;
+                }
+
+                const host = hostInput.toString();
+                config.host = host;
+
+                if (debugOn) log($('#ip').text());
+                if (debugOn) log(`IP = ${host} = ${config.host}`);
+
+                const portNumber = Number.parseInt(portInput.toString(), 10);
+                if (Number.isNaN(portNumber) || portNumber < 1 || portNumber > 65535) {
+                    portInvalidToast();
+                    return; // Stop submission
+                }
+
+                const port = portInput.toString();
+                config.port = Number.parseInt(port);
+
+                if (debugOn) log($('#port').text());
+                if (debugOn) log(`PORT = ${port} = ${config.port}`);
+
+                saveSettings(config.host, config.port);
+            } else {
+                // Show a toast if IP or Port input is missing
+                $('#networkSettings > h5')
+                    .after(`<div class="toast text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000" data-bs-autohide="true">
+                        <div class="toast-header text-bg-danger">
+                          <strong class="text-center me-auto">Invalid Input!</strong>
+                          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                        Both IP and Port fields must be filled out.
+                        </div>
+                    </div>
+                `);
+                $('.toast').toast('show');
+            }
         });
+
         $('#restoreSettings').on('click', () => {
             /* Setting the value of the input fields back to 127.0.0.1 and 10101. */
             $('#ip').val('127.0.0.1');
@@ -1187,231 +1323,221 @@ const checkRCM = async () => {
                 message.Category === 'Flag' ||
                 message.Category === 'Other' ||
                 message.Category === 'SafetyCar' ||
-                message.SubCategory === 'Drs'
+                message.Category === 'Drs'
         );
         /* Taking the last element of the array and returning it. */
-        const recentMessage = filteredMessages.slice(-1)[0];
+        const recentMessage = filteredMessages.at(-1);
 
         if (debugOn) console.log('Most Recent Filtered Message: ');
         if (debugOn) console.table(recentMessage);
         if (debugOn) console.log('Most Recent RCM Message: ');
-        if (debugOn) console.table(result.Messages.slice(-1)[0]);
+        if (debugOn) console.table(result.Messages.at(-1));
 
-        /* Checking if the message contains the word "BLACK AND ORANGE" and if it does, it sets the category to "Flag" and the flag to "BLACK AND ORANGE". */
-        if (recentMessage.Message.match(/BLACK AND ORANGE/i)) {
-            const carNumberMatch = recentMessage.Message.match(/CAR (\d+)/i);
-            if (carNumberMatch) {
-                const carNumber = carNumberMatch[1];
-                changeGif('mec', currentMode);
-                await timer(3500);
-                if (carNumber in themes[currentTheme].gifs) {
-                    changeGif(carNumber, currentMode);
+        if (recentMessage) {
+            /* Checking if the message contains the word "BLACK AND ORANGE" and if it does, it sets the category to "Flag" and the flag to "BLACK AND ORANGE". */
+            if (/black and orange/i.test(recentMessage.Message)) {
+                const carNumberMatch = recentMessage.Message.match(/car (\d+)/i);
+                if (carNumberMatch) {
+                    const carNumber = carNumberMatch[1];
+                    changeGif('mec', currentMode);
                     await timer(3500);
-                    turnOff(carNumber);
-                } else {
-                    if (debugOn) console.log(`No racing number GIF found for ${carNumber}`);
+                    if (carNumber in themes[currentTheme].gifs) {
+                        changeGif(carNumber, currentMode);
+                        await timer(3500);
+                        turnOff(carNumber);
+                    } else {
+                        if (debugOn) console.log(`No racing number GIF found for ${carNumber}`);
+                    }
                 }
-                return;
             }
-        }
-        /* Checking if the message contains the word "BLACK AND WHITE" and if it does, it will change the gif
+            /* Checking if the message contains the word "BLACK AND WHITE" and if it does, it will change the gif
 to black and white, wait 2.5 seconds, then change the gif to the racing number, wait 2.5 seconds,
 then turn off the racing number gif, then turn off the black and white gif. */
-        if (recentMessage.Message.match(/BLACK AND WHITE/i)) {
-            isGifPlaying = true;
-            changeGif('blackandwhite', currentMode);
-            await timer(3500);
-            const recentRacingNumber = recentMessage.RacingNumber;
-            if (recentRacingNumber) {
-                changeGif(recentRacingNumber, currentMode, recentRacingNumber);
+            if (/black and white/i.test(recentMessage.Message)) {
+                isGifPlaying = true;
+                changeGif('blackandwhite', currentMode);
                 await timer(3500);
-                turnOff(recentRacingNumber, recentRacingNumber);
-                isGifPlaying = false;
-            } else {
-                if (debugOn) console.log(`No racing number GIF found for ${recentRacingNumber}`);
-                turnOff('blackandwhite');
-                isGifPlaying = false;
+                const recentRacingNumber = recentMessage.RacingNumber;
+                if (recentRacingNumber) {
+                    changeGif(recentRacingNumber, currentMode, recentRacingNumber);
+                    await timer(3500);
+                    turnOff(recentRacingNumber, recentRacingNumber);
+                    isGifPlaying = false;
+                } else {
+                    if (debugOn) console.log(`No racing number GIF found for ${recentRacingNumber}`);
+                    turnOff('blackandwhite');
+                    isGifPlaying = false;
+                }
             }
-            return;
-        }
-        /* Checking the recentMessage.SubCategory to see if it is a TimePenalty. If it is, it is checking the
+            /* Checking the recentMessage.SubCategory to see if it is a TimePenalty. If it is, it is checking the
 recentMessage.Message to see if it contains the text "CAR #" where # is a number. If it does, it is
 checking the recentMessage.Message to see if it contains the text "5 SECOND TIME PENALTY" or "10
 SECOND TIME PENALTY". If it does, it is changing the gif to the appropriate gif and then turning it
 off after a certain amount of time. */
-        if (recentMessage.SubCategory === 'TimePenalty' && extraFlagSwitch) {
-            /* Using a regular expression to match the message to a pattern. */
-            const carNumberMatch = recentMessage.Message.match(/CAR (\d+)/i);
-            if (carNumberMatch) {
-                /* Using a regular expression to extract the car number from the string. */
-                const carNumber = carNumberMatch[1];
-                if (debugOn) console.log(`Car Number: ${carNumber}`);
-                if (recentMessage.Message.match(/5 SECOND TIME PENALTY/i)) {
-                    isGifPlaying = true;
-                    changeGif('timepenalty5sec', currentMode);
-                    await timer(3500);
-                    changeGif(carNumber, currentMode, carNumber);
-                    await timer(3500);
-                    turnOff(carNumber, carNumber);
-                    isGifPlaying = false;
-                }
-                if (recentMessage.Message.match(/10 SECOND TIME PENALTY/i)) {
-                    isGifPlaying = true;
-                    changeGif('timepenalty10sec', currentMode);
-                    await timer(3500);
-                    changeGif(carNumber, currentMode, carNumber);
-                    await timer(3500);
-                    turnOff(carNumber, carNumber);
-                    isGifPlaying = false;
-                }
-            }
-        }
-        if (recentMessage.SubCategory === 'StopGoPenalty' && extraFlagSwitch) {
-            /* Using a regular expression to match the message to a pattern. */
-            const carNumberMatch = recentMessage.Message.match(/CAR (\d+)/i);
-            if (carNumberMatch) {
-                /* Using a regular expression to extract the car number from the string. */
-                const carNumber = carNumberMatch[1];
-                if (debugOn) console.log(`Car Number: ${carNumber}`);
-                if (recentMessage.Message.match(/10 SECOND STOP\/GO PENALTY/i)) {
-                    isGifPlaying = true;
-                    changeGif('stopgopenalty10sec', currentMode);
-                    await timer(3500);
-                    changeGif(carNumber, currentMode, carNumber);
-                    await timer(3500);
-                    turnOff(carNumber, carNumber);
-                    isGifPlaying = false;
+            if (recentMessage.SubCategory === 'TimePenalty' && extraFlagSwitch) {
+                /* Using a regular expression to match the message to a pattern. */
+                const carNumberMatch = recentMessage.Message.match(/car (\d+)/i);
+                if (carNumberMatch) {
+                    /* Using a regular expression to extract the car number from the string. */
+                    const carNumber = carNumberMatch[1];
+                    if (debugOn) console.log(`Car Number: ${carNumber}`);
+                    if (/5 second time penalty/i.test(recentMessage.Message)) {
+                        isGifPlaying = true;
+                        changeGif('timepenalty5sec', currentMode);
+                        await timer(3500);
+                        changeGif(carNumber, currentMode, carNumber);
+                        await timer(3500);
+                        turnOff(carNumber, carNumber);
+                        isGifPlaying = false;
+                    }
+                    if (/10 second time penalty/i.test(recentMessage.Message)) {
+                        isGifPlaying = true;
+                        changeGif('timepenalty10sec', currentMode);
+                        await timer(3500);
+                        changeGif(carNumber, currentMode, carNumber);
+                        await timer(3500);
+                        turnOff(carNumber, carNumber);
+                        isGifPlaying = false;
+                    }
                 }
             }
-        }
-        /* Checking if the message contains the word "ROLLING START" and if it does, it will change the gif to "rs" and then turn it off after 20 seconds. */
-        if (
-            recentMessage.Message.match(/ROLLING START/i) &&
-            //Fixes an issue When the Rolling Start Flag Would Display when a ROLLING START PROCEDURE INFRINGEMENT Occurs
-            recentMessage.SubCategory !== 'IncidentInvestigationAfterSession' &&
-            recentMessage.SubCategory !== 'SessionResume'
-        ) {
-            isGifPlaying = true;
-            changeGif('rs', currentMode);
-            await timer(20000);
-            turnOff('rs');
-            isGifPlaying = false;
-            return;
-        }
-        if (recentMessage.Message.match(/STANDING START PROCEDURE/i) && recentMessage.SubCategory !== 'SessionResume') {
-            isGifPlaying = true;
-            changeGif('ss', currentMode);
-            await timer(20000);
-            turnOff('ss');
-            isGifPlaying = false;
-            return;
-        }
-        if (recentMessage.Message.match(/DRS ENABLED/i) && extraFlagSwitch) {
-            isGifPlaying = true;
-            changeGif('DRSenabled', currentMode);
-            await timer(3500);
-            turnOff('DRSenabled');
-            isGifPlaying = false;
-            return;
-        }
-        if (recentMessage.Message.match(/DRS DISABLED/i) && extraFlagSwitch) {
-            isGifPlaying = true;
-            changeGif('DRSdisabled', currentMode);
-            await timer(3500);
-            turnOff('DRSdisabled');
-            isGifPlaying = false;
-            return;
-        }
-        if (recentMessage.Message.match(/PIT LANE ENTRY CLOSED/i)) {
-            isGifPlaying = true;
-            changeGif('pitclosed', currentMode);
-            await timer(3500);
-            turnOff('pitclosed');
-            isGifPlaying = false;
-            return;
-        }
-        if (recentMessage.Message.match(/PIT EXIT OPEN/i)) {
-            isGifPlaying = true;
-            changeGif('green', currentMode);
-            await timer(3500);
-            turnOff('green');
-            isGifPlaying = false;
-            return;
-        }
-        if (recentMessage.Message.match(/PIT ENTRY CLOSED/i)) {
-            isGifPlaying = true;
-            changeGif('pitclosed', currentMode);
-            await timer(3500);
-            turnOff('pitclosed');
-            isGifPlaying = false;
-            return;
-        }
-        if (recentMessage.Message.match(/RECOVERY VEHICLE ON TRACK/i) && extraFlagSwitch) {
-            isGifPlaying = true;
-            changeGif('recoveryvehicle', currentMode);
-            await timer(5000);
-            turnOff('recoveryvehicle');
-            isGifPlaying = false;
-            return;
-        }
-        if (recentMessage.Message.match(/MEDICAL CAR DEPLOYED/i) && extraFlagSwitch) {
-            isGifPlaying = true;
-            changeGif('medicalcar', currentMode);
-            await timer(5000);
-            turnOff('medicalcar');
-            isGifPlaying = false;
-            return;
-        }
-
-        if (recentMessage.SubCategory === 'TrackSurfaceSlippery') {
-            isGifPlaying = true;
-            changeGif('slippery', currentMode);
-            await timer(5000);
-            turnOff('slippery');
-            isGifPlaying = false;
-            return;
-        }
-
-        if (
-            recentMessage.Message.match(/DOUBLE YELLOW/i) &&
-            !recentMessage.Message.match(/LAP DELETED/i) &&
-            sc !== true &&
-            vsc !== true
-        ) {
-            isGifPlaying = true;
-            changeGif('dyellow', currentMode);
-            await timer(10000);
-            turnOff('dyellow');
-            isGifPlaying = false;
-            return;
-        }
-
-        if (recentMessage.Message.match(/BLUE FLAG/i) && recentMessage.Flag !== 'CHEQUERED' && blueFlagSwitch) {
-            isGifPlaying = true;
-            changeGif('blue', currentMode);
-            await timer(3500);
-            /* Using a regular expression to match the message to a pattern. */
-            const recentRacingNumber = recentMessage.RacingNumber;
-            if (recentRacingNumber) {
-                changeGif(recentRacingNumber, currentMode, recentRacingNumber);
+            if (recentMessage.SubCategory === 'StopGoPenalty' && extraFlagSwitch) {
+                /* Using a regular expression to match the message to a pattern. */
+                const carNumberMatch = recentMessage.Message.match(/car (\d+)/i);
+                if (carNumberMatch) {
+                    /* Using a regular expression to extract the car number from the string. */
+                    const carNumber = carNumberMatch[1];
+                    if (debugOn) console.log(`Car Number: ${carNumber}`);
+                    if (/10 second stop\/go penalty/i.test(recentMessage.Message)) {
+                        isGifPlaying = true;
+                        changeGif('stopgopenalty10sec', currentMode);
+                        await timer(3500);
+                        changeGif(carNumber, currentMode, carNumber);
+                        await timer(3500);
+                        turnOff(carNumber, carNumber);
+                        isGifPlaying = false;
+                    }
+                }
+            }
+            /* Checking if the message contains the word "ROLLING START" and if it does, it will change the gif to "rs" and then turn it off after 20 seconds. */
+            if (
+                /rolling start/i.test(recentMessage.Message) &&
+                //Fixes an issue When the Rolling Start Flag Would Display when a ROLLING START PROCEDURE INFRINGEMENT Occurs
+                recentMessage.SubCategory !== 'IncidentInvestigationAfterSession' &&
+                recentMessage.SubCategory !== 'SessionResume'
+            ) {
+                isGifPlaying = true;
+                changeGif('rs', currentMode);
+                await timer(20000);
+                turnOff('rs');
+                isGifPlaying = false;
+            }
+            if (
+                /standing start procedure/i.test(recentMessage.Message) &&
+                recentMessage.SubCategory !== 'SessionResume'
+            ) {
+                isGifPlaying = true;
+                changeGif('ss', currentMode);
+                await timer(20000);
+                turnOff('ss');
+                isGifPlaying = false;
+            }
+            if (/drs enabled/i.test(recentMessage.Message) && extraFlagSwitch) {
+                isGifPlaying = true;
+                changeGif('DRSenabled', currentMode);
                 await timer(3500);
-                turnOff(recentRacingNumber, recentRacingNumber);
-                isGifPlaying = false;
-            } else {
-                if (debugOn) console.log(`No racing number GIF found for ${recentRacingNumber}`);
-                turnOff('blue');
+                turnOff('DRSenabled');
                 isGifPlaying = false;
             }
-            return;
-        }
+            if (/drs disabled/i.test(recentMessage.Message) && extraFlagSwitch) {
+                isGifPlaying = true;
+                changeGif('DRSdisabled', currentMode);
+                await timer(3500);
+                turnOff('DRSdisabled');
+                isGifPlaying = false;
+            }
+            if (/pit lane entry closed/i.test(recentMessage.Message)) {
+                isGifPlaying = true;
+                changeGif('pitclosed', currentMode);
+                await timer(3500);
+                turnOff('pitclosed');
+                isGifPlaying = false;
+            }
+            if (/pit exit open/i.test(recentMessage.Message)) {
+                isGifPlaying = true;
+                changeGif('green', currentMode);
+                await timer(3500);
+                turnOff('green');
+                isGifPlaying = false;
+            }
+            if (/pit entry closed/i.test(recentMessage.Message)) {
+                isGifPlaying = true;
+                changeGif('pitclosed', currentMode);
+                await timer(3500);
+                turnOff('pitclosed');
+                isGifPlaying = false;
+            }
+            if (/recovery vehicle on track/i.test(recentMessage.Message) && extraFlagSwitch) {
+                isGifPlaying = true;
+                changeGif('recoveryvehicle', currentMode);
+                await timer(5000);
+                turnOff('recoveryvehicle');
+                isGifPlaying = false;
+            }
+            if (/medical car deployed/i.test(recentMessage.Message) && extraFlagSwitch) {
+                isGifPlaying = true;
+                changeGif('medicalcar', currentMode);
+                await timer(5000);
+                turnOff('medicalcar');
+                isGifPlaying = false;
+            }
 
-        if (recentMessage.Message.match(/CHEQUERED FLAG/i)) {
-            isGifPlaying = true;
-            changeGif('chequered', currentMode);
-            await timer(90000);
-            turnOff('chequered');
-            isGifPlaying = false;
-            return;
+            if (recentMessage.SubCategory === 'TrackSurfaceSlippery') {
+                isGifPlaying = true;
+                changeGif('slippery', currentMode);
+                await timer(5000);
+                turnOff('slippery');
+                isGifPlaying = false;
+            }
+
+            if (
+                /double yellow/i.test(recentMessage.Message) &&
+                !/lap deleted/i.test(recentMessage.Message) &&
+                sc !== true &&
+                vsc !== true
+            ) {
+                isGifPlaying = true;
+                changeGif('dyellow', currentMode);
+                await timer(10000);
+                turnOff('dyellow');
+                isGifPlaying = false;
+            }
+
+            if (/blue flag/i.test(recentMessage.Message) && recentMessage.Flag !== 'CHEQUERED' && blueFlagSwitch) {
+                isGifPlaying = true;
+                changeGif('blue', currentMode);
+                await timer(3500);
+                /* Using a regular expression to match the message to a pattern. */
+                const recentRacingNumber = recentMessage.RacingNumber;
+                if (recentRacingNumber) {
+                    changeGif(recentRacingNumber, currentMode, recentRacingNumber);
+                    await timer(3500);
+                    turnOff(recentRacingNumber, recentRacingNumber);
+                    isGifPlaying = false;
+                } else {
+                    if (debugOn) console.log(`No racing number GIF found for ${recentRacingNumber}`);
+                    turnOff('blue');
+                    isGifPlaying = false;
+                }
+            }
+
+            if (/chequered flag/i.test(recentMessage.Message)) {
+                isGifPlaying = true;
+                changeGif('chequered', currentMode);
+                await timer(90000);
+                turnOff('chequered');
+                isGifPlaying = false;
+            }
         }
     }
 };
@@ -1429,11 +1555,11 @@ async function checkTrackStatus() {
     // {"Status":"5","Message":"Red"}
     // {"Status":"6","Message":"VSCDeployed"}
     // {"Status":"7","Message":"VSCEnding"}
-    const recentTrackStatus = trackStatus.slice(-1)[0];
-    if (recentTrackStatus !== currentTrackStatus) {
+    const recentTrackStatus = trackStatus.at(-1);
+    if (recentTrackStatus !== undefined && recentTrackStatus !== currentTrackStatus) {
         // check if the status has changed
         switch (recentTrackStatus) {
-            case '1':
+            case '1': {
                 if (sc || vsc || red || yellow) {
                     if (debugOn) console.log(`New track status : 🟩 %cGreen`, 'color:#05e376');
                     sc = false;
@@ -1447,7 +1573,9 @@ async function checkTrackStatus() {
                     isGifPlaying = false;
                 }
                 break;
-            case '2': // Yellow
+            }
+            case '2': {
+                // Yellow
                 if (debugOn) console.log(`New track status : 🟨 %cYellow`, 'color:#e8f00a');
                 sc = false;
                 yellow = true;
@@ -1456,7 +1584,9 @@ async function checkTrackStatus() {
                 isGifPlaying = true;
                 changeGif('yellow', currentMode);
                 break;
-            case '4': // SCDeployed
+            }
+            case '4': {
+                // SCDeployed
                 sc = true;
                 yellow = false;
                 vsc = false;
@@ -1464,7 +1594,9 @@ async function checkTrackStatus() {
                 isGifPlaying = true;
                 changeGif('sc', currentMode);
                 break;
-            case '5': // Red
+            }
+            case '5': {
+                // Red
                 if (debugOn) console.log(`New track status : 🟥 %cRed`, 'color:#f0250a');
                 sc = false;
                 yellow = false;
@@ -1473,7 +1605,9 @@ async function checkTrackStatus() {
                 isGifPlaying = true;
                 changeGif('red', currentMode);
                 break;
-            case '6': // VSCDeployed
+            }
+            case '6': {
+                // VSCDeployed
                 sc = false;
                 yellow = false;
                 vsc = true;
@@ -1481,7 +1615,9 @@ async function checkTrackStatus() {
                 isGifPlaying = true;
                 changeGif('vsc', currentMode);
                 break;
-            case '7': // VSCEnding
+            }
+            case '7': {
+                // VSCEnding
                 sc = false;
                 yellow = false;
                 vsc = true;
@@ -1489,8 +1625,10 @@ async function checkTrackStatus() {
                 isGifPlaying = true;
                 changeGif('vsc', currentMode);
                 break;
-            default:
+            }
+            default: {
                 break;
+            }
         }
         currentTrackStatus = recentTrackStatus; // update the current status
         if (debugOn) console.log(`Current Track Status: ${currentTrackStatus}`);
@@ -1510,24 +1648,24 @@ async function checkRain() {
     const Rain = LT_Data.WeatherData.Rainfall;
     if (Rain !== currentRainStatus && !isGifPlaying) {
         switch (Rain) {
-            case '0': // Not raining
-                if (lightOnRain) {
-                    if (pixoostartup === false) {
-                        if (debugOn) console.log(`%cIt Stopped Raining!`, 'color:orange');
-                        changeGif('void', currentMode);
-                        lightOnRain = false;
-                    }
+            case '0': {
+                // Not raining
+                if (lightOnRain && pixoostartup === false) {
+                    if (debugOn) console.log(`%cIt Stopped Raining!`, 'color:orange');
+                    changeGif('void', currentMode);
+                    lightOnRain = false;
                 }
                 break;
-            case '1': // Raining
-                if (!lightOnRain) {
-                    if (pixoostartup === false) {
-                        if (debugOn) console.log(`%cIt's Raining!`, 'color:aqua');
-                        changeGif('rain', currentMode);
-                        lightOnRain = true;
-                    }
+            }
+            case '1': {
+                // Raining
+                if (!lightOnRain && pixoostartup === false) {
+                    if (debugOn) console.log(`%cIt's Raining!`, 'color:aqua');
+                    changeGif('rain', currentMode);
+                    lightOnRain = true;
                 }
                 break;
+            }
         }
         currentRainStatus = Rain;
         if (debugOn) console.log(`%cCurrent Rain Status: ${currentRainStatus}`, 'color:aqua');
@@ -1541,19 +1679,17 @@ async function checkRain() {
  */
 async function updateData() {
     try {
-        if (started) {
-            if (pixoostartup === false) {
-                LT_Data = await window.api.LiveTimingAPIGraphQL(config, [
-                    'RaceControlMessages',
-                    'TrackStatus',
-                    'CarData',
-                    'TimingData',
-                    'WeatherData',
-                ]);
-                checkTrackStatus();
-                checkRCM();
-                checkRain();
-            }
+        if (started && pixoostartup === false) {
+            LT_Data = await globalThis.api.LiveTimingAPIGraphQL(config, [
+                'RaceControlMessages',
+                'TrackStatus',
+                'CarData',
+                'TimingData',
+                'WeatherData',
+            ]);
+            checkTrackStatus();
+            checkRCM();
+            checkRain();
         }
     } catch (error) {
         console.error(error);
@@ -1562,7 +1698,7 @@ async function updateData() {
 }
 
 /* Update the Live Timing data initially */
-updateData();
+await updateData();
 /**
  * If the background is transparent, make it opaque. If the background is opaque, make it transparent.
  */
@@ -1590,18 +1726,23 @@ updateData();
  * window.api.getAlwaysOnTop() function.
  * @returns A promise.
  */
+
 async function getAlwaysOnTopSetting() {
-    return await window.api.getAlwaysOnTop();
+    return await globalThis.api.getAlwaysOnTop();
 }
-
-/* Getting the value of the alwaysOnTop setting from the storage and setting the checkbox to the
+if (/electron/i.test(userAgent)) {
+    /* Getting the value of the alwaysOnTop setting from the storage and setting the checkbox to the
 value. */
-jQuery(async () => {
-    const alwaysOnTop = await getAlwaysOnTopSetting();
-    $('#alwaysOnTopSwitch').prop('checked', alwaysOnTop);
-});
+    $(async () => {
+        const alwaysOnTop = await getAlwaysOnTopSetting();
+        $('#alwaysOnTopSwitch').prop('checked', alwaysOnTop);
+    });
 
-/* When the alwaysOnTop switch is changed it window to always on top. */
-$('#alwaysOnTopSwitch').on('change', async () => {
-    await window.api.setAlwaysOnTop();
-});
+    /* When the alwaysOnTop switch is changed it window to always on top. */
+    $('#alwaysOnTopSwitch').on('change', async () => {
+        await globalThis.api.setAlwaysOnTop();
+    });
+} else {
+    $('#alwaysOnTop').remove();
+    $('#networkSettings').remove();
+}
