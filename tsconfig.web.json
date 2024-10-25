@@ -1,14 +1,23 @@
 {
-  "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
-  "include": ["src/renderer/**/*.ts", "src/preload/*.d.ts","*.json", "src/renderer/**/translation.json", "src/renderer/i18n.ts"],
-  "compilerOptions": {
-    "composite": true,
-    "module": "CommonJS",
-    "target": "ES2022",
-    "moduleResolution": "Node",
-    "useUnknownInCatchVariables": false,
-    "strict": false,
-    "isolatedModules": false,
-    "types": ["jquery"]
-  }
+    "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
+    "include": [
+        "src/renderer/**/*.ts",
+        "src/preload/*.d.ts",
+        "src/renderer/**/translation.json",
+        "src/renderer/i18n.ts"
+    ],
+    "compilerOptions": {
+        "composite": true,
+        "module": "ESNext",
+        "target": "ESNext",
+        "moduleResolution": "Bundler",
+        "experimentalDecorators": true,
+        "noImplicitReturns": true,
+        "noImplicitOverride": true,
+        "noUnusedLocals": true,
+        "allowUnreachableCode": false,
+        "resolveJsonModule": true,
+        "strict": true,
+        "types": ["jquery", "bootstrap"]
+    }
 }

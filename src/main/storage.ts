@@ -19,7 +19,7 @@ export function getWindowSizeSettings() {
     /* Getting the height of the screen and multiplying it by 0.8. */
     const height = dimensions.height * 0.8;
     /* Creating an array with the width and height of the screen. */
-    const defaultWindowSize:number[] = [width, height];
+    const defaultWindowSize: number[] = [width, height];
     /* Getting the value of the key "lastWindowSize" from the storage object. */
     const windowSize = storage.get('lastWindowSize') as number[];
 
@@ -27,7 +27,7 @@ export function getWindowSizeSettings() {
     if (windowSize) return windowSize;
     else {
         storage.set('lastWindowSize', defaultWindowSize);
-        return defaultWindowSize
+        return defaultWindowSize;
     }
 }
 /**
@@ -36,7 +36,7 @@ export function getWindowSizeSettings() {
  * @returns An array of two numbers.
  */
 export function getWindowPositionSettings() {
-    const defaultWindowPositon:number[] = []
+    const defaultWindowPositon: number[] = [];
     const windowPos = storage.get('lastWindowPosition') as number[];
     if (windowPos) return windowPos;
     else {
@@ -51,7 +51,7 @@ export function getWindowPositionSettings() {
  */
 export function saveWindowSize(windowSize: number[]): void {
     storage.set('lastWindowSize', windowSize);
-    console.log('Window Size Saved: ', windowSize);
+    console.log('Window Size Saved:', windowSize);
 }
 /**
  * This function saves the window position to the config.json
@@ -59,20 +59,20 @@ export function saveWindowSize(windowSize: number[]): void {
  */
 export function saveWindowPos(windowPos: number[]): void {
     storage.set('lastWindowPosition', windowPos);
-    console.log('Window Position Saved: ', windowPos);
+    console.log('Window Position Saved:', windowPos);
 }
 
 export function getAlwaysOnTopState() {
-    const defaultAlwaysOnTopState=false
+    const defaultAlwaysOnTopState = false;
     const alwaysOnTopState = storage.get('alwaysOnTop') as boolean;
     if (alwaysOnTopState) return alwaysOnTopState;
     else {
         storage.set('alwaysOnTop', defaultAlwaysOnTopState);
         return defaultAlwaysOnTopState;
     }
-  }
+}
 
 export function saveAlwaysOnTopState(alwaysOnTop: boolean): void {
     storage.set('alwaysOnTop', alwaysOnTop);
-    console.log(`Always on Top State (${alwaysOnTop}) Saved: `, alwaysOnTop);
+    console.log(`Always on Top State (${alwaysOnTop}) Saved:`, alwaysOnTop);
 }
