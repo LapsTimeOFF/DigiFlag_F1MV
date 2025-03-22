@@ -23,7 +23,7 @@ asarUnpack:
 win:
   executableName: DigiFlag-F1MV
   # Remove Comment From Line Below For Faster Builds During Development. Add # During Production
-  compression: store
+  # compression: store
   target:
     - zip
     - target: nsis
