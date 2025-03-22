@@ -149,8 +149,34 @@
               "77": "gifs/T2_11/DriverNumbers/2024/77.gif",
               "81": "gifs/T2_11/DriverNumbers/2024/81.gif"
             }
+          },
+          {
+            "year": "2025",
+            "DriverNumbers": {
+              "1": "gifs/T2_11/DriverNumbers/2025/1.gif",
+              "4": "gifs/T2_11/DriverNumbers/2025/4.gif",
+              "5": "gifs/T2_11/DriverNumbers/2025/5.gif",
+              "6": "gifs/T2_11/DriverNumbers/2025/6.gif",
+              "7": "gifs/T2_11/DriverNumbers/2025/7.gif",
+              "10": "gifs/T2_11/DriverNumbers/2025/10.gif",
+              "12": "gifs/T2_11/DriverNumbers/2025/12.gif",
+              "14": "gifs/T2_11/DriverNumbers/2025/14.gif",
+              "16": "gifs/T2_11/DriverNumbers/2025/16.gif",
+              "18": "gifs/T2_11/DriverNumbers/2025/18.gif",
+              "22": "gifs/T2_11/DriverNumbers/2025/22.gif",
+              "23": "gifs/T2_11/DriverNumbers/2025/23.gif",
+              "27": "gifs/T2_11/DriverNumbers/2025/27.gif",
+              "30": "gifs/T2_11/DriverNumbers/2025/30.gif",
+              "31": "gifs/T2_11/DriverNumbers/2025/31.gif",
+              "44": "gifs/T2_11/DriverNumbers/2025/44.gif",
+              "55": "gifs/T2_11/DriverNumbers/2025/55.gif",
+              "63": "gifs/T2_11/DriverNumbers/2025/63.gif",
+              "81": "gifs/T2_11/DriverNumbers/2025/81.gif",
+              "87": "gifs/T2_11/DriverNumbers/2025/87.gif"
+            }
           }
         ],
+        "abortedstart": "gifs/T2_11/abortedstart.gif",
         "blackandwhite": "gifs/T2_11/blackandwhite.gif",
         "blue": "gifs/T2_11/blue.gif",
         "chequered": "gifs/T2_11/chequered.gif",
@@ -246,14 +272,41 @@
               "77": "gifs/T2_169/DriverNumbers/2024/77.gif",
               "81": "gifs/T2_169/DriverNumbers/2024/81.gif"
             }
+          },
+          {
+            "year": "2025",
+            "DriverNumbers": {
+              "1": "gifs/T2_169/DriverNumbers/2025/1.gif",
+              "4": "gifs/T2_169/DriverNumbers/2025/4.gif",
+              "5": "gifs/T2_169/DriverNumbers/2025/5.gif",
+              "6": "gifs/T2_169/DriverNumbers/2025/6.gif",
+              "7": "gifs/T2_169/DriverNumbers/2025/7.gif",
+              "10": "gifs/T2_169/DriverNumbers/2025/10.gif",
+              "12": "gifs/T2_169/DriverNumbers/2025/12.gif",
+              "14": "gifs/T2_169/DriverNumbers/2025/14.gif",
+              "16": "gifs/T2_169/DriverNumbers/2025/16.gif",
+              "18": "gifs/T2_169/DriverNumbers/2025/18.gif",
+              "22": "gifs/T2_169/DriverNumbers/2025/22.gif",
+              "23": "gifs/T2_169/DriverNumbers/2025/23.gif",
+              "27": "gifs/T2_169/DriverNumbers/2025/27.gif",
+              "30": "gifs/T2_169/DriverNumbers/2025/30.gif",
+              "31": "gifs/T2_169/DriverNumbers/2025/31.gif",
+              "44": "gifs/T2_169/DriverNumbers/2025/44.gif",
+              "55": "gifs/T2_169/DriverNumbers/2025/55.gif",
+              "63": "gifs/T2_169/DriverNumbers/2025/63.gif",
+              "81": "gifs/T2_169/DriverNumbers/2025/81.gif",
+              "87": "gifs/T2_169/DriverNumbers/2025/87.gif"
+            }
           }
         ],
+        "abortedstart": "gifs/T2_169/abortedstart.gif",
         "blackandwhite": "gifs/T2_169/blackandwhite.gif",
         "blue": "gifs/T2_169/blue.gif",
         "chequered": "gifs/T2_169/chequered.gif",
         "DRSenabled": "gifs/T2_169/DRSenabled.gif",
         "DRSdisabled": "gifs/T2_169/DRSdisabled.gif",
         "dyellow": "gifs/T2_169/dyellow.gif",
+        "finallap": "gifs/T2_169/finallap.gif",
         "green": "gifs/T2_169/green.gif",
         "mec": "gifs/T2_169/mec.gif",
         "medicalcar": "gifs/T2_169/medicalcar.gif",
@@ -343,6 +396,31 @@
               "77": "gifs/pixoo64/DriverNumbers/2024/77.gif",
               "81": "gifs/pixoo64/DriverNumbers/2024/81.gif"
             }
+          },
+          {
+            "year": "2025",
+            "DriverNumbers": {
+              "1": "gifs/pixoo64/DriverNumbers/2025/1.gif",
+              "4": "gifs/pixoo64/DriverNumbers/2025/4.gif",
+              "5": "gifs/pixoo64/DriverNumbers/2025/5.gif",
+              "6": "gifs/pixoo64/DriverNumbers/2025/6.gif",
+              "7": "gifs/pixoo64/DriverNumbers/2025/7.gif",
+              "10": "gifs/pixoo64/DriverNumbers/2025/10.gif",
+              "12": "gifs/pixoo64/DriverNumbers/2025/12.gif",
+              "14": "gifs/pixoo64/DriverNumbers/2025/14.gif",
+              "16": "gifs/pixoo64/DriverNumbers/2025/16.gif",
+              "18": "gifs/pixoo64/DriverNumbers/2025/18.gif",
+              "22": "gifs/pixoo64/DriverNumbers/2025/22.gif",
+              "23": "gifs/pixoo64/DriverNumbers/2025/23.gif",
+              "27": "gifs/pixoo64/DriverNumbers/2025/27.gif",
+              "30": "gifs/pixoo64/DriverNumbers/2025/30.gif",
+              "31": "gifs/pixoo64/DriverNumbers/2025/31.gif",
+              "44": "gifs/pixoo64/DriverNumbers/2025/44.gif",
+              "55": "gifs/pixoo64/DriverNumbers/2025/55.gif",
+              "63": "gifs/pixoo64/DriverNumbers/2025/63.gif",
+              "81": "gifs/pixoo64/DriverNumbers/2025/81.gif",
+              "87": "gifs/pixoo64/DriverNumbers/2025/87.gif"
+            }
           }
         ],
         "blackandwhite": "gifs/pixoo64/blackandwhite.gif",
@@ -351,6 +429,7 @@
         "DRSenabled": "gifs/pixoo64/DRSenabled.gif",
         "DRSdisabled": "gifs/pixoo64/DRSdisabled.gif",
         "dyellow": "gifs/pixoo64/dyellow.gif",
+        "finallap": "gifs/pixoo64/finallap.gif",
         "green": "gifs/pixoo64/green.gif",
         "mec": "gifs/pixoo64/mec.gif",
         "mv": "gifs/pixoo64/mv.gif",
@@ -438,7 +517,7 @@
         {
           "year": "2024",
           "trackMaps": {
-            "2024 Pre-Season Testing": "tracks/2023/Bahrain/Bahrain Grand Prix_16-9.png",
+            "2024 Pre-Season Testing": "tracks/2024/Bahrain/Bahrain Grand Prix_16-9.png",
             "2024 Bahrain Grand Prix": "tracks/2024/Bahrain/Bahrain Grand Prix_16-9.png",
             "2024 Saudi Arabian Grand Prix": "tracks/2024/Saudi_Arabia/Saudi Arabian Grand Prix_16-9.png",
             "2024 Australian Grand Prix": "tracks/2024/Australia/Australian Grand Prix_16-9.png",
@@ -463,6 +542,36 @@
             "2024 Las Vegas Grand Prix": "tracks/2024/Las_Vegas/Las Vegas Grand Prix_16-9.png",
             "2024 Qatar Grand Prix": "tracks/2024/Qatar/Qatar Grand Prix_16-9.png",
             "2024 Abu Dhabi Grand Prix": "tracks/2024/Abu_Dhabi/Abu Dhabi Grand Prix_16-9.png"
+          }
+        },
+        {
+          "year": "2025",
+          "trackMaps": {
+            "2025 Pre-Season Testing": "tracks/2025/Bahrain/Bahrain Grand Prix_16-9.png",
+            "2025 Australian Grand Prix": "tracks/2025/Australia/Australian Grand Prix_16-9.png",
+            "2025 Chinese Grand Prix": "tracks/2025/China/Chinese Grand Prix_16-9.png",
+            "2025 Japanese Grand Prix": "tracks/2025/Japan/Japanese Grand Prix_16-9.png",
+            "2025 Bahrain Grand Prix": "tracks/2025/Bahrain/Bahrain Grand Prix_16-9.png",
+            "2025 Saudi Arabian Grand Prix": "tracks/2025/Saudi_Arabia/Saudi Arabian Grand Prix_16-9.png",
+            "2025 Miami Grand Prix": "tracks/2025/Miami/Miami Grand Prix_16-9.png",
+            "2025 Emilia Romagna Grand Prix": "tracks/2025/Italy/Emilia Romagna Grand Prix_16-9.png",
+            "2025 Monaco Grand Prix": "tracks/2025/Monaco/Monaco Grand Prix_16-9.png",
+            "2025 Spanish Grand Prix": "tracks/2025/Spain/Spanish Grand Prix_16-9.png",
+            "2025 Canadian Grand Prix": "tracks/2025/Canada/Canadian Grand Prix_16-9.png",
+            "2025 Austrian Grand Prix": "tracks/2025/Austria/Austrian Grand Prix_16-9.png",
+            "2025 British Grand Prix": "tracks/2025/UK/British Grand Prix_16-9.png",
+            "2025 Belgian Grand Prix": "tracks/2025/Belgium/Belgian Grand Prix_16-9.png",
+            "2025 Hungarian Grand Prix": "tracks/2025/Hungary/Hungarian Grand Prix_16-9.png",
+            "2025 Dutch Grand Prix": "tracks/2025/Netherlands/Dutch Grand Prix_16-9.png",
+            "2025 Italian Grand Prix": "tracks/2025/Italy/Italian Grand Prix_16-9.png",
+            "2025 Azerbaijan Grand Prix": "tracks/2025/Azerbaijan/Azerbaijan Grand Prix_16-9.png",
+            "2025 Singapore Grand Prix": "tracks/2025/Singapore/Singapore Grand Prix_16-9.png",
+            "2025 United States Grand Prix": "tracks/2025/USA/United States Grand Prix_16-9.png",
+            "2025 Mexico City Grand Prix": "tracks/2025/Mexico/Mexico City Grand Prix_16-9.png",
+            "2025 Brazilian Grand Prix": "tracks/2025/Brazil/Brazilian Grand Prix_16-9.png",
+            "2025 Las Vegas Grand Prix": "tracks/2025/Las_Vegas/Las Vegas Grand Prix_16-9.png",
+            "2025 Qatar Grand Prix": "tracks/2025/Qatar/Qatar Grand Prix_16-9.png",
+            "2025 Abu Dhabi Grand Prix": "tracks/2025/Abu_Dhabi/Abu Dhabi Grand Prix_16-9.png"
           }
         }
       ]
@@ -556,6 +665,36 @@
             "2024 Las Vegas Grand Prix": "tracks/2024/Las Vegas/Las Vegas Grand Prix_16-9_sat.png",
             "2024 Qatar Grand Prix": "tracks/2024/Qatar/Qatar Grand Prix_16-9_sat.png",
             "2024 Abu Dhabi Grand Prix": "tracks/2024/Abu_Dhabi/Abu Dhabi Grand Prix_16-9_sat.png"
+          }
+        },
+        {
+          "year": "2025",
+          "trackMaps": {
+            "2025 Pre-Season Testing": "tracks/2025/Bahrain/Bahrain Grand Prix_16-9_sat.png",
+            "2025 Australian Grand Prix": "tracks/2025/Australia/Australian Grand Prix_16-9_sat.png",
+            "2025 Chinese Grand Prix": "tracks/2025/China/Chinese Grand Prix_16-9_sat.png",
+            "2025 Japanese Grand Prix": "tracks/2025/Japan/Japanese Grand Prix_16-9_sat.png",
+            "2025 Bahrain Grand Prix": "tracks/2025/Bahrain/Bahrain Grand Prix_16-9_sat.png",
+            "2025 Saudi Arabian Grand Prix": "tracks/2025/Saudi_Arabia/Saudi Arabian Grand Prix_16-9_sat.png",
+            "2025 Miami Grand Prix": "tracks/2025/Miami/Miami Grand Prix_16-9_sat.png",
+            "2025 Emilia Romagna Grand Prix": "tracks/2025/Italy/Emilia Romagna Grand Prix_16-9_sat.png",
+            "2025 Monaco Grand Prix": "tracks/2025/Monaco/Monaco Grand Prix_16-9_sat.png",
+            "2025 Spanish Grand Prix": "tracks/2025/Spain/Spanish Grand Prix_16-9_sat.png",
+            "2025 Canadian Grand Prix": "tracks/2025/Canada/Canadian Grand Prix_16-9_sat.png",
+            "2025 Austrian Grand Prix": "tracks/2025/Austria/Austrian Grand Prix_16-9_sat.png",
+            "2025 British Grand Prix": "tracks/2025/UK/British Grand Prix_16-9_sat.png",
+            "2025 Belgian Grand Prix": "tracks/2025/Belgium/Belgian Grand Prix_16-9_sat.png",
+            "2025 Hungarian Grand Prix": "tracks/2025/Hungary/Hungarian Grand Prix_16-9_sat.png",
+            "2025 Dutch Grand Prix": "tracks/2025/Netherlands/Dutch Grand Prix_16-9_sat.png",
+            "2025 Italian Grand Prix": "tracks/2025/Italy/Italian Grand Prix_16-9_sat.png",
+            "2025 Azerbaijan Grand Prix": "tracks/2025/Azerbaijan/Azerbaijan Grand Prix_16-9_sat.png",
+            "2025 Singapore Grand Prix": "tracks/2025/Singapore/Singapore Grand Prix_16-9_sat.png",
+            "2025 United States Grand Prix": "tracks/2025/USA/United States Grand Prix_16-9_sat.png",
+            "2025 Mexico City Grand Prix": "tracks/2025/Mexico/Mexico City Grand Prix_16-9_sat.png",
+            "2025 Brazilian Grand Prix": "tracks/2025/Brazil/Brazilian Grand Prix_16-9_sat.png",
+            "2025 Las Vegas Grand Prix": "tracks/2025/Las_Vegas/Las Vegas Grand Prix_16-9_sat.png",
+            "2025 Qatar Grand Prix": "tracks/2025/Qatar/Qatar Grand Prix_16-9_sat.png",
+            "2025 Abu Dhabi Grand Prix": "tracks/2025/Abu_Dhabi/Abu Dhabi Grand Prix_16-9_sat.png"
           }
         }
       ]

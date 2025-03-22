@@ -1,11 +1,11 @@
 appId: com.DigiFlagTeam.DigiFlag-F1MV
 artifactName: ${productName}-${version}-${os}-${arch}.${ext}
 productName: DigiFlag-F1MV
-copyright: Copyright © 2024 DigiFlag Team
+copyright: Copyright © 2025 DigiFlag Team
 generateUpdatesFilesForAllChannels: true
 npmRebuild: false
 publish:
-    provider: "github"
+  provider: 'github'
 nodeGypRebuild: false
 buildDependenciesFromSource: false
 directories:
@@ -25,11 +25,11 @@ win:
   # Remove Comment From Line Below For Faster Builds During Development. Add # During Production
   # compression: store
   target:
-  - zip
-  - target: nsis
-    arch:
-    - x64
-    - ia32
+    - zip
+    - target: nsis
+      arch:
+        - x64
+        - ia32
 nsis:
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
@@ -38,33 +38,34 @@ nsis:
   perMachine: true
 mac:
   category: public.app-category.utilities
-  minimumSystemVersion: "10.12.0"
+  minimumSystemVersion: '10.12.0'
+  darkModeSupport: true
   target:
-      - target: dmg
-        arch:
-            - x64
-            - arm64
+    - target: dmg
+      arch:
+        - x64
+        - arm64
 dmg:
-  backgroundColor: "#121212"
+  backgroundColor: '#121212'
   window:
     width: 400
     height: 300
   contents:
-  - x: 100
-    y: 100
-  - x: 300
-    y: 100
-    type: link
-    path: "/Applications"
+    - x: 100
+      y: 100
+    - x: 300
+      y: 100
+      type: link
+      path: '/Applications'
 linux:
-  maintainer: "DigiFlag Team"
-  icon: "build/icon.icns"
+  maintainer: 'DigiFlag Team'
+  icon: 'build/icon.icns'
   target:
-  - AppImage
-  - deb
-  - target: zip
-    arch:
-    - x64
-    - arm64
+    - AppImage
+    - deb
+    - target: zip
+      arch:
+        - x64
+        - arm64
 appImage:
   category: Utility
