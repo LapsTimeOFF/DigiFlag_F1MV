@@ -56,6 +56,9 @@
       </div>
       <p id="infoTag" data-i18n="infoTag"></p>
       <p id="checkNetworkSettings" data-i18n="checkNetworkSettings"></p>
+      <button class="btn-sm btn btn-primary" id="openMultiViewer" data-i18n="openMultiViewer">
+        Open MultiViewer
+      </button>
       <div id="selectTheme"></div>
       <div id="selectDevice"></div>
       <div id="selectMisc"></div>
@@ -63,6 +66,7 @@
   </main>
   <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasSettings" aria-labelledby="offcanvasResponsiveLabel">
     <div class="offcanvas-header">
+         <h5 id="offcanvasResponsiveLabel" data-i18n="settings">Settings</h5>
       <div id="closeButtonContainer">
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
           data-bs-target="#offcanvasSettings" aria-label="Close"></button>
@@ -76,6 +80,7 @@
           <option value="es">Español</option>
           <option value="fr">Français</option>
           <option value="nl">Nederlands</option>
+          <option value="de">German</option>
         </select>
       </div>
       <div class="offcanvas-component" id="general">
@@ -94,9 +99,9 @@
           <path d="M3 9h18M9 21V9" />
         </svg>
         <h5 data-i18n="layout">Layout</h5>
-        <button type="button" class="btn-sm btn btn-primary" id="newInstance" data-i18n="newDigiflagInstance">New
-          DigiFlag
-          Instance</button>
+        <button type="button" class="btn-sm btn btn-primary" id="newInstance" data-i18n="newDigiflagInstance">
+          New DigiFlag Instance
+        </button>
       </div>
       <div class="offcanvas-component" id="github">
         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white"
@@ -106,11 +111,11 @@
           </path>
         </svg>
         <h5>Github</h5>
-        <button class="btn-sm btn btn-primary" id="openGithub" data-i18n="openDigiflagGithub">Open DigiFlag
-          Github</button>
+        <button class="btn-sm btn btn-primary" id="openGithub" data-i18n="openDigiflagGithub">
+          Open DigiFlag Github
+        </button>
       </div>
-      <div class="offcanvas-component" id="networkSettings">
-      </div>
+      <div class="offcanvas-component" id="networkSettings"></div>
     </div>
   </div>
   <div class="bottom-screen" id="zoomControl">
@@ -146,4 +151,5 @@
     </button>
   </div>
 </body>
+
 </html>
