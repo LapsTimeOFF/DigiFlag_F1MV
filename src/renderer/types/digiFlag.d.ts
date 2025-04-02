@@ -1,4 +1,4 @@
-import {F1LiveTimingState} from './multiViewerAPI';
+import { F1LiveTimingState } from './multiViewerAPI';
 export interface PixooData {
   ReturnCode?: number;
   ReturnMessage?: string;

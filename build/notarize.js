@@ -1,4 +1,4 @@
-import {notarize} from '@electron/notarize';
+import { notarize } from '@electron/notarize';
 
 export default async (context) => {
   if (process.platform !== 'darwin') return;
@@ -17,7 +17,7 @@ export default async (context) => {
 
   const appId = 'com.electron.app';
 
-  const {appOutDir} = context;
+  const { appOutDir } = context;
 
   const appName = context.packager.appInfo.productFilename;
 

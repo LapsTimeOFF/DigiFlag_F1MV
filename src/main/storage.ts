@@ -1,5 +1,5 @@
 import Store from 'electron-store';
-import {screen} from 'electron';
+import { screen } from 'electron';
 /* Creating a new instance of the Store class. */
 
 const storage = new Store();
