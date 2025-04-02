@@ -1,6 +1,6 @@
-import type {LTData, PixooData, PixooDeviceList} from './types/digiFlag.d.ts';
-import type {DriverNumbers, FilesConfig, Gifs, MapTheme, Theme} from './types/filesConfig.d.ts';
-import type {F1LiveTimingState, RaceControlMessages} from './types/multiViewerAPI.d.ts';
+import type { LTData, PixooData, PixooDeviceList } from './types/digiFlag.d.ts';
+import type { DriverNumbers, FilesConfig, Gifs, MapTheme, Theme } from './types/filesConfig.d.ts';
+import type { F1LiveTimingState, RaceControlMessages } from './types/multiViewerAPI.d.ts';
 /* Declaring a variable called host and assigning it the value of "127.0.0.1". */
 
 const userAgent = globalThis.navigator.userAgent;
@@ -190,7 +190,7 @@ async function getDigiFlagVersion() {
 if (/electron/i.test(userAgent)) {
   await getDigiFlagVersion();
 } else {
-  version = '2.7.1';
+  version = '2.8.1';
 }
 /**
  * This function asynchronously retrieves the IP address of the Express server.
@@ -198,7 +198,7 @@ if (/electron/i.test(userAgent)) {
  */
 async function getExpressIP(): Promise<string> {
   expressIP = await globalThis.api.getExpressIP();
-  console.log(`Express IP: ${expressIP}`);
+  if (debugOn) console.log(`Express IP: ${expressIP}`);
   $('#expressIP').text(`Express Server IP: ${expressIP}`);
   return expressIP;
 }
@@ -331,6 +331,8 @@ function updatePixooDisplay(pixooDevices: PixooDeviceList[]) {
 
 async function fetchAndDisplayPixooDevices() {
   const pixooDevices = await getPixooIPs();
+  if (debugOn) console.log('Pixoo Devices Found: ' + pixooDevices.length);
+  if (debugOn) console.table(pixooDevices);
   updatePixooDisplay(pixooDevices);
 }
 /**
@@ -917,7 +919,7 @@ function linkSuccess() {
 </div>`);
   miscOptionsReference = $('#selectDevice,#selectMisc').detach();
   $(document).localize();
-  let theme: {id: number; name: string};
+  let theme: { id: number; name: string };
   for (const theme_ of themes) {
     theme = theme_;
     $('#themes').append(`
@@ -972,32 +974,39 @@ function linkSuccess() {
       $('#extraFlagSwitch').prop('disabled', false);
     }
     $('#selectDevice').on('change', (event_) => {
-      if (event_.target.id === 'pixoo64Radio') {
-        if (debugOn) console.log('Pixoo64 was Selected');
-        currentMode = 1;
-        void getExpressIP();
-        void fetchAndDisplayPixooDevices();
-        if (pixooIPs.length > 0) {
-          $('#launchPixoo').removeClass();
-          $('#launchPixoo').addClass('btn btn-success');
-          $('#launchPixoo').prop('disabled', false);
-          $('#mvSwitch').prop('disabled', false);
-          $('#blueFlagSwitch').prop('disabled', false);
-          $('#extraFlagSwitch').prop('disabled', false);
+      void (async () => {
+        if (event_.target.id === 'pixoo64Radio') {
+          try {
+            if (debugOn) console.log('Pixoo64 was Selected');
+            currentMode = 1;
+            await getExpressIP();
+            await fetchAndDisplayPixooDevices();
+            if (pixooIPs.length > 0) {
+              $('#launchPixoo').removeClass();
+              $('#launchPixoo').addClass('btn btn-success');
+              $('#launchPixoo').prop('disabled', false);
+              $('#mvSwitch').prop('disabled', false);
+              $('#blueFlagSwitch').prop('disabled', false);
+              $('#extraFlagSwitch').prop('disabled', false);
+            }
+            if (debugOn) console.log('Current Mode: ' + `${currentMode}`);
+          } catch (error) {
+            console.error('Error occurred:', error);
+          }
+        } else {
+          if (debugOn) console.log('Window was Selected');
+          currentMode = 0;
+          $('#launchDigiFlag').show();
+          $('#launchPixoo').hide();
+          $('#pixooIPContainer').removeClass();
+          $('#pixooIPContainer').addClass('collapse');
+          if (debugOn) console.log('Current Mode: ' + `${currentMode}`);
+          $('#mapSwitch').prop('disabled', false);
+          $(document).localize();
         }
-        if (debugOn) console.log('Current Mode: ' + `${currentMode}`);
-      } else {
-        if (debugOn) console.log('Window was Selected');
-        currentMode = 0;
-        $('#launchDigiFlag').show();
-        $('#launchPixoo').hide();
-        $('#pixooIPContainer').removeClass();
-        $('#pixooIPContainer').addClass('collapse');
-        if (debugOn) console.log('Current Mode: ' + `${currentMode}`);
-        $('#mapSwitch').prop('disabled', false);
-        $(document).localize();
-      }
+      })(); // Immediately invoke the async function
     });
+
     /* Checking if the blue flag is disabled, if it is, it will enable it. If it is not, it will disable
 it. */
     $('#blueFlag').on('change', () => {

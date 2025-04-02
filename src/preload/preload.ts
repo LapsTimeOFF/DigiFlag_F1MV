@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {contextBridge, ipcRenderer} from 'electron';
-import {type Config, LiveTimingAPIGraphQL, type Topic} from 'npm_f1mv_api';
-import type {F1LiveTimingState} from '../renderer/types/multiViewerAPI.d.ts';
+import { contextBridge, ipcRenderer } from 'electron';
+import { type Config, LiveTimingAPIGraphQL, type Topic } from 'npm_f1mv_api';
+import type { F1LiveTimingState } from '../renderer/types/multiViewerAPI.d.ts';
 export interface API {
   LiveTimingAPIGraphQL: (config: Config, topic: Topic | Topic[]) => Promise<F1LiveTimingState>;
   getVersion: () => Promise<string>;

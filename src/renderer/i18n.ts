@@ -28,7 +28,7 @@ async function initI18n() {
       },
     });
 }
-jqueryI18next.init(i18next, $, {useOptionsAttr: true});
+jqueryI18next.init(i18next, $, { useOptionsAttr: true });
 function translatePage() {
   $(document).localize();
   setTimeout(() => {

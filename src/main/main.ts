@@ -1,10 +1,10 @@
-import {ip} from 'address';
-import {app, BrowserWindow, ipcMain} from 'electron';
+import { ip } from 'address';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import express from 'express';
 import path from 'node:path';
-import type {Gifs, Theme} from '../renderer/types/filesConfig.d.ts';
-import {failedToLoadAPI} from './errorTable.js';
-import {themes} from './filesConfiguration.json';
+import type { Gifs, Theme } from '../renderer/types/filesConfig.d.ts';
+import { failedToLoadAPI } from './errorTable.js';
+import { themes } from './filesConfiguration.json';
 import {
   getAlwaysOnTopState,
   getWindowPositionSettings,
@@ -30,7 +30,7 @@ expressApp
 
 /* A route that is used to get a gif from the server. */
 expressApp.get('/getGif/:gif/:themeID', (request, response) => {
-  const {gif, themeID} = request.params;
+  const { gif, themeID } = request.params;
   const theme: Theme = themes[themeID] as Theme;
   const gifPath = theme.gifs[gif as keyof Gifs];
   response.sendFile(`${gifPath}`, {
@@ -40,7 +40,7 @@ expressApp.get('/getGif/:gif/:themeID', (request, response) => {
 
 /* A route that is used to change the GIF on the Pixoo64. */
 expressApp.get('/getGifPixoo/:themeID/:gif.gif/', (request, response) => {
-  const {gif, themeID} = request.params;
+  const { gif, themeID } = request.params;
   const theme: Theme = themes[themeID] as Theme;
   /* Checking if the theme is compatible with Pixoo64. If it isn't, it sends a 400 error. */
   if (!theme.compatibleWith.Pixoo64) {
@@ -55,7 +55,7 @@ expressApp.get('/getGifPixoo/:themeID/:gif.gif/', (request, response) => {
 });
 /* A route that is used to get a DriverNumber GIF. */
 expressApp.get('/getGifPixoo/:themeID/DriverNumbers/:year/:driverNumber.gif/', (request, response) => {
-  const {driverNumber, themeID, year} = request.params;
+  const { driverNumber, themeID, year } = request.params;
   const theme: Theme = themes[themeID] as Theme;
   const driverNumbersArray = theme.gifs.driverNumber;
   let DriverNumberPath = '';
@@ -129,7 +129,7 @@ function createWindow(
   // Event listeners on the window
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.show();
-    if (version.includes('dev')) mainWindow.webContents.openDevTools({mode: 'detach'});
+    if (version.includes('dev')) mainWindow.webContents.openDevTools({ mode: 'detach' });
   });
 
   /* A type alias for a function that takes an array of unknowns and returns a value of type R. */
@@ -175,7 +175,7 @@ the size of the window as an argument. */
   /* Setting the minimum size of the window to 256x256. */
   mainWindow.setMinimumSize(256, 256);
 
-  mainWindow.webContents.setWindowOpenHandler(({url}) => {
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (url === 'https://github.com/LapsTimeOFF/DigiFlag_F1MV') {
       return {
         action: 'allow',
@@ -236,7 +236,7 @@ function createInstanceWindow() {
     },
   });
 
-  instanceWindow.webContents.setWindowOpenHandler(({url}) => {
+  instanceWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (url === 'https://github.com/LapsTimeOFF/DigiFlag_F1MV') {
       return {
         action: 'allow',
