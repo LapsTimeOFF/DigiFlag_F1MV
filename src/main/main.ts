@@ -172,8 +172,6 @@ the size of the window as an argument. */
       saveWindowSize(mainWindow.getSize());
     }, 500)
   );
-  /* Setting the minimum size of the window to 256x256. */
-  mainWindow.setMinimumSize(256, 256);
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (url === 'https://github.com/LapsTimeOFF/DigiFlag_F1MV') {
@@ -216,15 +214,18 @@ the size of the window as an argument. */
       };
     }
   });
+  // Hide macOS Traffic Lights
+  if (process.platform === 'darwin') {
+    mainWindow.setWindowButtonVisibility(false);
+  }
   return mainWindow;
 }
 function createInstanceWindow() {
   const instanceWindow = new BrowserWindow({
     autoHideMenuBar: true,
-    frame: false,
+    frame: true,
     show: false,
-    transparent: true,
-    parent: mainWindow,
+    transparent: false,
     titleBarStyle: 'hidden',
     title: 'DigiFlag Instance',
     icon: path.join(import.meta.dirname, '../../build/icon.png'),
@@ -283,6 +284,10 @@ function createInstanceWindow() {
     void instanceWindow.loadFile(path.join(import.meta.dirname, '../renderer/index.html'));
   }
   instanceWindow.once('ready-to-show', () => {
+    // Hide macOS Traffic Lights
+    if (process.platform === 'darwin') {
+      instanceWindow.setWindowButtonVisibility(false);
+    }
     instanceWindow.show();
   });
 }
