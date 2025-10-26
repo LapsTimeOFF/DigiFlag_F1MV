@@ -32,6 +32,8 @@
 1. Click on the Release Badge below to download the latest release of DigiFlag for your corresponding Operating System
    (Windows/Mac/Linux).
 
+   [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/LapsTimeOFF/DigiFlag_F1MV?color=%235FAD56&include_prereleases&style=for-the-badge)](https://github.com/LapsTimeOFF/DigiFlag_F1MV/releases/latest)
+
 2. (Windows/Linux) Extract the downloaded archive.
 
    2a. (Mac) Open DMG File & Install Like Any Other App.
