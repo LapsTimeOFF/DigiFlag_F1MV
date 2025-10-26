@@ -190,7 +190,7 @@ async function getDigiFlagVersion() {
 if (/electron/i.test(userAgent)) {
   await getDigiFlagVersion();
 } else {
-  version = '2.8.1';
+  version = '2.8.4';
 }
 /**
  * This function asynchronously retrieves the IP address of the Express server.
@@ -236,7 +236,6 @@ function autoConnectF1MV() {
             $('#tagSession').removeClass();
             $('#currentSession').removeClass();
             $('#raceName').removeClass();
-            $('#checkNetworkSettings,#infoTag').hide();
             $('#openMultiViewer').hide();
             $('#tagLink').addClass('badge text-bg-primary');
             $('#tagSession').addClass('badge text-bg-primary');
@@ -260,7 +259,19 @@ function autoConnectF1MV() {
   }
 }
 /**
- * It gets the current race name from the MultiViewer API and displays it on the page.
+ * Fetches the current race session information from the MultiViewer GraphQL API and updates the page display.
+ *
+ * @returns {Promise<string>} Resolves with the race year and meeting name string if successful,
+ * or an error message string if data retrieval fails.
+ *
+ * @throws {Error} Throws if the session information is incomplete.
+ *
+ * @description
+ * Calls the global MultiViewer API via GraphQL request for 'SessionInfo'.
+ * Extracts the current session's meeting name, session type, and start year.
+ * Validates session values and updates the element with id 'raceName'.
+ * Logs info if debug mode is enabled.
+ * Handles and logs errors from the API call, providing a fallback error message.
  */
 async function getCurrentSessionInfo(): Promise<string> {
   try {
@@ -331,7 +342,7 @@ function updatePixooDisplay(pixooDevices: PixooDeviceList[]) {
 
 async function fetchAndDisplayPixooDevices() {
   const pixooDevices = await getPixooIPs();
-  if (debugOn) console.log('Pixoo Devices Found: ' + pixooDevices.length);
+  if (debugOn) console.log('Pixoo Devices Found: ' + pixooDevices.length.toString());
   if (debugOn) console.table(pixooDevices);
   updatePixooDisplay(pixooDevices);
 }
@@ -452,29 +463,56 @@ function getDriverNumberPath(DriverNumber: string): string {
 }
 
 /**
- * It saves the host and port to local storage.
- * @param host - The hostname of the server.
- * @param port{number} - The port number of the server.
+ * Saves the host and port settings to local storage and displays a Bootstrap toast notification.
+ *
+ * @param host - The hostname of the server to save.
+ * @param port - The port number of the server to save; must be between 0 and 65535 inclusive.
+ *
  */
 function saveSettings(host: string, port: number): void {
   $('.toast').remove();
   localStorage.setItem('host', host);
-  /* The code below is checking if the port is valid or not. If the port is valid, it will save the port in the local storage. If the port is invalid, it will throw an error. */
+  // Check if the port number is within the valid range of 0 to 65535
   if (port >= 0 && port <= 65535) {
+    // Save the port value as a string in localStorage
     localStorage.setItem('port', port.toString());
+
     if (debugOn) log('Network Settings Saved !');
-    $('#networkSettings > h5')
-      .after(`<div class="toast text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000" data-bs-autohide="true">
-        <div class="toast-header text-bg-success">
-          <strong class="text-center me-auto">Network Settings Saved!</strong>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-        <p>Host:${host}</p>
-        <p>Port:${port}</p>
-        </div>
-    </div>
-    `);
+
+    // Create the toast container div
+    const toast = $('<div>').addClass('toast text-bg-dark').attr({
+      role: 'alert', // Accessibility role for alert
+      'aria-live': 'assertive', // Screen readers will announce this toast immediately
+      'aria-atomic': 'true', // Screen readers treat the whole region as atomic
+      'data-bs-delay': '3000', // Auto-hide delay in milliseconds
+      'data-bs-autohide': 'true', // Toast will auto-hide after delay
+    });
+
+    // Create the toast header with a success background color
+    const toastHeader = $('<div>').addClass('toast-header text-bg-success');
+
+    // Add a strong element for the toast title with centering and margin utilities
+    toastHeader.append('<strong class="text-center me-auto">Network Settings Saved!</strong>');
+
+    // Add the close button for dismissing the toast
+    toastHeader.append(
+      '<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>'
+    );
+
+    // Create the toast body container
+    const body = $('<div>').addClass('toast-body');
+
+    // Append the host and port as plain text paragraphs to sanitize values
+    body.append($('<p>').text(`Host: ${host}`));
+    body.append($('<p>').text(`Port: ${port}`));
+
+    // Append header and body to the toast container
+    toast.append(toastHeader).append(body);
+
+    // Insert the toast right after the <h5> inside #networkSettings container
+    $('#networkSettings > h5').after(toast);
+
+    // Show the toast using Bootstrap's toast plugin
     $('.toast').toast('show');
     autoConnectF1MV();
   } else {
@@ -579,7 +617,7 @@ function portInvalidToast() {
           <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
         <div class="toast-body">
-        Please enter a valid port number (1-65535)
+        Please enter a valid port number (0-65535)
         </div>
     </div>
     `);
@@ -673,7 +711,7 @@ function selectTheme(id: number) {
 function selectMapTheme(id: number) {
   const mapThemesID = mapThemes[id];
   if (trackMapSwitch && mapThemesID) {
-    if (debugOn) log('Map Theme selected : ' + mapThemesID.name.toString());
+    if (debugOn) log('Map Theme selected : ' + mapThemesID.name);
     currentMapTheme = id;
     getCurrentTrackPath(currentMapTheme);
     $('#launchDigiFlag').prop('disabled', true);
@@ -863,8 +901,6 @@ function linkSuccess() {
   $('#tagSession').show();
   $('#openMultiViewer').remove();
   $('#linkF1MV').remove();
-  $('#infoTag').remove();
-  $('#checkNetworkSettings').remove();
   $('#networkSettings').remove();
   $('#selectTheme').append(`
     <p class="lead text-center fs-4 mb-1" data-i18n="selectADigiflagTheme"></p>
@@ -1089,7 +1125,9 @@ it. */
     });
     $('#launchDigiFlag').on('click', () => {
       $('.menu-box').remove();
-      $('body').append(`<img src="${getGifPath('void')}" id="digiflag" class="img-fluid center-screen">`);
+      $('body').append(
+        `<img src="${getGifPath('void')}" id="digiflag" class="img-fluid center-screen" style="width: 100%; object-fit: cover;">`
+      );
       $('#digiflag').insertBefore('.bottom-screen');
       $('.bottom-screen:not(:hover)').animate(
         {
@@ -1164,7 +1202,6 @@ async function linkF1MV(force?: boolean) {
       $('#tagLink').attr('data-i18n', 'youAreConnectedToF1mvButTheLiveReplayTimingWindowIsNotOpen');
       $('#raceName').attr('data-i18n', 'unableToRetrieveCurrentSessionFromF1mv');
       $('#openMultiViewer').hide();
-      $('#checkNetworkSettings,#infoTag').hide();
       $(document).localize();
       setTimeout(() => {
         autoConnectF1MV();
@@ -1189,10 +1226,6 @@ async function linkF1MV(force?: boolean) {
     $('#openMultiViewer').show();
 
     $(document).localize();
-    /* Changing the text of the element with the id "infoTag" to "Maybe you are trying to connect
-        to another host? Maybe your port isn't the default one?" */
-    /* The above code is changing the text of the element with the id of checkNetworkSettings to
-       Click on the Settings Gear Above to check your Network Settings. */
     setTimeout(() => {
       $('#tagLink').removeAttr('data-i18n');
       $('#raceName').removeAttr('data-i18n');
@@ -1225,10 +1258,7 @@ $(function () {
     // Append Network Settings title
     $('#networkSettings').append('<h5 data-i18n="network">Network</h5>');
 
-    const ipv4Pattern = new RegExp(
-      `^(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})\\.(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})\\.(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})\\.(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})$`,
-      'gm'
-    );
+    const ipv4Pattern = new RegExp(/^(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)$/);
 
     const sanitizedHost = escapeHtml(config.host);
     const sanitizedPort = escapeHtml(config.port.toString());
@@ -1242,7 +1272,7 @@ $(function () {
     // Append Port input with validation
     $('#networkSettings').append(
       `<label for="port">MultiViewer API Port:</label>
-    <input type="number" class="form-control-sm text-bg-dark" maxlength="5" value="${sanitizedPort}" id="port" required min="1" max="65535">`
+    <input type="number" class="form-control-sm text-bg-dark" maxlength="5" value="${sanitizedPort}" id="port" required min="0" max="65535">`
     );
     $('#networkSettings').append(
       $('<div/>', {
@@ -1274,7 +1304,7 @@ $(function () {
         config.host = host;
 
         if (debugOn) log($('#ip').text());
-        if (debugOn) log(`IP = ${host} = ${config.host}`);
+        if (debugOn) log(`IP: ${config.host}`);
 
         const portNumber = Number.parseInt(portInput.toString(), 10);
         if (Number.isNaN(portNumber) || portNumber < 1 || portNumber > 65535) {
@@ -1286,7 +1316,7 @@ $(function () {
         config.port = Number.parseInt(port);
 
         if (debugOn) log($('#port').text());
-        if (debugOn) log(`PORT = ${port} = ${config.port}`);
+        if (debugOn) log(`PORT: ${config.port}`);
 
         saveSettings(config.host, config.port);
       } else {

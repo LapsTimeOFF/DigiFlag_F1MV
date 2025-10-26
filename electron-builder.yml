@@ -2,7 +2,7 @@ appId: com.DigiFlagTeam.DigiFlag-F1MV
 artifactName: ${productName}-${version}-${os}-${arch}.${ext}
 productName: DigiFlag-F1MV
 copyright: Copyright © 2025 DigiFlag Team
-generateUpdatesFilesForAllChannels: true
+generateUpdatesFilesForAllChannels: false
 npmRebuild: false
 publish:
   provider: 'github'
@@ -10,13 +10,20 @@ nodeGypRebuild: false
 buildDependenciesFromSource: false
 directories:
   buildResources: build
-  output: out
+electronLanguages:
+  - en-US
 files:
   - '!**/.vscode/*'
   - '!src/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'
-  - '!{.eslintignore,.eslintrc.js,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!node_modules/**/*.js.map'
+  - '!node_modules/**/*.cjs.map'
+  - '!node_modules/**/*.mjs.map'
+  - '!node_modules/**/*.ts.map'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - '!{electron-builder.yml,electron-builder.config.js}'
 asar: true
 asarUnpack:
   - '**/*.{node,dll}'
@@ -30,31 +37,38 @@ win:
       arch:
         - x64
         - ia32
+        - arm64
 nsis:
+  artifactName: ${productName}-${version}-${os}-${arch}-Setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
   oneClick: true
-  perMachine: true
+  perMachine: false
+  differentialPackage: false
+  buildUniversalInstaller: false
 mac:
+  entitlementsInherit: build/entitlements.mac.plist
+  extendInfo:
+    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
+    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
   category: public.app-category.utilities
   minimumSystemVersion: '10.12.0'
   darkModeSupport: true
   target:
     - target: dmg
       arch:
+        - universal
         - x64
         - arm64
 dmg:
   backgroundColor: '#121212'
-  window:
-    width: 400
-    height: 300
+  writeUpdateInfo: false
   contents:
-    - x: 100
-      y: 100
-    - x: 300
-      y: 100
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
       type: link
       path: '/Applications'
 linux:

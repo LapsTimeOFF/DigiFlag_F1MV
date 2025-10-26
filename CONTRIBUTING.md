@@ -1,6 +1,6 @@
 <!-- omit in toc -->
 
-# Contributing to DigiFlag for F1MV
+# Contributing to DigiFlag for MultiViewer
 
 First off, thanks for taking the time to contribute! ❤️
 
@@ -31,8 +31,8 @@ community looks forward to your contributions. 🎉
 ## Code of Conduct
 
 This project and everyone participating in it is governed by the
-[DigiFlag F1MV Code of Conduct](https://github.com/LapsTimeOFF/DigiFlag_F1MVblob/master/CODE_OF_CONDUCT.md). By
-participating, you are expected to uphold this code. Please report unacceptable behavior to
+[DigiFlag for MultiViewer Code of Conduct](https://github.com/LapsTimeOFF/DigiFlag_F1MV/blob/stable/CODE_OF_CONDUCT.md).
+By participating, you are expected to uphold this code. Please report unacceptable behavior to
 [@LapsTimeOFF](https://github.com/LapsTimeOFF).
 
 ## I Have a Question
@@ -134,9 +134,9 @@ Once it's filed:
 
 ### Suggesting Enhancements
 
-This section guides you through submitting an enhancement suggestion for DigiFlag F1MV, **including completely new
-features and minor improvements to existing functionality**. Following these guidelines will help maintainers and the
-community to understand your suggestion and find related suggestions.
+This section guides you through submitting an enhancement suggestion for DigiFlag for MultiViewer, **including
+completely new features and minor improvements to existing functionality**. Following these guidelines will help
+maintainers and the community to understand your suggestion and find related suggestions.
 
 <!-- omit in toc -->
 
@@ -164,8 +164,8 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/LapsTi
   you can also tell which alternatives do not work for you.
 - You may want to **include screenshots and animated GIFs** which help you demonstrate the steps or point out the part
   which the suggestion is related to.
-- **Explain why this enhancement would be useful** to most DigiFlag F1MV users. You may also want to point out the other
-  projects that solved it better and which could serve as inspiration.
+- **Explain why this enhancement would be useful** to most DigiFlag For MultiViewer users. You may also want to point
+  out the other projects that solved it better and which could serve as inspiration.
 
 <!-- You might want to create an issue template for enhancement suggestions that can be used as a guide and that defines the structure of the information to be included. If you do so, reference it here in the description. -->
 

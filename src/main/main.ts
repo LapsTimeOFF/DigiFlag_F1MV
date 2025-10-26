@@ -1,10 +1,10 @@
 import { ip } from 'address';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import express from 'express';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import type { Gifs, Theme } from '../renderer/types/filesConfig.d.ts';
+import type { FilesConfig, Gifs, Theme } from '../renderer/types/filesConfig.d.ts';
 import { failedToLoadAPI } from './errorTable.js';
-import { themes } from './filesConfiguration.json';
 import {
   getAlwaysOnTopState,
   getWindowPositionSettings,
@@ -28,15 +28,37 @@ expressApp
     throw new Error(`${failedToLoadAPI}`);
   });
 
-/* A route that is used to get a gif from the server. */
-expressApp.get('/getGif/:gif/:themeID', (request, response) => {
-  const { gif, themeID } = request.params;
-  const theme: Theme = themes[themeID] as Theme;
-  const gifPath = theme.gifs[gif as keyof Gifs];
-  response.sendFile(`${gifPath}`, {
-    root: path.join(import.meta.dirname, '../renderer/'),
-  });
-});
+let themes = {};
+
+/**
+ * Loads configuration data from a JSON file located at '../renderer/filesConfiguration.json'.
+ * Parses the JSON file and assigns the 'themes' property to the global 'themes' variable.
+ * Logs an error if the configuration loading fails.
+ *
+ * @function
+ * @throws {Error} If there is an issue with reading or parsing the configuration file.
+ */
+function loadConfig() {
+  try {
+    // Define the path to the configuration file
+    const filePath = path.join(import.meta.dirname, '../renderer/filesConfiguration.json');
+
+    // Read the file content as a UTF-8 encoded string
+    const file = readFileSync(filePath, 'utf8');
+
+    // Parse the JSON string into a JavaScript object, casting it to the FilesConfig type
+    const data = JSON.parse(file) as FilesConfig;
+
+    // Extract and store the themes from the configuration data
+    themes = data.themes;
+  } catch (error) {
+    // Log an error message if the configuration loading fails
+    console.log('Failed to load configuration:', error);
+  }
+}
+
+// Call the loadConfig function to load the configuration when the script runs
+loadConfig();
 
 /* A route that is used to change the GIF on the Pixoo64. */
 expressApp.get('/getGifPixoo/:themeID/:gif.gif/', (request, response) => {
@@ -104,6 +126,9 @@ function createWindow(
     x: windowPositionX,
     y: windowPositionY,
     frame: true,
+    roundedCorners: process.platform === 'darwin' ? true : false,
+    accentColor: false,
+    backgroundColor: '#121212',
     transparent: false,
     titleBarStyle: 'hidden',
     /* Setting the icon of the window. */
@@ -161,15 +186,18 @@ position of the window as an argument. */
   mainWindow.on(
     'move',
     debounce(() => {
-      saveWindowPos(mainWindow.getPosition());
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        saveWindowPos(mainWindow.getPosition());
+      }
     }, 500)
   );
-  /* A function that is called when the window is resized. It calls the `saveWindowSize` function with
-the size of the window as an argument. */
+
   mainWindow.on(
     'resize',
     debounce(() => {
-      saveWindowSize(mainWindow.getSize());
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        saveWindowSize(mainWindow.getSize());
+      }
     }, 500)
   );
 
@@ -196,6 +224,9 @@ the size of the window as an argument. */
         action: 'allow',
         overrideBrowserWindowOptions: {
           frame: false,
+          roundedCorners: process.platform === 'darwin' ? true : false,
+          accentColor: false,
+          backgroundColor: '#121212',
           transparent: true,
           fullscreenable: false,
           minWidth: 256,
@@ -225,6 +256,9 @@ function createInstanceWindow() {
     autoHideMenuBar: true,
     frame: true,
     show: false,
+    roundedCorners: process.platform === 'darwin' ? true : false,
+    accentColor: false,
+    backgroundColor: '#121212',
     transparent: false,
     titleBarStyle: 'hidden',
     title: 'DigiFlag Instance',

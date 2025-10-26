@@ -1,0 +1,64 @@
+name: ✨ Feature Request
+description: Suggest a new idea or enhancement
+title: '[Feature]: '
+labels: [enhancement]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! Please provide details to help us understand and prioritize your request.
+
+  - type: input
+    id: summary
+    attributes:
+      label: Feature Summary
+      description: Provide a short, clear title or description of your feature request.
+      placeholder: e.g., Add dark mode support
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or Opportunity
+      description: Is your feature request related to a problem or limitation? Please describe.
+      placeholder: I'm frustrated when I ...
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution or feature you'd like to see implemented.
+      placeholder: I would like the app to ...
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you thought of other solutions or workarounds?
+      placeholder: Instead, I tried ...
+
+  - type: textarea
+    id: benefits
+    attributes:
+      label: Benefits
+      description: How will this feature help you or others? What's the impact?
+      placeholder: This will improve usability by ...
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - High (critical for my workflow)
+        - Medium (would greatly improve experience)
+        - Low (nice to have)
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing feature requests
+        - label: I have provided enough context for this request

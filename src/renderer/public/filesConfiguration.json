@@ -192,7 +192,7 @@
         "pitentry": "gifs/T2_11/pitentry.gif",
         "rain": "gifs/T2_11/rain.gif",
         "red": "gifs/T2_11/red.gif",
-        "recoveryvehicle": "gifs/T2_11f/recoveryvehicle.gif",
+        "recoveryvehicle": "gifs/T2_11/recoveryvehicle.gif",
         "rs": "gifs/T2_11/rs.gif",
         "sc": "gifs/T2_11/sc.gif",
         "slippery": "gifs/T2_11/slippery.gif",
@@ -441,6 +441,7 @@
         "pixoostartup": "gifs/pixoo64/pixoostartup.gif",
         "pixoostartupMV": "gifs/pixoo64/pixoostartupMV.gif",
         "rain": "gifs/pixoo64/rain.gif",
+        "recoveryvehicle": "gifs/pixoo64/recoveryvehicle.gif",
         "red": "gifs/pixoo64/red.gif",
         "rs": "gifs/pixoo64/rs.gif",
         "sc": "gifs/pixoo64/sc.gif",
@@ -464,15 +465,15 @@
           "year": "2022",
           "trackMaps": {
             "2022 Bahrain Grand Prix": "tracks/2022/Bahrain/Bahrain Grand Prix_16-9.png",
-            "2022 Saudi Arabian Grand Prix": "tracks/2022/Saudi_Arabia/Saudi Arabian Grand Prix_16-9.png",
+            "2022 Saudi Arabian Grand Prix": "tracks/2022/Saudi Arabia/Saudi Arabian Grand Prix_16-9.png",
             "2022 Australian Grand Prix": "tracks/2022/Australia/Australian Grand Prix_16-9.png",
             "2022 Emilia Romagna Grand Prix": "tracks/2022/",
             "2022 Miami Grand Prix": "tracks/2022/Miami/Miami Grand Prix_16-9.png",
-            "2022 Spanish Grand Prix": "tracks/2022/Barcelona/Barcelona Grand Prix_16-9.png",
+            "2022 Spanish Grand Prix": "tracks/2022/Barcelona/Spanish Grand Prix_16-9.png",
             "2022 Monaco Grand Prix": "tracks/2022/",
             "2022 Azerbaijan Grand Prix": "tracks/2022/Azerbaijan/Azerbaijan Grand Prix_16-9.png",
             "2022 Canadian Grand Prix": "tracks/2022/Canada/Canadian Grand Prix_16-9.png",
-            "2022 British Grand Prix": "tracks/2022/UK/Britsh Grand Prix_16-9.png",
+            "2022 British Grand Prix": "tracks/2022/UK/British Grand Prix_16-9.png",
             "2022 Austrian Grand Prix": "tracks/2022/Austria/Austrian Grand Prix_16-9.png",
             "2022 French Grand Prix": "tracks/2022/",
             "2022 Hungarian Grand Prix": "tracks/2022/Hungary/Hungarian Grand Prix_16-9.png",
@@ -483,8 +484,8 @@
             "2022 Japanese Grand Prix": "tracks/2022/",
             "2022 United States Grand Prix": "tracks/2022/",
             "2022 Mexico City Grand Prix": "tracks/2022/",
-            "2022 São Paulo Grand Prix": "tracks/2022/Sao_Palo/Sao Paulo Grand Prix_16-9.png",
-            "2022 Abu Dhabi Grand Prix": "tracks/2022/Abu_Dhabi/Abu Dhabi Grand Prix_16-9.png"
+            "2022 São Paulo Grand Prix": "tracks/2022/Brazil/Sao Paulo Grand Prix_16-9.png",
+            "2022 Abu Dhabi Grand Prix": "tracks/2022/Abu Dhabi/Abu Dhabi Grand Prix_16-9.png"
           }
         },
         {
@@ -492,15 +493,14 @@
           "trackMaps": {
             "2023 Pre-Season Testing": "tracks/2023/Bahrain/Bahrain Grand Prix_16-9.png",
             "2023 Bahrain Grand Prix": "tracks/2023/Bahrain/Bahrain Grand Prix_16-9.png",
-            "2023 Saudi Arabian Grand Prix": "tracks/2023/Saudi_Arabia/Saudi Arabian Grand Prix_16-9.png",
+            "2023 Saudi Arabian Grand Prix": "tracks/2023/Saudi Arabia/Saudi Arabian Grand Prix_16-9.png",
             "2023 Australian Grand Prix": "tracks/2023/Australia/Australian Grand Prix_16-9.png",
-            "2023 Emilia Romagna Grand Prix": "tracks/2023/",
             "2023 Miami Grand Prix": "tracks/2023/Miami/Miami Grand Prix_16-9.png",
-            "2023 Spanish Grand Prix": "tracks/2023/Barcelona/Barcelona Grand Prix_16-9.png",
+            "2023 Spanish Grand Prix": "tracks/2023/Barcelona/Spanish Grand Prix_16-9.png",
             "2023 Monaco Grand Prix": "tracks/2023/",
             "2023 Azerbaijan Grand Prix": "tracks/2023/Azerbaijan/Azerbaijan Grand Prix_16-9.png",
             "2023 Canadian Grand Prix": "tracks/2023/Canada/Canadian Grand Prix_16-9.png",
-            "2023 British Grand Prix": "tracks/2023/UK/Britsh Grand Prix_16-9.png",
+            "2023 British Grand Prix": "tracks/2023/UK/British Grand Prix_16-9.png",
             "2023 Austrian Grand Prix": "tracks/2023/Austria/Austrian Grand Prix_16-9.png",
             "2023 French Grand Prix": "tracks/2023/",
             "2023 Hungarian Grand Prix": "tracks/2023/Hungary/Hungarian Grand Prix_16-9.png",
@@ -512,9 +512,9 @@
             "2023 Qatar Grand Prix": "tracks/2023/",
             "2023 United States Grand Prix": "tracks/2023/",
             "2023 Mexico City Grand Prix": "tracks/2023/",
-            "2023 São Paulo Grand Prix": "tracks/2023/Sao_Palo/Sao Paulo Grand Prix_16-9.png",
+            "2023 São Paulo Grand Prix": "tracks/2023/Brazil/Sao Paulo Grand Prix_16-9.png",
             "2023 Las Vegas Grand Prix": "tracks/2023/",
-            "2023 Abu Dhabi Grand Prix": "tracks/2023/Abu_Dhabi/Abu Dhabi Grand Prix_16-9.png"
+            "2023 Abu Dhabi Grand Prix": "tracks/2023/Abu Dhabi/Abu Dhabi Grand Prix_16-9.png"
           }
         },
         {
@@ -522,7 +522,7 @@
           "trackMaps": {
             "2024 Pre-Season Testing": "tracks/2024/Bahrain/Bahrain Grand Prix_16-9.png",
             "2024 Bahrain Grand Prix": "tracks/2024/Bahrain/Bahrain Grand Prix_16-9.png",
-            "2024 Saudi Arabian Grand Prix": "tracks/2024/Saudi_Arabia/Saudi Arabian Grand Prix_16-9.png",
+            "2024 Saudi Arabian Grand Prix": "tracks/2024/Saudi Arabia/Saudi Arabian Grand Prix_16-9.png",
             "2024 Australian Grand Prix": "tracks/2024/Australia/Australian Grand Prix_16-9.png",
             "2024 Japanese Grand Prix": "tracks/2024/Japan/Japanese Grand Prix_16-9.png",
             "2024 Chinese Grand Prix": "tracks/2024/China/Chinese Grand Prix_16-9.png",
@@ -530,7 +530,7 @@
             "2024 Emilia Romagna Grand Prix": "tracks/2024/Italy/Emilia Romagna Grand Prix_16-9.png",
             "2024 Monaco Grand Prix": "tracks/2024/Monaco/Monaco Grand Prix_16-9.png",
             "2024 Canadian Grand Prix": "tracks/2024/Canada/Canadian Grand Prix_16-9.png",
-            "2024 Spanish Grand Prix": "tracks/2024/Spain/Spanish Grand Prix_16-9.png",
+            "2024 Spanish Grand Prix": "tracks/2024/Barcelona/Spanish Grand Prix_16-9.png",
             "2024 Austrian Grand Prix": "tracks/2024/Austria/Austrian Grand Prix_16-9.png",
             "2024 British Grand Prix": "tracks/2024/UK/British Grand Prix_16-9.png",
             "2024 Hungarian Grand Prix": "tracks/2024/Hungary/Hungarian Grand Prix_16-9.png",
@@ -539,12 +539,12 @@
             "2024 Italian Grand Prix": "tracks/2024/Italy/Italian Grand Prix_16-9.png",
             "2024 Azerbaijan Grand Prix": "tracks/2024/Azerbaijan/Azerbaijan Grand Prix_16-9.png",
             "2024 Singapore Grand Prix": "tracks/2024/Singapore/Singapore Grand Prix_16-9.png",
-            "2024 United States Grand Prix": "tracks/2024/USA/United States Grand Prix_16-9.png",
+            "2024 United States Grand Prix": "tracks/2024/Austin/United States Grand Prix_16-9.png",
             "2024 Mexico City Grand Prix": "tracks/2024/Mexico/Mexico City Grand Prix_16-9.png",
-            "2024 Brazilian Grand Prix": "tracks/2024/Brazil/Brazilian Grand Prix_16-9.png",
-            "2024 Las Vegas Grand Prix": "tracks/2024/Las_Vegas/Las Vegas Grand Prix_16-9.png",
+            "2024 São Paulo Grand Prix": "tracks/2024/Brazil/Sao Paulo Grand Prix_16-9.png",
+            "2024 Las Vegas Grand Prix": "tracks/2024/Las Vegas/Las Vegas Grand Prix_16-9.png",
             "2024 Qatar Grand Prix": "tracks/2024/Qatar/Qatar Grand Prix_16-9.png",
-            "2024 Abu Dhabi Grand Prix": "tracks/2024/Abu_Dhabi/Abu Dhabi Grand Prix_16-9.png"
+            "2024 Abu Dhabi Grand Prix": "tracks/2024/Abu Dhabi/Abu Dhabi Grand Prix_16-9.png"
           }
         },
         {
@@ -555,11 +555,11 @@
             "2025 Chinese Grand Prix": "tracks/2025/China/Chinese Grand Prix_16-9.png",
             "2025 Japanese Grand Prix": "tracks/2025/Japan/Japanese Grand Prix_16-9.png",
             "2025 Bahrain Grand Prix": "tracks/2025/Bahrain/Bahrain Grand Prix_16-9.png",
-            "2025 Saudi Arabian Grand Prix": "tracks/2025/Saudi_Arabia/Saudi Arabian Grand Prix_16-9.png",
+            "2025 Saudi Arabian Grand Prix": "tracks/2025/Saudi Arabia/Saudi Arabian Grand Prix_16-9.png",
             "2025 Miami Grand Prix": "tracks/2025/Miami/Miami Grand Prix_16-9.png",
             "2025 Emilia Romagna Grand Prix": "tracks/2025/Italy/Emilia Romagna Grand Prix_16-9.png",
             "2025 Monaco Grand Prix": "tracks/2025/Monaco/Monaco Grand Prix_16-9.png",
-            "2025 Spanish Grand Prix": "tracks/2025/Spain/Spanish Grand Prix_16-9.png",
+            "2025 Spanish Grand Prix": "tracks/2025/Barcelona/Spanish Grand Prix_16-9.png",
             "2025 Canadian Grand Prix": "tracks/2025/Canada/Canadian Grand Prix_16-9.png",
             "2025 Austrian Grand Prix": "tracks/2025/Austria/Austrian Grand Prix_16-9.png",
             "2025 British Grand Prix": "tracks/2025/UK/British Grand Prix_16-9.png",
@@ -569,12 +569,12 @@
             "2025 Italian Grand Prix": "tracks/2025/Italy/Italian Grand Prix_16-9.png",
             "2025 Azerbaijan Grand Prix": "tracks/2025/Azerbaijan/Azerbaijan Grand Prix_16-9.png",
             "2025 Singapore Grand Prix": "tracks/2025/Singapore/Singapore Grand Prix_16-9.png",
-            "2025 United States Grand Prix": "tracks/2025/USA/United States Grand Prix_16-9.png",
+            "2025 United States Grand Prix": "tracks/2025/Austin/United States Grand Prix_16-9.png",
             "2025 Mexico City Grand Prix": "tracks/2025/Mexico/Mexico City Grand Prix_16-9.png",
-            "2025 Brazilian Grand Prix": "tracks/2025/Brazil/Brazilian Grand Prix_16-9.png",
-            "2025 Las Vegas Grand Prix": "tracks/2025/Las_Vegas/Las Vegas Grand Prix_16-9.png",
+            "2025 São Paulo Grand Prix": "tracks/2025/Brazil/Sao Paulo Grand Prix_16-9.png",
+            "2025 Las Vegas Grand Prix": "tracks/2025/Las Vegas/Las Vegas Grand Prix_16-9.png",
             "2025 Qatar Grand Prix": "tracks/2025/Qatar/Qatar Grand Prix_16-9.png",
-            "2025 Abu Dhabi Grand Prix": "tracks/2025/Abu_Dhabi/Abu Dhabi Grand Prix_16-9.png"
+            "2025 Abu Dhabi Grand Prix": "tracks/2025/Abu Dhabi/Abu Dhabi Grand Prix_16-9.png"
           }
         }
       ]
@@ -587,15 +587,15 @@
           "year": "2022",
           "trackMaps": {
             "2022 Bahrain Grand Prix": "tracks/2022/Bahrain/Bahrain Grand Prix_16-9_sat.png",
-            "2022 Saudi Arabian Grand Prix": "tracks/2022/Saudi_Arabia/Saudi Arabian Grand Prix_16-9_sat.png",
+            "2022 Saudi Arabian Grand Prix": "tracks/2022/Saudi Arabia/Saudi Arabian Grand Prix_16-9_sat.png",
             "2022 Australian Grand Prix": "tracks/2022/Australia/Australian Grand Prix_16-9_sat.png",
             "2022 Emilia Romagna Grand Prix": "tracks/2022/",
-            "2022 Miami Grand Prix": "tracks/2022/",
-            "2022 Spanish Grand Prix": "tracks/2022/Barcelona/Barcelona Grand Prix_16-9_sat.png",
+            "2022 Miami Grand Prix": "tracks/2022/Miami/Miami Grand Prix_16-9_sat.png",
+            "2022 Spanish Grand Prix": "tracks/2022/Barcelona/Spanish Grand Prix_16-9_sat.png",
             "2022 Monaco Grand Prix": "tracks/2022/Monaco/Monaco Grand Prix_16-9_sat.png",
             "2022 Azerbaijan Grand Prix": "tracks/2022/Azerbaijan/Azerbaijan Grand Prix_16-9_sat.png",
             "2022 Canadian Grand Prix": "tracks/2022/Canada/Canadian Grand Prix_16-9_sat.png",
-            "2022 British Grand Prix": "tracks/2022/UK/Britsh Grand Prix_16-9_sat.png",
+            "2022 British Grand Prix": "tracks/2022/UK/British Grand Prix_16-9_sat.png",
             "2022 Austrian Grand Prix": "tracks/2022/Austria/Austrian Grand Prix_16-9_sat.png",
             "2022 French Grand Prix": "tracks/2022/",
             "2022 Hungarian Grand Prix": "tracks/2022/Hungary/Hungarian Grand Prix_16-9_sat.png",
@@ -604,10 +604,10 @@
             "2022 Italian Grand Prix": "tracks/2022/Italy/Italian Grand Prix_16-9_sat.png",
             "2022 Singapore Grand Prix": "tracks/2022/Singapore/Singapore Grand Prix_16-9_sat.png",
             "2022 Japanese Grand Prix": "tracks/2022/Japan/Japanese Grand Prix_16-9_sat.png",
-            "2022 United States Grand Prix": "tracks/2022/Austin/US Grand Prix_16-9_sat.png",
+            "2022 United States Grand Prix": "tracks/2022/Austin/United States Grand Prix_16-9_sat.png",
             "2022 Mexico City Grand Prix": "tracks/2022/Mexico/Mexico City Grand Prix_16-9_sat.png",
-            "2022 São Paulo Grand Prix": "tracks/2022/Sao_Palo/Sao Paulo Grand Prix_16-9_sat.png",
-            "2022 Abu Dhabi Grand Prix": "tracks/2022/Abu_Dhabi/Abu Dhabi Grand Prix_16-9_sat.png"
+            "2022 São Paulo Grand Prix": "tracks/2022/Brazil/Sao Paulo Grand Prix_16-9_sat.png",
+            "2022 Abu Dhabi Grand Prix": "tracks/2022/Abu Dhabi/Abu Dhabi Grand Prix_16-9_sat.png"
           }
         },
         {
@@ -615,15 +615,14 @@
           "trackMaps": {
             "2023 Pre-Season Testing": "tracks/2023/Bahrain/Bahrain Grand Prix_16-9_sat.png",
             "2023 Bahrain Grand Prix": "tracks/2023/Bahrain/Bahrain Grand Prix_16-9_sat.png",
-            "2023 Saudi Arabian Grand Prix": "tracks/2023/Saudi_Arabia/Saudi Arabian Grand Prix_16-9_sat.png",
+            "2023 Saudi Arabian Grand Prix": "tracks/2023/Saudi Arabia/Saudi Arabian Grand Prix_16-9_sat.png",
             "2023 Australian Grand Prix": "tracks/2022/Australia/Australian Grand Prix_16-9_sat.png",
-            "2023 Emilia Romagna Grand Prix": "tracks/2023/",
-            "2023 Miami Grand Prix": "tracks/2023/",
-            "2023 Spanish Grand Prix": "tracks/2023/Barcelona/Barcelona Grand Prix_16-9_sat.png",
+            "2023 Miami Grand Prix": "tracks/2023/Miami/Miami Grand Prix_16-9_sat.png",
+            "2023 Spanish Grand Prix": "tracks/2023/Barcelona/Spanish Grand Prix_16-9_sat.png",
             "2023 Monaco Grand Prix": "tracks/2023/Monaco/Monaco Grand Prix_16-9_sat.png",
             "2023 Azerbaijan Grand Prix": "tracks/2023/Azerbaijan/Azerbaijan Grand Prix_16-9_sat.png",
             "2023 Canadian Grand Prix": "tracks/2023/Canada/Canadian Grand Prix_16-9_sat.png",
-            "2023 British Grand Prix": "tracks/2023/UK/Britsh Grand Prix_16-9_sat.png",
+            "2023 British Grand Prix": "tracks/2023/UK/British Grand Prix_16-9_sat.png",
             "2023 Austrian Grand Prix": "tracks/2023/Austria/Austrian Grand Prix_16-9_sat.png",
             "2023 French Grand Prix": "tracks/2023/",
             "2023 Hungarian Grand Prix": "tracks/2023/Hungary/Hungarian Grand Prix_16-9_sat.png",
@@ -633,11 +632,11 @@
             "2023 Singapore Grand Prix": "tracks/2023/Singapore/Singapore Grand Prix_16-9_sat.png",
             "2023 Japanese Grand Prix": "tracks/2023/Japan/Japanese Grand Prix_16-9_sat.png",
             "2023 Qatar Grand Prix": "tracks/2023/Qatar/Qatar Grand Prix_16-9_sat.png",
-            "2023 United States Grand Prix": "tracks/2023/Austin/US Grand Prix_16-9_sat.png",
+            "2023 United States Grand Prix": "tracks/2023/Austin/United States Grand Prix_16-9_sat.png",
             "2023 Mexico City Grand Prix": "tracks/2023/Mexico/Mexico City Grand Prix_16-9_sat.png",
-            "2023 São Paulo Grand Prix": "tracks/2023/Sao_Palo/Sao Paulo Grand Prix_16-9_sat.png",
+            "2023 São Paulo Grand Prix": "tracks/2023/Brazil/Sao Paulo Grand Prix_16-9_sat.png",
             "2023 Las Vegas Grand Prix": "tracks/2023/Las Vegas/Las Vegas Grand Prix_16-9_sat.png",
-            "2023 Abu Dhabi Grand Prix": "tracks/2023/Abu_Dhabi/Abu Dhabi Grand Prix_16-9_sat.png"
+            "2023 Abu Dhabi Grand Prix": "tracks/2023/Abu Dhabi/Abu Dhabi Grand Prix_16-9_sat.png"
           }
         },
         {
@@ -645,7 +644,7 @@
           "trackMaps": {
             "2024 Pre-Season Testing": "tracks/2024/Bahrain/Bahrain Grand Prix_16-9_sat.png",
             "2024 Bahrain Grand Prix": "tracks/2024/Bahrain/Bahrain Grand Prix_16-9_sat.png",
-            "2024 Saudi Arabian Grand Prix": "tracks/2024/Saudi_Arabia/Saudi Arabian Grand Prix_16-9_sat.png",
+            "2024 Saudi Arabian Grand Prix": "tracks/2024/Saudi Arabia/Saudi Arabian Grand Prix_16-9_sat.png",
             "2024 Australian Grand Prix": "tracks/2024/Australia/Australian Grand Prix_16-9_sat.png",
             "2024 Japanese Grand Prix": "tracks/2024/Japan/Japanese Grand Prix_16-9_sat.png",
             "2024 Chinese Grand Prix": "tracks/2024/China/Chinese Grand Prix_16-9_sat.png",
@@ -653,7 +652,7 @@
             "2024 Emilia Romagna Grand Prix": "tracks/2024/Italy/Emilia Romagna Grand Prix_16-9_sat.png",
             "2024 Monaco Grand Prix": "tracks/2024/Monaco/Monaco Grand Prix_16-9_sat.png",
             "2024 Canadian Grand Prix": "tracks/2024/Canada/Canadian Grand Prix_16-9_sat.png",
-            "2024 Spanish Grand Prix": "tracks/2024/Spain/Spanish Grand Prix_16-9_sat.png",
+            "2024 Spanish Grand Prix": "tracks/2024/Barcelona/Spanish Grand Prix_16-9_sat.png",
             "2024 Austrian Grand Prix": "tracks/2024/Austria/Austrian Grand Prix_16-9_sat.png",
             "2024 British Grand Prix": "tracks/2024/UK/British Grand Prix_16-9_sat.png",
             "2024 Hungarian Grand Prix": "tracks/2024/Hungary/Hungarian Grand Prix_16-9_sat.png",
@@ -662,12 +661,12 @@
             "2024 Italian Grand Prix": "tracks/2024/Italy/Italian Grand Prix_16-9_sat.png",
             "2024 Azerbaijan Grand Prix": "tracks/2024/Azerbaijan/Azerbaijan Grand Prix_16-9_sat.png",
             "2024 Singapore Grand Prix": "tracks/2024/Singapore/Singapore Grand Prix_16-9_sat.png",
-            "2024 United States Grand Prix": "tracks/2024/USA/United States Grand Prix_16-9_sat.png",
+            "2024 United States Grand Prix": "tracks/2024/Austin/United States Grand Prix_16-9_sat.png",
             "2024 Mexico City Grand Prix": "tracks/2024/Mexico/Mexico City Grand Prix_16-9_sat.png",
-            "2024 Brazilian Grand Prix": "tracks/2024/Brazil/Brazilian Grand Prix_16-9_sat.png",
+            "2024 São Paulo Grand Prix": "tracks/2024/Brazil/Sao Paulo Grand Prix_16-9_sat.png",
             "2024 Las Vegas Grand Prix": "tracks/2024/Las Vegas/Las Vegas Grand Prix_16-9_sat.png",
             "2024 Qatar Grand Prix": "tracks/2024/Qatar/Qatar Grand Prix_16-9_sat.png",
-            "2024 Abu Dhabi Grand Prix": "tracks/2024/Abu_Dhabi/Abu Dhabi Grand Prix_16-9_sat.png"
+            "2024 Abu Dhabi Grand Prix": "tracks/2024/Abu Dhabi/Abu Dhabi Grand Prix_16-9_sat.png"
           }
         },
         {
@@ -678,11 +677,11 @@
             "2025 Chinese Grand Prix": "tracks/2025/China/Chinese Grand Prix_16-9_sat.png",
             "2025 Japanese Grand Prix": "tracks/2025/Japan/Japanese Grand Prix_16-9_sat.png",
             "2025 Bahrain Grand Prix": "tracks/2025/Bahrain/Bahrain Grand Prix_16-9_sat.png",
-            "2025 Saudi Arabian Grand Prix": "tracks/2025/Saudi_Arabia/Saudi Arabian Grand Prix_16-9_sat.png",
+            "2025 Saudi Arabian Grand Prix": "tracks/2025/Saudi Arabia/Saudi Arabian Grand Prix_16-9_sat.png",
             "2025 Miami Grand Prix": "tracks/2025/Miami/Miami Grand Prix_16-9_sat.png",
             "2025 Emilia Romagna Grand Prix": "tracks/2025/Italy/Emilia Romagna Grand Prix_16-9_sat.png",
             "2025 Monaco Grand Prix": "tracks/2025/Monaco/Monaco Grand Prix_16-9_sat.png",
-            "2025 Spanish Grand Prix": "tracks/2025/Spain/Spanish Grand Prix_16-9_sat.png",
+            "2025 Spanish Grand Prix": "tracks/2025/Barcelona/Spanish Grand Prix_16-9_sat.png",
             "2025 Canadian Grand Prix": "tracks/2025/Canada/Canadian Grand Prix_16-9_sat.png",
             "2025 Austrian Grand Prix": "tracks/2025/Austria/Austrian Grand Prix_16-9_sat.png",
             "2025 British Grand Prix": "tracks/2025/UK/British Grand Prix_16-9_sat.png",
@@ -692,12 +691,12 @@
             "2025 Italian Grand Prix": "tracks/2025/Italy/Italian Grand Prix_16-9_sat.png",
             "2025 Azerbaijan Grand Prix": "tracks/2025/Azerbaijan/Azerbaijan Grand Prix_16-9_sat.png",
             "2025 Singapore Grand Prix": "tracks/2025/Singapore/Singapore Grand Prix_16-9_sat.png",
-            "2025 United States Grand Prix": "tracks/2025/USA/United States Grand Prix_16-9_sat.png",
+            "2025 United States Grand Prix": "tracks/2025/Austin/United States Grand Prix_16-9_sat.png",
             "2025 Mexico City Grand Prix": "tracks/2025/Mexico/Mexico City Grand Prix_16-9_sat.png",
-            "2025 Brazilian Grand Prix": "tracks/2025/Brazil/Brazilian Grand Prix_16-9_sat.png",
-            "2025 Las Vegas Grand Prix": "tracks/2025/Las_Vegas/Las Vegas Grand Prix_16-9_sat.png",
+            "2025 São Paulo Grand Prix": "tracks/2025/Brazil/Sao Paulo Grand Prix_16-9_sat.png",
+            "2025 Las Vegas Grand Prix": "tracks/2025/Las Vegas/Las Vegas Grand Prix_16-9_sat.png",
             "2025 Qatar Grand Prix": "tracks/2025/Qatar/Qatar Grand Prix_16-9_sat.png",
-            "2025 Abu Dhabi Grand Prix": "tracks/2025/Abu_Dhabi/Abu Dhabi Grand Prix_16-9_sat.png"
+            "2025 Abu Dhabi Grand Prix": "tracks/2025/Abu Dhabi/Abu Dhabi Grand Prix_16-9_sat.png"
           }
         }
       ]

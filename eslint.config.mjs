@@ -60,6 +60,7 @@ export default [
       '@typescript-eslint/no-base-to-string': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-misused-promises': 'off',
+      '@typescript-eslint/no-floating-promises': 'off',
     },
   },
 ];

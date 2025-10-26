@@ -4,27 +4,32 @@ on:
     tags:
       - v*.*.*
 jobs:
-    release:
-        runs-on: ${{ matrix.os }}
-        permissions:
-          contents: write
-        strategy:
-            matrix:
-                os:
-                    - macos-13
-                    - ubuntu-latest
-                    - windows-latest
-        steps:
-            - name: Check out Git repository
-              uses: actions/checkout@v4
-            - name: Setup Node.js environment
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 20
-            - name: Install yarn packages
-              run: yarn install
-            - name: Build/release Electron app
-              uses: paneron/action-electron-builder@v1.8.1
-              with:
-                  github_token: ${{ secrets.github_token }}
-                  release: true
+  release:
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        os:
+          - macos-13
+          - ubuntu-latest
+          - windows-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v5
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Install pnpm packages
+        run: pnpm install
+      - name: Build/release Electron app
+        uses: paneron/action-electron-builder@v1.8.1
+        with:
+          github_token: ${{ secrets.github_token }}
+          release: true
