@@ -1,0 +1,128 @@
+name: 🐞 DigiFlag Bug Report
+description: Report a bug or malfunction in DigiFlag for MultiViewer
+title: '[Bug]: '
+labels: [bug]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting an issue in DigiFlag! Please provide as much detail as possible.
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the bug you encountered.
+      options:
+        - label: I have searched the existing issues
+          required: true
+  - type: input
+    id: summary
+    attributes:
+      label: Bug Summary
+      description: Provide a short description of the bug.
+      placeholder: e.g., Flag status not updating
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Please list the steps to reproduce the bug.
+      placeholder: |
+        1. Open DigiFlag
+        2. Connect to MultiViewer
+        3. Set a flag
+        4. Observe incorrect flag display
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect DigiFlag to do?
+      placeholder: The flag status should update correctly.
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: Instead, the flag status did not change.
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this bug?
+      options:
+        - Critical (blocks usage)
+        - Major (significant impact)
+        - Minor (small impact)
+        - Trivial (cosmetic issue)
+
+  - type: dropdown
+    id: operating_systems
+    attributes:
+      label: What operating system are you using?
+      description: Select your operating system.
+      options:
+        - Windows
+        - macOS
+        - Ubuntu
+        - Other Linux
+        - Other (specify below)
+    validations:
+      required: true
+
+  - type: input
+    id: os_version
+    attributes:
+      label: Operating System Version
+      description: |
+        What operating system version are you using?
+        On Windows, click Start > Settings > System > About.
+        On macOS, click the Apple Menu > About This Mac.
+        On Linux, use `lsb_release` or `uname -a`.
+      placeholder: e.g. Windows 10 version 1909, macOS Catalina 10.15.7, or Ubuntu 20.04
+    validations:
+      required: true
+
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: What architecture are you using?
+      description: CPU architecture of your system.
+      options:
+        - x64
+        - ia32
+        - arm64 (including Apple Silicon)
+        - Other (specify below)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: pixoo_64_usage
+    attributes:
+      label: Are you using the Divoom Pixoo 64 with DigiFlag?
+      description: Select whether you have a Pixoo 64 device connected or integrated.
+      options:
+        - Yes, I am using Pixoo 64
+        - No, I am not using Pixoo 64
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Screenshots
+      description: Attach any relevant logs or screenshots.
+      placeholder: Drag and drop files or paste logs here.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched for existing DigiFlag bug reports
+        - label: I have attached all relevant information

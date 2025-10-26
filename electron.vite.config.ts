@@ -1,9 +1,11 @@
+import viteImagemin from '@vheemstra/vite-plugin-imagemin';
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
+import imagemingifsicle from 'imagemin-gifsicle';
+import imageminWebp from 'imagemin-webp';
 export default defineConfig({
   main: {
     plugins: [externalizeDepsPlugin()],
     build: {
-      outDir: './dist/main',
       emptyOutDir: true,
       rollupOptions: {
         output: {
@@ -15,7 +17,6 @@ export default defineConfig({
   preload: {
     plugins: [externalizeDepsPlugin()],
     build: {
-      outDir: './dist/preload',
       emptyOutDir: true,
       rollupOptions: {
         output: {
@@ -25,8 +26,22 @@ export default defineConfig({
     },
   },
   renderer: {
+    plugins: [
+      viteImagemin({
+        plugins: {
+          png: imageminWebp({
+            method: 6,
+          }),
+          gif: imagemingifsicle({
+            optimizationLevel: 3,
+            interlaced: true,
+          }),
+        },
+        cache: true,
+        root: './out/renderer',
+      }),
+    ],
     build: {
-      outDir: './dist/renderer',
       emptyOutDir: true,
     },
   },
