@@ -190,7 +190,7 @@ async function getDigiFlagVersion() {
 if (/electron/i.test(userAgent)) {
   await getDigiFlagVersion();
 } else {
-  version = '2.8.4';
+  version = '2.8.5';
 }
 /**
  * This function asynchronously retrieves the IP address of the Express server.
